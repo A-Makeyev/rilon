@@ -38,3 +38,14 @@ export const signInFormControls = [
         type: 'password'
     },
 ]
+
+export const initialSignInFormData = {
+    email: '',
+    password: '',
+}
+
+export const initialSignUpFormData = {
+    email: '',
+    username: '',
+    password: '',
+}

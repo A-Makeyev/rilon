@@ -8,6 +8,7 @@ const FormControls = ({ formControls = [], formData, setFormData }) => {
 
     function renderComponentByType(item) {
         let element = null
+        const currentValue = formData[item.name] || ''
 
         switch(item.componentType) {
             case 'input':
@@ -17,11 +18,22 @@ const FormControls = ({ formControls = [], formData, setFormData }) => {
                         name={item.name}
                         type={item.type}
                         placeholder={item.placeholder}
+                        value={currentValue}
+                        onChange={(e) => setFormData({
+                            ...formData,
+                            [item.name] : e.target.value
+                        })}
                     />
                 break
             case 'select':
                 element = 
-                    <Select>
+                    <Select 
+                        value={currentValue}
+                        onValueChange={(val) => setFormData({
+                        ...formData,
+                        [item.name] : val
+                    })}
+                    >
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder={item.label} />
                         </SelectTrigger>
@@ -44,6 +56,11 @@ const FormControls = ({ formControls = [], formData, setFormData }) => {
                         id={item.name}
                         name={item.name}
                         placeholder={item.placeholder}
+                        value={currentValue}
+                        onChange={(e) => setFormData({
+                            ...formData,
+                            [item.name] : e.target.value
+                        })}
                     />
                 break
             default:
@@ -53,6 +70,11 @@ const FormControls = ({ formControls = [], formData, setFormData }) => {
                         name={item.name}
                         type={item.type}
                         placeholder={item.placeholder}
+                        value={currentValue}
+                        onChange={(e) => setFormData({
+                            ...formData,
+                            [item.name] : e.target.value
+                        })}
                     />
                 break
         }
