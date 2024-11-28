@@ -10,29 +10,29 @@ const FormControls = ({ formControls = [], formData, setFormData }) => {
         let element = null
         const currentValue = formData[item.name] || ''
 
-        switch(item.componentType) {
+        switch (item.componentType) {
             case 'input':
-                element = 
-                    <Input 
+                element =
+                    <Input
                         id={item.name}
                         name={item.name}
                         type={item.type}
                         placeholder={item.placeholder}
                         value={currentValue}
-                        onChange={(e) => setFormData({
+                        onChange={(event) => setFormData({
                             ...formData,
-                            [item.name] : e.target.value
+                            [item.name]: event.target.value
                         })}
                     />
                 break
             case 'select':
-                element = 
-                    <Select 
+                element =
+                    <Select
                         value={currentValue}
                         onValueChange={(val) => setFormData({
-                        ...formData,
-                        [item.name] : val
-                    })}
+                            ...formData,
+                            [item.name]: val
+                        })}
                     >
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder={item.label} />
@@ -40,40 +40,40 @@ const FormControls = ({ formControls = [], formData, setFormData }) => {
                         <SelectContent>
                             {
                                 item.options && item.options.length > 0
-                                ? item.options.map(option => (
-                                    <SelectItem key={option.id} value={item.id}>
-                                        { option.label }
-                                    </SelectItem>
-                                ))
-                                : null
+                                    ? item.options.map(option => (
+                                        <SelectItem key={option.id} value={item.id}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))
+                                    : null
                             }
                         </SelectContent>
                     </Select>
                 break
             case 'textarea':
-                element = 
-                    <Textarea 
+                element =
+                    <Textarea
                         id={item.name}
                         name={item.name}
                         placeholder={item.placeholder}
                         value={currentValue}
-                        onChange={(e) => setFormData({
+                        onChange={(event) => setFormData({
                             ...formData,
-                            [item.name] : e.target.value
+                            [item.name]: event.target.value
                         })}
                     />
                 break
             default:
-                element = 
-                    <Input 
+                element =
+                    <Input
                         id={item.name}
                         name={item.name}
                         type={item.type}
                         placeholder={item.placeholder}
                         value={currentValue}
-                        onChange={(e) => setFormData({
+                        onChange={(event) => setFormData({
                             ...formData,
-                            [item.name] : e.target.value
+                            [item.name]: event.target.value
                         })}
                     />
                 break

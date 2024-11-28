@@ -1,4 +1,4 @@
-export const signUpFormControls = [
+export const registerFormControls = [
     {
         name: 'email',
         label: 'Email',
@@ -22,7 +22,7 @@ export const signUpFormControls = [
     },
 ]
 
-export const signInFormControls = [
+export const loginFormControls = [
     {
         name: 'email',
         label: 'Email',
@@ -39,12 +39,12 @@ export const signInFormControls = [
     },
 ]
 
-export const initialSignInFormData = {
+export const initialLoginFormData = {
     email: '',
     password: '',
 }
 
-export const initialSignUpFormData = {
+export const initialRegisterFormData = {
     email: '',
     username: '',
     password: '',

@@ -2,38 +2,39 @@ import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import { GraduationCap } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { signInFormControls, signUpFormControls } from "@/config"
+import { loginFormControls, registerFormControls } from "@/config"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AuthContext } from "@/context"
+import { AuthContext } from "@/context/auth"
 import CommonForm from "@/components/common-form"
 
 const AuthPage = () => {
-    const [activeTab, setActiveTab] = useState('signin')
-    const {                
-        signInFormData, 
-        setSignInFormData,
-        signUpFormData, 
-        setSignUpFormData
+    const [activeTab, setActiveTab] = useState('login')
+    const {
+        loginFormData,
+        setLoginFormData,
+        registerFormData,
+        setRegisterFormData,
+        handleRegister
     } = useContext(AuthContext)
 
     function handleTabChange(value) {
         setActiveTab(value)
     }
 
-    function isSignInValid() {
+    function isLoginValid() {
         return (
-            signInFormData 
-            && signInFormData.email !== '' 
-            && signInFormData.password !== ''
+            loginFormData
+            && loginFormData.email !== ''
+            && loginFormData.password !== ''
         )
     }
 
-    function isSignUpValid() {
+    function isRegisterValid() {
         return (
-            signUpFormData 
-            && signUpFormData.email !== '' 
-            && signUpFormData.username !== '' 
-            && signUpFormData.password !== ''
+            registerFormData
+            && registerFormData.email !== ''
+            && registerFormData.username !== ''
+            && registerFormData.password !== ''
         )
     }
 
@@ -46,47 +47,48 @@ const AuthPage = () => {
                 </Link>
             </header>
             <div className="flex items-center justify-center min-h-screen bg-background">
-                <Tabs 
+                <Tabs
                     value={activeTab}
-                    defaultValue="signin"
+                    defaultValue="login"
                     onValueChange={handleTabChange}
                     className="w-full max-w-md"
                 >
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="signin">Sign In</TabsTrigger>
-                        <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                        <TabsTrigger value="login">Sign In</TabsTrigger>
+                        <TabsTrigger value="register">Sign Up</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="signin">
+                    <TabsContent value="login">
                         <Card className="p-6 space-y-4">
                             <CardHeader>
-                                <CardTitle>Sign in to your account</CardTitle>
+                                <CardTitle className="text-center">Sign in to your account</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                            <CommonForm 
-                                formControls={signInFormControls}
-                                 buttonText={'Sign In'}
-                                 formData={signInFormData}
-                                 setFormData={setSignInFormData}
-                                 isButtonDisabled={!isSignInValid()}
-                            />
+                                <CommonForm
+                                    formControls={loginFormControls}
+                                    buttonText={'Sign In'}
+                                    formData={loginFormData}
+                                    setFormData={setLoginFormData}
+                                    isButtonDisabled={!isLoginValid()}
+                                />
                             </CardContent>
                         </Card>
                     </TabsContent>
-                    <TabsContent value="signup">
+                    <TabsContent value="register">
                         <Card className="p-6 space-y-4">
                             <CardHeader>
-                                <CardTitle>Create a new account</CardTitle>
+                                <CardTitle className="text-center">Create a new account</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                            <CommonForm 
-                                formControls={signUpFormControls}
+                                <CommonForm
+                                    formControls={registerFormControls}
                                     buttonText={'Sign Up'}
-                                    formData={signUpFormData}
-                                    setFormData={setSignUpFormData}
-                                    isButtonDisabled={!isSignUpValid()}
-                            />
+                                    formData={registerFormData}
+                                    setFormData={setRegisterFormData}
+                                    isButtonDisabled={!isRegisterValid()}
+                                    handleSubmit={handleRegister}
+                                />
                             </CardContent>
-                        </Card>              
+                        </Card>
                     </TabsContent>
                 </Tabs>
             </div>
