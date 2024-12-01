@@ -1,12 +1,13 @@
 const User = require("../../models/User")
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
 
-const rergisterUser = async(req, res) => {
+const registerUser = async (req, res) => {
     const { username, email, role, password } = req.body
-    
+
     const user = await User.findOne({
-        $or: [{ username }, { email }] 
+        $or: [{ username }, { email }]
     })
 
     if (user) {
@@ -26,4 +27,39 @@ const rergisterUser = async(req, res) => {
     })
 }
 
-module.exports = { rergisterUser }
+const loginUser = async (req, res) => {
+    const { email, password } = req.body
+    
+    const user = await User.findOne({ email })
+    console.log(user)
+    
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid Credentials'
+        })
+    }
+
+    const accessToken = jwt.sign({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+    }, 'JWT_SECRET', { expiresIn: '120m' })
+
+    return res.status(200).json({
+        success: true,
+        message: `User "${user.username}" logged in`,
+        data: {
+            accessToken,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        }
+    })
+}
+
+module.exports = { registerUser, loginUser }

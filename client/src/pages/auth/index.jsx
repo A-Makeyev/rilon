@@ -1,11 +1,12 @@
 import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import { GraduationCap } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { loginFormControls, registerFormControls } from "@/config"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthContext } from "@/context/auth"
+import { loginFormControls, registerFormControls } from "@/config"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import CommonForm from "@/components/common-form"
+
 
 const AuthPage = () => {
     const [activeTab, setActiveTab] = useState('login')
@@ -14,7 +15,8 @@ const AuthPage = () => {
         setLoginFormData,
         registerFormData,
         setRegisterFormData,
-        handleRegister
+        handleRegister,
+        handleLogin,
     } = useContext(AuthContext)
 
     function handleTabChange(value) {
@@ -60,15 +62,16 @@ const AuthPage = () => {
                     <TabsContent value="login">
                         <Card className="p-6 space-y-4">
                             <CardHeader>
-                                <CardTitle className="text-center">Sign in to your account</CardTitle>
+                                <CardTitle className="text-center text-lg">Log in to your account</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <CommonForm
                                     formControls={loginFormControls}
-                                    buttonText={'Sign In'}
+                                    buttonText={'Login'}
                                     formData={loginFormData}
                                     setFormData={setLoginFormData}
                                     isButtonDisabled={!isLoginValid()}
+                                    handleSubmit={handleLogin}
                                 />
                             </CardContent>
                         </Card>
@@ -76,12 +79,12 @@ const AuthPage = () => {
                     <TabsContent value="register">
                         <Card className="p-6 space-y-4">
                             <CardHeader>
-                                <CardTitle className="text-center">Create a new account</CardTitle>
+                                <CardTitle className="text-center text-lg">Create a new account</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <CommonForm
                                     formControls={registerFormControls}
-                                    buttonText={'Sign Up'}
+                                    buttonText={'Register'}
                                     formData={registerFormData}
                                     setFormData={setRegisterFormData}
                                     isButtonDisabled={!isRegisterValid()}
