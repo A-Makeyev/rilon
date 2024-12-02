@@ -8,7 +8,7 @@ export const AuthContext = createContext(null)
 export default function AuthProvider({ children }) {
     const [loginFormData, setLoginFormData] = useState(initialLoginFormData)
     const [registerFormData, setRegisterFormData] = useState(initialRegisterFormData)
-    const [auth, setAuth] = useState({})
+    const [auth, setAuth] = useState({ user: null, isAuthenticated: false })
 
     async function handleRegister(event) {
         event.preventDefault()
@@ -23,12 +23,12 @@ export default function AuthProvider({ children }) {
             sessionStorage.setItem('accessToken', data.accessToken)
             setAuth({
                 user: data.user,
-                authenticated: true
+                isAuthenticated: true
             })
         } else {
             setAuth({
                 user: null,
-                authenticated: false
+                isAuthenticated: false
             })
         }
     }
@@ -39,12 +39,12 @@ export default function AuthProvider({ children }) {
         if (data.user) {
             setAuth({
                 user: data.user,
-                authenticated: true
+                isAuthenticated: true
             })
         } else {
             setAuth({
                 user: null,
-                authenticated: false
+                isAuthenticated: false
             })
         }
     }
@@ -61,7 +61,8 @@ export default function AuthProvider({ children }) {
                 registerFormData,
                 setRegisterFormData,
                 handleRegister,
-                handleLogin
+                handleLogin,
+                auth
             }}
         >
             {children}

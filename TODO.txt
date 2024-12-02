@@ -3,4 +3,4 @@ cd client && npm i && npm run dev
 git add . && git commit -m"update" && git push
 
 
-1:59:20
+2 16

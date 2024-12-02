@@ -45,7 +45,7 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role
-    }, 'JWT_SECRET', { expiresIn: '120m' })
+    }, 'JWT_SECRET', { expiresIn: '6d' })
 
     return res.status(200).json({
         success: true,
