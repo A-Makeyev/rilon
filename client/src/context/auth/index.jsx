@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react"
 import { initialLoginFormData, initialRegisterFormData } from "@/config"
 import { login, register, verify } from '../../services/index'
+import { Skeleton } from "@/components/ui/skeleton"
 
 
 export const AuthContext = createContext(null)
@@ -9,6 +10,7 @@ export default function AuthProvider({ children }) {
     const [loginFormData, setLoginFormData] = useState(initialLoginFormData)
     const [registerFormData, setRegisterFormData] = useState(initialRegisterFormData)
     const [auth, setAuth] = useState({ user: null, isAuthenticated: false })
+    const [loading, setLoading] = useState(true)
 
     async function handleRegister(event) {
         event.preventDefault()
@@ -25,27 +27,39 @@ export default function AuthProvider({ children }) {
                 user: data.user,
                 isAuthenticated: true
             })
+            setLoading(false)
         } else {
             setAuth({
                 user: null,
                 isAuthenticated: false
             })
+            setLoading(false)
         }
     }
 
     async function authenticate() {
-        const { data } = await verify()
+        try {
+            const { data } = await verify()
 
-        if (data.user) {
-            setAuth({
-                user: data.user,
-                isAuthenticated: true
-            })
-        } else {
-            setAuth({
-                user: null,
-                isAuthenticated: false
-            })
+            if (data.user) {
+                setAuth({
+                    user: data.user,
+                    isAuthenticated: true
+                })
+            } else {
+                setAuth({
+                    user: null,
+                    isAuthenticated: false
+                })
+            }
+        } catch (err) {
+            if (!err?.response?.data?.success) {
+                setAuth({
+                    user: null,
+                    isAuthenticated: false
+                })
+            }
+            setLoading(false)
         }
     }
 
@@ -65,7 +79,7 @@ export default function AuthProvider({ children }) {
                 auth
             }}
         >
-            {children}
+            { loading ? <Skeleton /> : children }
         </AuthContext.Provider>
     )
 }

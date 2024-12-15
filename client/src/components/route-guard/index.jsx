@@ -10,8 +10,8 @@ function RouteGuard({ isAuthenticated, user, element }) {
     }
 
     if (
-        isAuthenticated && user?.role !== 'instructor' 
-        && (location.pathname.includes('instructor') || location.pathname.includes('/auth'))
+        isAuthenticated && user?.role !== 'instructor' &&
+        (location.pathname.includes('instructor') || location.pathname.includes('/auth'))
     ) {
         return <Navigate to="/home" />      
     }   
