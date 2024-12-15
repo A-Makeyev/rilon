@@ -48,7 +48,7 @@ const AuthPage = () => {
                     <span className="font-extrabold text-xl">Easy Programming</span>
                 </Link>
             </header>
-            <div className="flex items-center justify-center min-h-screen bg-background">
+            <div className="flex items-center justify-center min-h-[90vh] bg-background">
                 <Tabs
                     value={activeTab}
                     defaultValue="login"

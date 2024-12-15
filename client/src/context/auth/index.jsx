@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react"
 import { initialLoginFormData, initialRegisterFormData } from "@/config"
-import { login, register, verify } from '../../services/index'
+import { login, register, verify } from '@/services'
 import { Skeleton } from "@/components/ui/skeleton"
 
 
@@ -27,17 +27,15 @@ export default function AuthProvider({ children }) {
                 user: data.user,
                 isAuthenticated: true
             })
-            setLoading(false)
         } else {
             setAuth({
                 user: null,
                 isAuthenticated: false
             })
-            setLoading(false)
         }
     }
 
-    async function authenticate() {
+    async function authenticateUser() {
         try {
             const { data } = await verify()
 
@@ -46,13 +44,17 @@ export default function AuthProvider({ children }) {
                     user: data.user,
                     isAuthenticated: true
                 })
+                setLoading(false)
             } else {
                 setAuth({
                     user: null,
                     isAuthenticated: false
                 })
+                setLoading(false)
             }
         } catch (err) {
+            console.error('Authentication error:', err)
+            
             if (!err?.response?.data?.success) {
                 setAuth({
                     user: null,
@@ -64,7 +66,7 @@ export default function AuthProvider({ children }) {
     }
 
     useEffect(() => {
-        authenticate()
+        authenticateUser()
     }, [])
 
     return (
