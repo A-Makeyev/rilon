@@ -53,8 +53,6 @@ export default function AuthProvider({ children }) {
                 setLoading(false)
             }
         } catch (err) {
-            console.error('Authentication error:', err)
-            
             if (!err?.response?.data?.success) {
                 setAuth({
                     user: null,
@@ -63,6 +61,14 @@ export default function AuthProvider({ children }) {
             }
             setLoading(false)
         }
+    }
+
+    function logout() {
+        setAuth({
+            user: null,
+            isAuthenticated: false
+        })
+        sessionStorage.clear()
     }
 
     useEffect(() => {
@@ -78,7 +84,8 @@ export default function AuthProvider({ children }) {
                 setRegisterFormData,
                 handleRegister,
                 handleLogin,
-                auth
+                auth,
+                logout
             }}
         >
             { loading ? <Skeleton /> : children }
