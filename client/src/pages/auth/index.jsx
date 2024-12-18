@@ -10,6 +10,7 @@ import CommonForm from "@/components/common-form"
 
 const AuthPage = () => {
     const [activeTab, setActiveTab] = useState('login')
+    
     const {
         loginFormData,
         setLoginFormData,

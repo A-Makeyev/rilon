@@ -7,6 +7,7 @@ import InstructorView from "./pages/instructor"
 import StudentView from "./components/student-view/common-layout"
 import StudentHomePage from "./pages/student/home"
 import NotFound from "./pages/not-found"
+import CreateNewCourse from "./pages/instructor/crerate-new-course"
 
 
 const App = () => {
@@ -29,6 +30,16 @@ const App = () => {
         element={
           <RouteGuard
             element={<InstructorView />}
+            isAuthenticated={auth?.isAuthenticated}
+            user={auth?.user}
+          />
+        }
+      />
+      <Route
+        path="/instructor/create-new-course"
+        element={
+          <RouteGuard
+            element={<CreateNewCourse />}
             isAuthenticated={auth?.isAuthenticated}
             user={auth?.user}
           />
