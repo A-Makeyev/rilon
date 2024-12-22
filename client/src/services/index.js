@@ -19,3 +19,8 @@ export async function verify() {
     const { data } = await axiosInstance.get('/auth/verify')
     return data
 }
+
+export async function mediaUpload(formData) {
+    const { data } = await axiosInstance.post('/media/upload', formData)
+    return data
+}

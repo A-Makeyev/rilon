@@ -5,18 +5,69 @@ import { InstructorContext } from "@/context/instructor"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { mediaUpload } from "@/services"
 
 
 function CourseCurriculum() {
-    const { courseCurriculumFormData, setCourseCurriculumFormData } = useContext(InstructorContext)
+    const { 
+        courseCurriculumFormData, 
+        setCourseCurriculumFormData,
+        mediaUploadProgress, 
+        setMediaUploadProgress 
+    } = useContext(InstructorContext)
 
     function handleNewLacture() {
-        setCourseCurriculumFormData([
-            ...courseCurriculumFormData,
-            { ...courseCurriculumFormData[0] },
+        setCourseCurriculumFormData(prevState => [
+            ...prevState,
+            { title: '', preview: false, video_url: '', public_id: '' }
         ])
     }
 
+    function handleTitleChange(event, index) {
+        setCourseCurriculumFormData(prevState => {
+            const newData = [...prevState]
+            newData[index] = { ...newData[index], title: event.target.value }
+            return newData
+        })
+    }
+    
+    function handlePreviewChange(value, index) {
+        setCourseCurriculumFormData(prevState => {
+            const newData = [...prevState]
+            newData[index] = { ...newData[index], preview: value }
+            return newData
+        })
+    }
+
+    async function handleSingleVideoUpload(event, index) {
+        const video = event.target.files[0]
+    
+        if (video) {
+            const videoFormData = new FormData()
+            videoFormData.append('file', video)
+    
+            try {
+                setMediaUploadProgress(true)
+                const response = await mediaUpload(videoFormData)
+                if (response.success) {
+                    setCourseCurriculumFormData(prevState => {
+                        const newData = [...prevState]
+                        newData[index] = {
+                            ...newData[index],
+                            video_url: response?.data?.url,
+                            public_id: response?.data?.public_id
+                        }
+                        return newData
+                    })
+                    setMediaUploadProgress(false)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+    }
+
+    console.log(courseCurriculumFormData)
     return (
         <Card>
             <CardHeader>
@@ -31,11 +82,17 @@ function CourseCurriculum() {
                                 <h3 className="font-semibold">Lecture { index + 1}</h3>
                                 <Input 
                                     name={`lecture-${index + 1}`}
+                                    value={courseCurriculumFormData[index]?.title}
+                                    onChange={(event) => handleTitleChange(event, index)}
                                     placeholder="What is this lectrue about?"
                                     className="max-w-96"
                                 />
                                 <div className="flex items-center space-x-2">
-                                    <Switch id={`preview-lecture-${index + 1}`} checked={true} />
+                                    <Switch 
+                                        id={`preview-lecture-${index + 1}`} 
+                                        checked={courseCurriculumFormData[index]?.preview} 
+                                        onCheckedChange={(value) => handlePreviewChange(value, index)}
+                                    />
                                     <Label htmlFor={`preview-lecture-${index + 1}`}>Preview</Label>
                                 </div>
                             </div>
@@ -43,7 +100,8 @@ function CourseCurriculum() {
                                 <Input 
                                     type="file"
                                     accept="video/*"
-                                    className="mb-4 cursor-pointer"
+                                    onChange={(event) => handleSingleVideoUpload(event, index)}
+                                    className="mb-1 cursor-pointer"
                                 />
                             </div>
                         </div>

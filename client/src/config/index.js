@@ -166,9 +166,9 @@ export const languageOptions = [
   export const courseCurriculumInitialFormData = [
     {
       title: '',
-      videoUrl: '',
-      preview: false,
+      video_url: '',
       public_id: '',
+      preview: false,
     },
   ]
   

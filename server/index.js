@@ -3,6 +3,9 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const express = require('express')
 const authRoutes = require('./routes/auth/index')
+const mediaRoutes = require('./routes/instructor-routes/media-routes')
+
+
 const app = express()
 const PORT = process.env.PORT || 5000
 const MONGODB_URI = process.env.MONGODB_URI
@@ -19,9 +22,10 @@ mongoose.connect(MONGODB_URI)
     .catch((err) => console.log(err))
 
 app.use('/auth', authRoutes)
+app.use('/media', mediaRoutes)
 
 app.use((err, req, res, next) => {
-    console.log(err.stack)
+    console.log('🥞', err.stack)
     res.status(500).json({
         success: false,
         message: 'Internal Server Error'
