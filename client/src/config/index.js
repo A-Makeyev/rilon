@@ -160,7 +160,7 @@ export const languageOptions = [
     pricing: '',
     objectives: '',
     welcomeMessage: '',
-    image: '',
+    image_url: '',
   }
   
   export const courseCurriculumInitialFormData = [

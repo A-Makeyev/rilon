@@ -6,14 +6,17 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { mediaUpload } from "@/services"
+import MediaProgressBar from "@/components/media-progress-bar"
 
 
 function CourseCurriculum() {
     const { 
         courseCurriculumFormData, 
         setCourseCurriculumFormData,
+        mediaUploadProgressPercentage, 
+        setMediaUploadProgressPercentage,
         mediaUploadProgress, 
-        setMediaUploadProgress 
+        setMediaUploadProgress
     } = useContext(InstructorContext)
 
     function handleNewLacture() {
@@ -48,7 +51,7 @@ function CourseCurriculum() {
     
             try {
                 setMediaUploadProgress(true)
-                const response = await mediaUpload(videoFormData)
+                const response = await mediaUpload(videoFormData, setMediaUploadProgressPercentage)
                 if (response.success) {
                     setCourseCurriculumFormData(prevState => {
                         const newData = [...prevState]
@@ -67,7 +70,6 @@ function CourseCurriculum() {
         }
     }
 
-    console.log(courseCurriculumFormData)
     return (
         <Card>
             <CardHeader>
@@ -75,11 +77,17 @@ function CourseCurriculum() {
             </CardHeader>
             <CardContent>
                 <Button onClick={handleNewLacture}>Add Lecture</Button>
+                { mediaUploadProgress &&
+                    <MediaProgressBar 
+                        isMediaUploading={mediaUploadProgress} 
+                        progress={mediaUploadProgressPercentage}
+                    />
+                }
                 <div className="mt-4 space-y-4">
                     { courseCurriculumFormData.map((item, index) => (
                         <div key={`lecture-${index}`} className="border p-5 rounded-md">
                             <div className="flex gap-5 items-center ml-1">
-                                <h3 className="font-semibold">Lecture { index + 1}</h3>
+                                <h3 className="font-semibold">Lecture { index + 1 }</h3>
                                 <Input 
                                     name={`lecture-${index + 1}`}
                                     value={courseCurriculumFormData[index]?.title}

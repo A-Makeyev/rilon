@@ -20,7 +20,12 @@ export async function verify() {
     return data
 }
 
-export async function mediaUpload(formData) {
-    const { data } = await axiosInstance.post('/media/upload', formData)
+export async function mediaUpload(formData, onProgressCallback) {
+    const { data } = await axiosInstance.post('/media/upload', formData, {
+        onUploadProgress: (progressEvent) => {
+            const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            onProgressCallback(percentage)
+        }
+    })
     return data
 }
