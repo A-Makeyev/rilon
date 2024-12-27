@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { mediaUpload } from "@/services"
 import MediaProgressBar from "@/components/media-progress-bar"
+import VideoPlayer from "@/components/video-player"
 
 
 function CourseCurriculum() {
@@ -77,12 +78,6 @@ function CourseCurriculum() {
             </CardHeader>
             <CardContent>
                 <Button onClick={handleNewLacture}>Add Lecture</Button>
-                { mediaUploadProgress &&
-                    <MediaProgressBar 
-                        isMediaUploading={mediaUploadProgress} 
-                        progress={mediaUploadProgressPercentage}
-                    />
-                }
                 <div className="mt-4 space-y-4">
                     { courseCurriculumFormData.map((item, index) => (
                         <div key={`lecture-${index}`} className="border p-5 rounded-md">
@@ -105,12 +100,29 @@ function CourseCurriculum() {
                                 </div>
                             </div>
                             <div className="mt-5">
-                                <Input 
-                                    type="file"
-                                    accept="video/*"
-                                    onChange={(event) => handleSingleVideoUpload(event, index)}
-                                    className="mb-1 cursor-pointer"
-                                />
+                                { courseCurriculumFormData[index]?.video_url ? (
+                                    <div className="flex gap-3">
+                                        <VideoPlayer url={courseCurriculumFormData[index]?.video_url} width="475px" height="225px" />
+                                        <Button>Replace Video</Button>
+                                        <Button className="bg-red-700 hover:bg-red-800">Delete Lecture</Button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        { mediaUploadProgress ? (
+                                            <MediaProgressBar 
+                                                isMediaUploading={mediaUploadProgress} 
+                                                progress={mediaUploadProgressPercentage}
+                                            />
+                                        ) : (
+                                            <Input 
+                                                type="file"
+                                                accept="video/*"
+                                                onChange={(event) => handleSingleVideoUpload(event, index)}
+                                                className="mb-1 cursor-pointer"
+                                            />
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
