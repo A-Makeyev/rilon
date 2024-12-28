@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react"
-import { Slider } from "../ui/slider"
-import { Button } from "../ui/button"
+import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
 import ReactPlayer from "react-player"
 
 
@@ -63,7 +63,7 @@ function VideoPlayer({ url,  width = '100%', height = '100%'}) {
     function handleMouseMove() {
         setShowControls(true)
         clearTimeout(controlsTimeoutRef.current)
-        controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000)
+        controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 2000)
     }
 
     function handlePlayAndPause() {
@@ -163,49 +163,49 @@ function VideoPlayer({ url,  width = '100%', height = '100%'}) {
                 // controls
             />
             { showControls && (
-                <div className={`${showControls ? "opacity-100" : "opacity-0"} absolute bottom-0 left-0 right-0 p-4 bg-slate-800 bg-opacity-75 transition-opacity duration-300`}>
+                <div className="absolute opacity-100 bottom-0 left-0 right-0 p-4 bg-slate-700 bg-opacity-75 transition-opacity duration-300">
                     <Slider 
                         max={100}
-                        step={0.1}
+                        step={1}
                         value={[ played * 100 ]}
                         onValueCommit={handleSeekHover}
                         onValueChange={(value) => handleSeekChange([value[0] / 100])}
-                        className="w-full mb-4 bg-slate-700"
+                        className="w-full mb-4 bg-slate-500"
                     />
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Button 
                                 size="icon"
-                                variant="ghost" 
-                                className="text-white bg-transparent hover:text-white hover:bg-slate-700"
+                                variant="none" 
+                                className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                 onClick={handlePlayAndPause}
                             >
-                                { playing ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" /> }    
+                                { playing ? <Pause /> : <Play /> }    
                             </Button>
                             <Button
                                 size="icon"
-                                variant="ghost" 
-                                className="text-white bg-transparent hover:text-white hover:bg-slate-700"
+                                variant="none" 
+                                className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                 onClick={handleRewind}
                             >
-                                <RotateCcw className="w-6 h-6" />
+                                <RotateCcw />
                             </Button>
                             <Button
                                 size="icon"
-                                variant="ghost" 
-                                className="text-white bg-transparent hover:text-white hover:bg-slate-700"
+                                variant="none" 
+                                className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                 onClick={handleForward}
                             >
-                                <RotateCw className="w-6 h-6" />
+                                <RotateCw />
                             </Button>
                             <Button
                                 size="icon"
-                                variant="ghost" 
-                                className="text-white bg-transparent hover:text-white hover:bg-slate-700"
+                                variant="none" 
+                                className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                 onClick={handleMute}
                                 disabled={!hasAudio}
                             >
-                                { muted || !hasAudio ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" /> }
+                                { muted || !hasAudio ? <VolumeX /> : <Volume2 /> }
                             </Button>
                             <Slider 
                                 max={100}
@@ -213,7 +213,7 @@ function VideoPlayer({ url,  width = '100%', height = '100%'}) {
                                 disabled={!hasAudio}
                                 value={[ volume * 100 ]}
                                 onValueChange={(value) => handleVolumeChange([value[0] / 100])}
-                                className="w-24 bg-slate-700"
+                                className="w-24 bg-slate-500"
                             />
                         </div>
                         <div className="flex items-center space-x-2">
@@ -224,11 +224,11 @@ function VideoPlayer({ url,  width = '100%', height = '100%'}) {
                             </div>
                             <Button
                                 size="icon"
-                                variant="ghost" 
-                                className="text-white bg-transparent hover:text-white hover:bg-slate-700"
+                                variant="none" 
+                                className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                 onClick={handleFullScreen}
                             >
-                                { fullScreen ? <Minimize className="w-6 h-6" /> : <Maximize className="w-6 h-6" /> }
+                                { fullScreen ? <Minimize /> : <Maximize /> }
                             </Button>
                         </div>
                     </div>
