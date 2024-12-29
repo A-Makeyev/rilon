@@ -2,5 +2,14 @@ cd client && npm run dev
 cd client && npm i && npm run dev
 git add . && git commit -m"update" && git push
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TODO:
+
+fix video fade out
+fix video fullscreen tooltip
+
+
+
 
 4 52 50

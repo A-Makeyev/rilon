@@ -22,7 +22,7 @@ function MediaProgressBar({ isMediaUploading, progress }) {
     if (!showProgress) return null
 
     return (
-        <div className="px-10 py-5">
+        <div className="p-5">
             <div className="w-full bg-gray-200 rounded-full h-3 mt-5 mb-5 relative overflow-hidden">
                 <motion.div
                     className="bg-blue-500 h-3 rounded-full"
