@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import ReactPlayer from "react-player"
 
 
-function VideoPlayer({ url, width = '100%', height = '100%' }) {
+function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' }) {
     const [played, setPlayed] = useState(0)
     const [volume, setVolume] = useState(1)
     const [prevVolume, setPrevVolume] = useState(volume)
@@ -207,7 +207,17 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
     }, [])
 
     useEffect(() => {
+        if (isFocused) {
+            playerContainerRef.current?.focus()
+        } else {
+            playerContainerRef.current?.blur()
+        }
+    }, [isFocused])
+
+    useEffect(() => {
         const handleKeyDown = (event) => {
+            if (!isFocused) return
+
             switch (event.key) {
                 case ' ':
                     handlePlayAndPause()
@@ -243,17 +253,29 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
             }
         }
 
+        if (isFocused) {
+            window.addEventListener('keydown', handleKeyDown)
+        } else {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
+    }, [isFocused, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
 
     return (
         <TooltipProvider>
             <div
+                tabIndex={0}
+                onFocus={onFocus}
                 ref={playerContainerRef}
                 style={{ width, height }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
+                onClick={(e) => {
+                    e.stopPropagation() 
+                    onFocus()
+                }}
                 className={`${fullScreen ? "w-screen h-screen" : ""} relative overflow-hidden rounded-lg shadow-xl bg-slate-900 video-player`}
             >
                 <ReactPlayer

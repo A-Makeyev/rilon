@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { InstructorContext } from "@/context/instructor"
@@ -19,6 +19,7 @@ function CourseCurriculum() {
         mediaUploadProgress, 
         setMediaUploadProgress
     } = useContext(InstructorContext)
+    const [focusedVideoIndex, setFocusedVideoIndex] = useState(null)
 
     function handleNewLacture() {
         setCourseCurriculumFormData(prevState => [
@@ -71,6 +72,17 @@ function CourseCurriculum() {
         }
     }
 
+    const unfocusOtherVideos = (currentIndex) => {
+        setFocusedVideoIndex(currentIndex)
+        setTimeout(() => {
+            courseCurriculumFormData.forEach((_, index) => {
+                if (index !== currentIndex) {
+                    document.querySelector(`[data-video-index="${index}"]`)?.blur()
+                }
+            })
+        }, 0)
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -79,7 +91,7 @@ function CourseCurriculum() {
             <CardContent>
                 <Button onClick={handleNewLacture}>Add Lecture</Button>
                 <div className="mt-4 space-y-4">
-                    { courseCurriculumFormData.map((item, index) => (
+                    { courseCurriculumFormData.map((_, index) => (
                         <div key={`lecture-${index}`} className="border p-5 rounded-md">
                             <div className="flex gap-5 items-center ml-1">
                                 <h3 className="font-semibold">Lecture { index + 1 }</h3>
@@ -102,9 +114,18 @@ function CourseCurriculum() {
                             <div className="mt-5">
                                 { courseCurriculumFormData[index]?.video_url ? (
                                     <div className="flex gap-3">
-                                        <VideoPlayer url={courseCurriculumFormData[index]?.video_url} width="475px" height="225px" />
+                                        <VideoPlayer 
+                                            data-video-index={index}
+                                            url={courseCurriculumFormData[index]?.video_url} 
+                                            onFocus={() => unfocusOtherVideos(index)}
+                                            isFocused={focusedVideoIndex === index} 
+                                            width="475px" 
+                                            height="225px" 
+                                        />
+                                    <div className="flex gap-3 flex-col">
                                         <Button>Replace Video</Button>
                                         <Button className="bg-red-700 hover:bg-red-800">Delete Lecture</Button>
+                                    </div>
                                     </div>
                                 ) : (
                                     <div>

@@ -38,10 +38,10 @@ function InstructorCourses() {
                             <TableCell>100</TableCell>
                             <TableCell>$6699</TableCell>
                             <TableCell className="text-right">
-                                <Button variant="ghost" size="sm">
+                                <Button variant="transparent" size="sm">
                                     <Edit className="h-6 w-6" />
                                 </Button>
-                                <Button variant="ghost" size="sm">
+                                <Button variant="transparent" size="sm">
                                     <Trash className="h-6 w-6" />
                                 </Button>
                             </TableCell>
