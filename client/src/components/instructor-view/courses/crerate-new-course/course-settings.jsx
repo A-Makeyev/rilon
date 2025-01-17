@@ -3,7 +3,7 @@ import { InstructorContext } from "@/context/instructor"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { mediaUpload } from "@/services"
+import { uploadMedia } from "@/services"
 import MediaProgressBar from "@/components/media-progress-bar"
 
 
@@ -26,7 +26,7 @@ function CourseSettings() {
     
             try {
                 setMediaUploadProgress(true)
-                const response = await mediaUpload(imageFormData, setMediaUploadProgressPercentage)
+                const response = await uploadMedia(imageFormData, setMediaUploadProgressPercentage)
                 if (response.success) {
                     setCourseLandingFormData({
                         ...courseLandingFormData,

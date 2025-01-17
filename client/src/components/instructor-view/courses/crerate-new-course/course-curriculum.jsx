@@ -5,7 +5,7 @@ import { InstructorContext } from "@/context/instructor"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { mediaUpload } from "@/services"
+import { uploadMedia, deleteMedia } from "@/services"
 import MediaProgressBar from "@/components/media-progress-bar"
 import VideoPlayer from "@/components/video-player"
 
@@ -44,6 +44,46 @@ function CourseCurriculum() {
         })
     }
 
+    const unfocusOtherVideos = (currentIndex) => {
+        setFocusedVideoIndex(currentIndex)
+        setTimeout(() => {
+            courseCurriculumFormData.forEach((_, index) => {
+                if (index !== currentIndex) {
+                    document.querySelector(`[data-video-index="${index}"]`)?.blur()
+                }
+            })
+        }, 0)
+    }
+
+    function isDataValid() {
+        return courseCurriculumFormData.every(item => {
+            return (
+                item 
+                && typeof item === 'object' 
+                && item.title.trim() !== '' 
+                && item.video_url.trim() !== ''
+            )
+        })
+    }
+
+    async function handleDeleteVideo(index) {
+        const copyCourseCurriculumFormData = [...courseCurriculumFormData]
+        const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
+        const responnse = await deleteMedia(currentVideoPublicId)
+
+        if (responnse?.success) {
+            setCourseCurriculumFormData(prevState => {
+                const newData = [...prevState]
+                newData[index] = {
+                    ...newData[index],
+                    video_url: '',
+                    public_id: ''
+                }
+                return newData
+            })
+        }
+    }
+
     async function handleSingleVideoUpload(event, index) {
         const video = event.target.files[0]
     
@@ -53,8 +93,8 @@ function CourseCurriculum() {
     
             try {
                 setMediaUploadProgress(true)
-                const response = await mediaUpload(videoFormData, setMediaUploadProgressPercentage)
-                if (response.success) {
+                const response = await uploadMedia(videoFormData, setMediaUploadProgressPercentage)
+                if (response?.success) {
                     setCourseCurriculumFormData(prevState => {
                         const newData = [...prevState]
                         newData[index] = {
@@ -72,24 +112,18 @@ function CourseCurriculum() {
         }
     }
 
-    const unfocusOtherVideos = (currentIndex) => {
-        setFocusedVideoIndex(currentIndex)
-        setTimeout(() => {
-            courseCurriculumFormData.forEach((_, index) => {
-                if (index !== currentIndex) {
-                    document.querySelector(`[data-video-index="${index}"]`)?.blur()
-                }
-            })
-        }, 0)
-    }
-
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Course Curriculum</CardTitle>
             </CardHeader>
             <CardContent>
-                <Button onClick={handleNewLacture}>Add Lecture</Button>
+                <Button 
+                    onClick={handleNewLacture}
+                    disabled={!isDataValid() || mediaUploadProgress}
+                >
+                    Add Lecture
+                </Button>
                 <div className="mt-4 space-y-4">
                     { courseCurriculumFormData.map((_, index) => (
                         <div key={`lecture-${index}`} className="border p-5 rounded-md">
@@ -120,10 +154,14 @@ function CourseCurriculum() {
                                             onFocus={() => unfocusOtherVideos(index)}
                                             isFocused={focusedVideoIndex === index} 
                                             width="475px" 
-                                            height="225px" 
+                                            height="225px"  
                                         />
                                     <div className="flex gap-3 flex-col">
-                                        <Button>Replace Video</Button>
+                                        <Button
+                                            onClick={() => handleDeleteVideo(index)}
+                                        >
+                                            Delete Video
+                                        </Button>
                                         <Button className="bg-red-700 hover:bg-red-800">Delete Lecture</Button>
                                     </div>
                                     </div>
