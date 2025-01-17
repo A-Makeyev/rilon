@@ -20,12 +20,17 @@ export async function verify() {
     return data
 }
 
-export async function mediaUpload(formData, onProgressCallback) {
+export async function uploadMedia(formData, onProgressCallback) {
     const { data } = await axiosInstance.post('/media/upload', formData, {
         onUploadProgress: (progressEvent) => {
             const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total)
             onProgressCallback(percentage)
         }
     })
+    return data
+}
+
+export async function deleteMedia(id) {
+    const { data } = await axiosInstance.delete(`/media/delete/${id}`)
     return data
 }

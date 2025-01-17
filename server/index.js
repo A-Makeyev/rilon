@@ -3,7 +3,8 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const express = require('express')
 const authRoutes = require('./routes/auth/index')
-const mediaRoutes = require('./routes/instructor-routes/media-routes')
+const instructorMediaRoutes = require('./routes/instructor-routes/media-routes')
+const instructorCourseRoutes = require('./routes/instructor-routes/course-routes')
 
 
 const app = express()
@@ -22,7 +23,8 @@ mongoose.connect(MONGODB_URI)
     .catch((err) => console.log(err))
 
 app.use('/auth', authRoutes)
-app.use('/media', mediaRoutes)
+app.use('/media', instructorMediaRoutes)
+app.use('/instructor/course', instructorCourseRoutes)
 
 app.use((err, req, res, next) => {
     console.log('🥞', err.stack)
