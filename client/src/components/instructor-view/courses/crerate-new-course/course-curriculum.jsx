@@ -115,7 +115,7 @@ function CourseCurriculum() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Course Curriculum</CardTitle>
+                <CardTitle>Course Lectures</CardTitle>
             </CardHeader>
             <CardContent>
                 <Button 

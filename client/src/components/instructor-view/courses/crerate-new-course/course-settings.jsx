@@ -43,26 +43,28 @@ function CourseSettings() {
     return (
         <Card>
             <CardHeader>
-            <CardTitle>Course Settings</CardTitle>
+                <CardTitle>Course Image</CardTitle>
             </CardHeader>
-            { mediaUploadProgress &&
-                <MediaProgressBar 
-                    isMediaUploading={mediaUploadProgress} 
-                    progress={mediaUploadProgressPercentage}
-                />
-            }
             <CardContent>
                 { courseLandingFormData?.image_url ? (
-                    <img src={courseLandingFormData.image_url} />
+                    <div>
+                        <img src={courseLandingFormData.image_url} />
+                    </div>
                 ) : (
-                    <div className="flex flex-col gap-3">
-                        <Label>Upload Course Image</Label>
-                        <Input 
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="ml-[-4px] cursor-pointer"
-                        />
+                    <div>
+                        { mediaUploadProgress ? (
+                            <MediaProgressBar 
+                                isMediaUploading={mediaUploadProgress} 
+                                progress={mediaUploadProgressPercentage}
+                            />
+                        ) : (
+                            <Input 
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="ml-[-4px] cursor-pointer"
+                            />
+                        )}
                     </div>
                 )}
             </CardContent>
