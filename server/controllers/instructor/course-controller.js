@@ -1,7 +1,7 @@
 const Course = require('../../models/Course')
 
 
-const addNewCourse = async(req, res) => {
+const addNewCourse = async (req, res) => {
     try {
         const data = req.body
         const course = new Course(data)
@@ -22,7 +22,7 @@ const addNewCourse = async(req, res) => {
     }
 }
 
-const getAllCourses = async(req, res) => {
+const getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find({})
 
@@ -38,7 +38,7 @@ const getAllCourses = async(req, res) => {
     }
 }
 
-const getCourse = async(req, res) => {
+const getCourseDetails = async (req, res) => {
     try {
         const { id } = req.params
         const course = await Course.findById(id)
@@ -62,7 +62,7 @@ const getCourse = async(req, res) => {
     }
 }
 
-const updateCourse = async(req, res) => {
+const updateCourse = async (req, res) => {
     try {
         const { id } = req.params
         const newCourseData = req.body
@@ -88,9 +88,9 @@ const updateCourse = async(req, res) => {
     }
 }
 
-module.exports = { 
-    addNewCourse, 
-    getAllCourses, 
-    getCourse, 
+module.exports = {
+    addNewCourse,
+    getAllCourses,
+    getCourseDetails,
     updateCourse
 }

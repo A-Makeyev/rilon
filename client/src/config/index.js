@@ -130,11 +130,11 @@ export const courseLandingPageFormControls = [
     placeholder: 'Enter course description',
   },
   {
-    name: 'pricing',
-    label: 'Pricing',
+    name: 'price',
+    label: 'Price',
     componentType: 'input',
     type: 'number',
-    placeholder: 'Enter course pricing',
+    placeholder: 'Enter course price',
   },
   {
     name: 'objectives',
@@ -158,7 +158,7 @@ export const courseLandingInitialFormData = {
   language: '',
   subtitle: '',
   description: '',
-  pricing: '',
+  price: '',
   objectives: '',
   welcomeMessage: '',
   image_url: '',

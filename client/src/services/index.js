@@ -34,3 +34,23 @@ export async function deleteMedia(id) {
     const { data } = await axiosInstance.delete(`/media/delete/${id}`)
     return data
 }
+
+export async function addNewCourse(formData) {
+    const { data } = await axiosInstance.post('/instructor/course/new', formData)
+    return data
+}
+
+export async function updateCourse(id, formData) {
+    const { data } = await axiosInstance.put(`/instructor/course/${id}`, formData)
+    return data
+}
+
+export async function getInstructorCourseDetails(id) {
+    const { data } = await axiosInstance.get(`/instructor/course/details/${id}`)
+    return data
+}
+
+export async function getInstructorCourses() {
+    const { data } = await axiosInstance.get('/instructor/course/all')
+    return data
+}

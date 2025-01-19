@@ -5,8 +5,7 @@ import { Edit, Trash } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 
-
-function InstructorCourses() {
+function InstructorCourses({ courses }) {
     const navigate = useNavigate()
 
     return (
@@ -31,21 +30,29 @@ function InstructorCourses() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow>
-                            <TableCell className="font-medium">
-                                React Redux Express MongoDB 2025
-                            </TableCell>
-                            <TableCell>100</TableCell>
-                            <TableCell>$6699</TableCell>
-                            <TableCell className="text-right">
-                                <Button variant="transparent" size="sm">
-                                    <Edit className="h-6 w-6" />
-                                </Button>
-                                <Button variant="transparent" size="sm">
-                                    <Trash className="h-6 w-6" />
-                                </Button>
-                            </TableCell>
-                            </TableRow>
+                            { courses && courses.length > 0 ? 
+                                courses.map(course => (
+                                    <TableRow key={course.title}>
+                                        <TableCell className="font-medium">
+                                            { course.title }
+                                        </TableCell>
+                                        <TableCell>
+                                            { course.students.length > 0 ? course.students.length : 'None' }
+                                        </TableCell>
+                                        <TableCell>
+                                            { course.price ? course.price : ''}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="transparent" size="sm">
+                                                <Edit className="h-6 w-6" />
+                                            </Button>
+                                            <Button variant="transparent" size="sm">
+                                                <Trash className="h-6 w-6" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                )) : null
+                            }
                         </TableBody>
                     </Table>
                 </div>

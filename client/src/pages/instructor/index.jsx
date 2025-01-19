@@ -1,16 +1,18 @@
+import { AuthContext } from "@/context/auth"
+import { InstructorContext } from "@/context/instructor"
+import { useContext, useEffect, useState } from "react"
+import { getInstructorCourses } from "@/services"
 import { Button } from "@/components/ui/button"
 import { BarChart, Book, LogOut } from "lucide-react"
 import { Tabs, TabsContent } from "@radix-ui/react-tabs"
-import { useContext, useState } from "react"
-import { AuthContext } from "@/context/auth"
 import InstructorDashboard from "@/components/instructor-view/dashboard"
 import InstructorCourses from "@/components/instructor-view/courses"
 
 
 function InstructorView() {
-    const [activeTab, setActiveTab] = useState('dashboard')
     const { auth, logout } = useContext(AuthContext)
-
+    const { instructorCourses, setInstructorCourses } = useContext(InstructorContext)
+    const [activeTab, setActiveTab] = useState('dashboard')
     const menuItems = [
         {
             icon: BarChart,
@@ -22,7 +24,7 @@ function InstructorView() {
             icon: Book,
             label: 'Courses',
             value: 'courses',
-            component: <InstructorCourses />
+            component: <InstructorCourses courses={instructorCourses} />
         },
         {
             icon: LogOut,
@@ -35,6 +37,17 @@ function InstructorView() {
     function handleLogout() {
         logout()
     }
+
+    async function getAllCourses() {
+        const response = await getInstructorCourses()
+        if (response?.success) {
+            setInstructorCourses(response?.data)
+        }
+    }
+
+    useEffect(() => {
+        getAllCourses()
+    })
 
     return (
         <div className="flex h-full min-h-screen bg-gray-100">
@@ -49,7 +62,7 @@ function InstructorView() {
                                 key={item.value} 
                                 variant={activeTab === item.value ? 'secondary' : 'ghost'}
                                 className="w-full justify-start mb-2"
-                                onClick={item.value === 'logout' ? handleLogout : ()=> setActiveTab(item.value)}
+                                onClick={item.value === 'logout' ? handleLogout : () => setActiveTab(item.value)}
                             >
                                 <item.icon className="h-4 w-4" />
                                 { item.label }
