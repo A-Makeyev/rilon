@@ -47,7 +47,7 @@ function InstructorView() {
 
     useEffect(() => {
         getAllCourses()
-    })
+    }, [])
 
     return (
         <div className="flex h-full min-h-screen bg-gray-100">

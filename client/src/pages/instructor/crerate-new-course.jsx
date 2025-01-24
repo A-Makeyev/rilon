@@ -1,11 +1,11 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AuthContext } from "@/context/auth"
-import { addNewCourse } from "@/services"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { InstructorContext } from "@/context/instructor"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { addNewCourse, getInstructorCourseDetails, updateCourse } from "@/services"
 import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config"
 import CourseCurriculum from "@/components/instructor-view/courses/crerate-new-course/course-curriculum"
 import CourseLandingPage from "@/components/instructor-view/courses/crerate-new-course/course-landing-page"
@@ -13,9 +13,17 @@ import CourseSettings from "@/components/instructor-view/courses/crerate-new-cou
 
 
 function CreateNewCourse() {
-    const { auth } = useContext(AuthContext)
-    const { courseLandingFormData, setCourseLandingFormData, courseCurriculumFormData, setCourseCurriculumFormData } = useContext(InstructorContext)
+    const params = useParams()
     const navigate = useNavigate()
+    const { auth } = useContext(AuthContext)
+    const { 
+        courseLandingFormData,
+        setCourseLandingFormData, 
+        courseCurriculumFormData, 
+        setCourseCurriculumFormData,
+        currentEditedCourse, 
+        setCurrentEditedCourse
+    } = useContext(InstructorContext)
 
     function isEmpty(value) {
         if (Array.isArray(value)) {
@@ -47,22 +55,48 @@ function CreateNewCourse() {
 
     async function handleCreateNewCourse() {
         const courseData = {
+            date: new Date(),
             instructorId: auth?.user?._id,
             instructorName: auth?.user?.username,
-            date: new Date(),
-            ...courseLandingFormData,
-            students: [],
             curriculum: courseCurriculumFormData,
-            isPublised: true
+            isPublished: true,
+            students: [],
+            ...courseLandingFormData
         }
-        
-        const response = await addNewCourse(courseData)
+
+        const response = currentEditedCourse !== null ? await updateCourse(currentEditedCourse, courseData) : await addNewCourse(courseData)
         if (response?.success) {
-            setCourseLandingFormData(courseLandingInitialFormData)
             setCourseCurriculumFormData(courseCurriculumInitialFormData)
+            setCourseLandingFormData(courseLandingInitialFormData)
+            setCurrentEditedCourse(null)
             navigate(-1)
         }
     }
+
+    async function getCourseDetails() {
+        const response = await getInstructorCourseDetails(currentEditedCourse)
+        if (response?.success) {
+            const courseFormData = Object.keys(courseLandingInitialFormData).reduce((acc, key) => {
+                acc[key] = response?.data[key] || courseLandingInitialFormData[key]
+                return acc
+              }, {})
+
+              setCourseLandingFormData(courseFormData)
+              setCourseCurriculumFormData(response?.data?.curriculum)
+        }
+    }
+
+    useEffect(() => {    
+        if (currentEditedCourse !== null) {
+            getCourseDetails()
+        }
+    }, [currentEditedCourse])
+    
+    useEffect(() => {
+        if (params?.courseId) {
+            setCurrentEditedCourse(params?.courseId)
+        }
+    }, [params?.courseId])
 
     return (
         <div className="container mx-auto p-4 mt-4">

@@ -46,7 +46,17 @@ const App = () => {
         }
       />
       <Route
-        path="/"
+        path="/instructor/edit-course/:courseId"
+        element={
+          <RouteGuard
+            element={<CreateNewCourse />}
+            isAuthenticated={auth?.isAuthenticated}
+            user={auth?.user}
+          />
+        }
+      />
+      <Route
+        path="/" 
         element={
           <RouteGuard
             element={<StudentView />}

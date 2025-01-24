@@ -1,12 +1,20 @@
+import { useContext } from "react"
+import { useNavigate } from "react-router-dom"
+import { InstructorContext } from "@/context/instructor"
+import { Edit, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Edit, Trash } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config"
 
 
 function InstructorCourses({ courses }) {
     const navigate = useNavigate()
+    const { 
+        setCourseLandingFormData, 
+        setCourseCurriculumFormData, 
+        setCurrentEditedCourse 
+    } = useContext(InstructorContext)
 
     return (
         <Card>
@@ -14,7 +22,15 @@ function InstructorCourses({ courses }) {
                 <CardTitle className="text-2xl">
                     All Courses
                 </CardTitle>
-                <Button className="p-6" onClick={() => navigate('/instructor/create-new-course')}>
+                <Button 
+                    className="p-6" 
+                    onClick={() => {
+                        setCurrentEditedCourse(null)
+                        setCourseCurriculumFormData(courseCurriculumInitialFormData)
+                        setCourseLandingFormData(courseLandingInitialFormData)
+                        navigate('/instructor/create-new-course')
+                    }}
+                >
                     Create New Course
                 </Button>
             </CardHeader>
@@ -40,10 +56,16 @@ function InstructorCourses({ courses }) {
                                             { course.students.length > 0 ? course.students.length : 'None' }
                                         </TableCell>
                                         <TableCell>
-                                            { course.price ? course.price : ''}
+                                            ₪ { course.price ? course.price : '0'}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button variant="transparent" size="sm">
+                                            <Button 
+                                                size="sm"
+                                                variant="transparent" 
+                                                onClick={() => {
+                                                    navigate(`/instructor/edit-course/${course._id}`)
+                                                }}
+                                            >
                                                 <Edit className="h-6 w-6" />
                                             </Button>
                                             <Button variant="transparent" size="sm">

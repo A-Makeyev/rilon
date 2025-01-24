@@ -2,7 +2,6 @@ import { useContext } from "react"
 import { InstructorContext } from "@/context/instructor"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { uploadMedia } from "@/services"
 import MediaProgressBar from "@/components/media-progress-bar"
 
@@ -39,7 +38,7 @@ function CourseSettings() {
             }
         }
     }
-
+    
     return (
         <Card>
             <CardHeader>

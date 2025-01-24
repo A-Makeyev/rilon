@@ -24,7 +24,7 @@ mongoose.connect(MONGODB_URI)
 
 app.use('/auth', authRoutes)
 app.use('/media', instructorMediaRoutes)
-app.use('/instructor/course', instructorCourseRoutes)
+app.use('/instructor/courses', instructorCourseRoutes)
 
 app.use((err, req, res, next) => {
     console.log('🥞', err.stack)

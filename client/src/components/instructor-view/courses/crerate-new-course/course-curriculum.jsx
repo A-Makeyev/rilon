@@ -125,8 +125,8 @@ function CourseCurriculum() {
                     Add Lecture
                 </Button>
                 <div className="mt-4 space-y-4">
-                    { courseCurriculumFormData.map((_, index) => (
-                        <div key={`lecture-${index}`} className="border p-5 rounded-md">
+                    { courseCurriculumFormData.map((item, index) => (
+                        <div key={`lecture-${item.title}`} className="border p-5 rounded-md">
                             <div className="flex gap-5 items-center ml-1">
                                 <h3 className="font-semibold">Lecture { index + 1 }</h3>
                                 <Input 

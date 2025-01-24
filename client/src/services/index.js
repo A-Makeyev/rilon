@@ -6,7 +6,7 @@ export async function register(formData) {
         ...formData,
         role: 'user',
     })
-    
+
     return data
 }
 
@@ -36,21 +36,21 @@ export async function deleteMedia(id) {
 }
 
 export async function addNewCourse(formData) {
-    const { data } = await axiosInstance.post('/instructor/course/new', formData)
+    const { data } = await axiosInstance.post('/instructor/courses/new-course', formData)
     return data
 }
 
 export async function updateCourse(id, formData) {
-    const { data } = await axiosInstance.put(`/instructor/course/${id}`, formData)
+    const { data } = await axiosInstance.put(`/instructor/courses/update-course/${id}`, formData)
     return data
 }
 
 export async function getInstructorCourseDetails(id) {
-    const { data } = await axiosInstance.get(`/instructor/course/details/${id}`)
+    const { data } = await axiosInstance.get(`/instructor/courses/course-details/${id}`)
     return data
 }
 
 export async function getInstructorCourses() {
-    const { data } = await axiosInstance.get('/instructor/course/all')
+    const { data } = await axiosInstance.get('/instructor/courses/all-courses')
     return data
 }
