@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from "react"
 import { InstructorContext } from "@/context/instructor"
-import { uploadMedia, deleteMedia, bulkUploadMedia } from "@/services"
+import { uploadMedia, deleteMedia, bulkUploadMedia, addNewCourse } from "@/services"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Input } from "@/components/ui/input"
@@ -160,6 +160,17 @@ function CourseCurriculum() {
         }
     }
 
+    async function handleDeleteLecture(index) {
+        const copyCourseCurriculumFormData = [...courseCurriculumFormData]
+        const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
+        const responnse = await deleteMedia(currentVideoPublicId)
+
+        if (responnse?.success) {  
+            const newCourseCurriculumFormData = copyCourseCurriculumFormData.filter((_, currentIndex) => currentIndex !== index)
+            setCourseCurriculumFormData(newCourseCurriculumFormData)
+        }
+    }
+
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
@@ -179,6 +190,7 @@ function CourseCurriculum() {
                         variant="outline"
                         htmlFor="bulk-media-upload"
                         className="cursor-pointer"
+                        disabled={mediaUploadProgress}
                         onClick={() => bulkUploadRef.current?.click()}
                     >
                     { mediaUploadProgress ? (
@@ -235,12 +247,12 @@ function CourseCurriculum() {
                                             height="225px"  
                                         />
                                     <div className="flex gap-3 flex-col">
-                                        <Button
-                                            onClick={() => handleDeleteVideo(index)}
-                                        >
+                                        <Button onClick={() => handleDeleteVideo(index)}>
                                             Delete Video
                                         </Button>
-                                        <Button className="bg-red-700 hover:bg-red-800">Delete Lecture</Button>
+                                        <Button onClick={() => handleDeleteLecture(index)} className="bg-red-700 hover:bg-red-800">
+                                            Delete Lecture
+                                        </Button>
                                     </div>
                                     </div>
                                 ) : (

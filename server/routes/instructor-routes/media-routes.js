@@ -36,7 +36,8 @@ router.delete('/delete/:id', async (req, res) => {
         const result = await deleteMedia(id)
         res.status(200).json({
             success: true,
-            data: result
+            data: result,
+            message: 'Deleted Media'
         })
     } catch (err) {
         console.log(err)
@@ -60,7 +61,7 @@ router.post('/bulk-upload', upload.array('files', 10), async (req, res) => {
         console.log(err)
         res.status(500).json({
             success: false,
-            message: `Error uuploading files -> ${err}`
+            message: `Error uploading files -> ${err}`
         })
     }
 })

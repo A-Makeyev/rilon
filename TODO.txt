@@ -12,4 +12,4 @@ fix video fullscreen tooltip
 
 
 
-6 35 20
+6 40 40
