@@ -1,11 +1,13 @@
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
+import { InstructorContext } from "@/context/instructor"
+import { uploadMedia, deleteMedia, bulkUploadMedia } from "@/services"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { InstructorContext } from "@/context/instructor"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { uploadMedia, deleteMedia } from "@/services"
+import { Upload } from "lucide-react"
 import MediaProgressBar from "@/components/media-progress-bar"
 import VideoPlayer from "@/components/video-player"
 
@@ -20,6 +22,7 @@ function CourseCurriculum() {
         setMediaUploadProgress
     } = useContext(InstructorContext)
     const [focusedVideoIndex, setFocusedVideoIndex] = useState(null)
+    const bulkUploadRef = useRef(null)
 
     function handleNewLacture() {
         setCourseCurriculumFormData(prevState => [
@@ -44,7 +47,7 @@ function CourseCurriculum() {
         })
     }
 
-    const unfocusOtherVideos = (currentIndex) => {
+    function unfocusOtherVideos(currentIndex) {
         setFocusedVideoIndex(currentIndex)
         setTimeout(() => {
             courseCurriculumFormData.forEach((_, index) => {
@@ -66,21 +69,46 @@ function CourseCurriculum() {
         })
     }
 
-    async function handleDeleteVideo(index) {
-        const copyCourseCurriculumFormData = [...courseCurriculumFormData]
-        const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
-        const responnse = await deleteMedia(currentVideoPublicId)
-
-        if (responnse?.success) {
-            setCourseCurriculumFormData(prevState => {
-                const newData = [...prevState]
-                newData[index] = {
-                    ...newData[index],
-                    video_url: '',
-                    public_id: ''
+    function checkCourseCurriculumFormDataEmptyObjects(arr) {
+        return arr.every(obj => {
+            return Object.entries(obj).every(([key, value]) => {
+                if (typeof value === 'boolean') {
+                    return true
                 }
-                return newData
+                return value === ''
             })
+        })
+    }
+
+    async function handleBulkVideosUpload(event) {
+        const videos = Array.from(event.target.files)
+        const videosFormData = new FormData()
+
+        videos.forEach(file => videosFormData.append('files', file))
+
+        try {
+            setMediaUploadProgress(true)
+
+            const response = await bulkUploadMedia(videosFormData, setMediaUploadProgressPercentage)
+            if (response?.success) {
+                let copyCourseCurriculumFormData = checkCourseCurriculumFormDataEmptyObjects(courseCurriculumFormData)
+                ? [] : [...courseCurriculumFormData]
+
+                copyCourseCurriculumFormData = [
+                    ...copyCourseCurriculumFormData,
+                    ...response?.data?.map((item, index) => ({
+                        title: `Lecture ${copyCourseCurriculumFormData.length + (index + 1)}`,
+                        public_id: item.public_id,
+                        video_url: item.url,
+                        preview: false
+                    }))
+                ]
+
+                setCourseCurriculumFormData(copyCourseCurriculumFormData)
+                setMediaUploadProgress(false)
+            }
+        } catch (err) {
+            console.error(err)
         }
     }
 
@@ -93,6 +121,7 @@ function CourseCurriculum() {
     
             try {
                 setMediaUploadProgress(true)
+
                 const response = await uploadMedia(videoFormData, setMediaUploadProgressPercentage)
                 if (response?.success) {
                     setCourseCurriculumFormData(prevState => {
@@ -104,6 +133,7 @@ function CourseCurriculum() {
                         }
                         return newData
                     })
+
                     setMediaUploadProgress(false)
                 }
             } catch (err) {
@@ -112,10 +142,58 @@ function CourseCurriculum() {
         }
     }
 
+    async function handleDeleteVideo(index) {
+        const copyCourseCurriculumFormData = [...courseCurriculumFormData]
+        const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
+        const responnse = await deleteMedia(currentVideoPublicId)
+
+        if (responnse?.success) {
+            setCourseCurriculumFormData(prevState => {
+                const newData = [...prevState]
+                newData[index] = {
+                    ...newData[index],
+                    public_id: '',
+                    video_url: ''
+                }
+                return newData
+            })
+        }
+    }
+
     return (
         <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row justify-between">
                 <CardTitle>Course Lectures</CardTitle>
+                <div>
+                    <Input 
+                        multiple
+                        type="file"
+                        accept="video/*"
+                        className="hidden"
+                        id="bulk-media-upload"
+                        onChange={handleBulkVideosUpload}
+                        ref={bulkUploadRef}
+                    />
+                    <Button
+                        as="label"
+                        variant="outline"
+                        htmlFor="bulk-media-upload"
+                        className="cursor-pointer"
+                        onClick={() => bulkUploadRef.current?.click()}
+                    >
+                    { mediaUploadProgress ? (
+                        <>
+                            <LoadingSpinner />
+                            <span>Uploading..</span>
+                        </>
+                    ) : (
+                        <>
+                            <Upload />
+                            <span>Bulk Upload</span>
+                        </>
+                    )}
+                    </Button>
+                </div>
             </CardHeader>
             <CardContent>
                 <Button 
@@ -125,8 +203,8 @@ function CourseCurriculum() {
                     Add Lecture
                 </Button>
                 <div className="mt-4 space-y-4">
-                    { courseCurriculumFormData.map((item, index) => (
-                        <div key={`lecture-${item.title}`} className="border p-5 rounded-md">
+                    { courseCurriculumFormData.map((_, index) => (
+                        <div key={index} className="border p-5 rounded-md">
                             <div className="flex gap-5 items-center ml-1">
                                 <h3 className="font-semibold">Lecture { index + 1 }</h3>
                                 <Input 

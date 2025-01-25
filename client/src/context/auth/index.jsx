@@ -22,7 +22,9 @@ export default function AuthProvider({ children }) {
         const { data } = await login(loginFormData)
 
         if (data.user && data.accessToken) {
-            sessionStorage.setItem('accessToken', data.accessToken)
+            localStorage.setItem('accessToken', data.accessToken)
+            // sessionStorage.setItem('accessToken', data.accessToken)
+
             setAuth({
                 user: data.user,
                 isAuthenticated: true

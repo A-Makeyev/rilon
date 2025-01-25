@@ -30,6 +30,16 @@ export async function uploadMedia(formData, onProgressCallback) {
     return data
 }
 
+export async function bulkUploadMedia(formData, onProgressCallback) {
+    const { data } = await axiosInstance.post('/media/bulk-upload', formData, {
+        onUploadProgress: (progressEvent) => {
+            const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            onProgressCallback(percentage)
+        }
+    })
+    return data
+}
+
 export async function deleteMedia(id) {
     const { data } = await axiosInstance.delete(`/media/delete/${id}`)
     return data

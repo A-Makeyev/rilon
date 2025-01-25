@@ -42,7 +42,25 @@ router.delete('/delete/:id', async (req, res) => {
         console.log(err)
         res.status(500).json({
             success: false,
-            message: `Error deleting asset -> ${err}`
+            message: `Error deleting file -> ${err}`
+        })
+    }
+})
+
+router.post('/bulk-upload', upload.array('files', 10), async (req, res) => {
+    try {
+        const upload = req.files.map(file => uploadMedia(file.path))
+        const result = await Promise.all(upload)
+
+        res.status(200).json({
+            success: true,
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            message: `Error uuploading files -> ${err}`
         })
     }
 })
