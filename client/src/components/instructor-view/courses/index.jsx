@@ -48,7 +48,7 @@ function InstructorCourses({ courses }) {
                         <TableBody>
                             { courses && courses.length > 0 ? 
                                 courses.map(course => (
-                                    <TableRow key={course.title}>
+                                    <TableRow key={course._id}>
                                         <TableCell className="font-medium">
                                             { course.title }
                                         </TableCell>
@@ -56,15 +56,13 @@ function InstructorCourses({ courses }) {
                                             { course.students.length > 0 ? course.students.length : 'None' }
                                         </TableCell>
                                         <TableCell>
-                                            ₪ { course.price ? course.price : '0'}
+                                            ₪ { course.price ? course.price : '0' }
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button 
                                                 size="sm"
                                                 variant="transparent" 
-                                                onClick={() => {
-                                                    navigate(`/instructor/edit-course/${course._id}`)
-                                                }}
+                                                onClick={() => {navigate(`/instructor/edit-course/${course._id}`)}}
                                             >
                                                 <Edit className="h-6 w-6" />
                                             </Button>

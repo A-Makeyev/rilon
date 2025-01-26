@@ -70,7 +70,8 @@ export default function AuthProvider({ children }) {
             user: null,
             isAuthenticated: false
         })
-        sessionStorage.clear()
+        localStorage.clear()
+        // sessionStorage.clear()
     }
 
     useEffect(() => {

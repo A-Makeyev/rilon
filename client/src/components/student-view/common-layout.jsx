@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom"
+import StudentHeader from "./header"
 
 
 function StudentView() {
     return (
         <div>
-            StudentView
+            <StudentHeader />
             <Outlet />
         </div>
     )
