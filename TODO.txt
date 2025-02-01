@@ -12,4 +12,4 @@ fix video fullscreen tooltip
 
 
 
-6 40 40
+7 09 27

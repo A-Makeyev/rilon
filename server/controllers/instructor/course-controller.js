@@ -22,7 +22,7 @@ const addNewCourse = async (req, res) => {
     }
 }
 
-const getAllCourses = async (req, res) => {
+const getCourses = async (req, res) => {
     try {
         const courses = await Course.find({})
 
@@ -90,7 +90,7 @@ const updateCourse = async (req, res) => {
 
 module.exports = {
     addNewCourse,
-    getAllCourses,
+    getCourses,
     getCourseDetails,
     updateCourse
 }

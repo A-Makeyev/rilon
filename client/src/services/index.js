@@ -55,12 +55,22 @@ export async function updateCourse(id, formData) {
     return data
 }
 
+export async function getInstructorCourses() {
+    const { data } = await axiosInstance.get('/instructor/courses/all-courses')
+    return data
+}
+
 export async function getInstructorCourseDetails(id) {
     const { data } = await axiosInstance.get(`/instructor/courses/course-details/${id}`)
     return data
 }
 
-export async function getInstructorCourses() {
-    const { data } = await axiosInstance.get('/instructor/courses/all-courses')
+export async function getStudentCourses() {
+    const { data } = await axiosInstance.get('/student/courses/all-courses')
+    return data
+}
+
+export async function getStudentCourseDetails(id) {
+    const { data } = await axiosInstance.get(`/student/courses/course-details/${id}`)
     return data
 }

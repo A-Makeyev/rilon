@@ -5,6 +5,7 @@ const express = require('express')
 const authRoutes = require('./routes/auth/index')
 const instructorMediaRoutes = require('./routes/instructor-routes/media-routes')
 const instructorCourseRoutes = require('./routes/instructor-routes/course-routes')
+const studentCourseRoutes = require('./routes/student-routes/course-routes')
 
 
 const app = express()
@@ -25,6 +26,7 @@ mongoose.connect(MONGODB_URI)
 app.use('/auth', authRoutes)
 app.use('/media', instructorMediaRoutes)
 app.use('/instructor/courses', instructorCourseRoutes)
+app.use('/student/courses', studentCourseRoutes)
 
 app.use((err, req, res, next) => {
     console.log('🥞', err.stack)

@@ -38,7 +38,7 @@ function InstructorView() {
         logout()
     }
 
-    async function getAllCourses() {
+    async function getCourses() {
         const response = await getInstructorCourses()
         if (response?.success) {
             setInstructorCourses(response?.data)
@@ -46,7 +46,7 @@ function InstructorView() {
     }
 
     useEffect(() => {
-        getAllCourses()
+        getCourses()
     }, [])
 
     return (
@@ -54,18 +54,18 @@ function InstructorView() {
             <aside className="w-64 bg-white shadow-md hidden md:block">
                 <div className="p-4">
                     <h2 className="text-2xl font-bold mb-4 text-center  capitalize">
-                        { auth.user.username }
+                        {auth.user.username}
                     </h2>
                     <nav>
-                        { menuItems.map(item => (
-                            <Button 
-                                key={item.value} 
+                        {menuItems.map(item => (
+                            <Button
+                                key={item.value}
                                 variant={activeTab === item.value ? 'secondary' : 'ghost'}
                                 className="w-full justify-start mb-2"
                                 onClick={item.value === 'logout' ? handleLogout : () => setActiveTab(item.value)}
                             >
                                 <item.icon className="h-4 w-4" />
-                                { item.label }
+                                {item.label}
                             </Button>
                         ))}
                     </nav>
@@ -77,9 +77,9 @@ function InstructorView() {
                         Instructor Dashboard
                     </h1>
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
-                        { menuItems.map(item => (
+                        {menuItems.map(item => (
                             <TabsContent key={item.value} value={item.value}>
-                                { item.component !== null && item.component }
+                                {item.component !== null && item.component}
                             </TabsContent>
                         ))}
                     </Tabs>
