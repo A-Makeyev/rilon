@@ -8,6 +8,7 @@ import StudentView from "./components/student-view/common-layout"
 import StudentHomePage from "./pages/student/home"
 import NotFound from "./pages/not-found"
 import CreateNewCourse from "./pages/instructor/crerate-new-course"
+import StudentCoursesPage from "./pages/student/courses"
 
 
 const App = () => {
@@ -67,6 +68,7 @@ const App = () => {
       >
         <Route path="" element={<StudentHomePage />} />
         <Route path="home" element={<StudentHomePage />} />
+        <Route path="courses" element={<StudentCoursesPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

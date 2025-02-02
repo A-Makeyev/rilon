@@ -55,17 +55,23 @@ function StudentHomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     { studentCourses && studentCourses.length > 0 ? (
                         studentCourses.map(item => (
-                            <div className="shadow border rounded overflow-hidden cursor-pointer">
+                            <div key={item.title} className="shadow border rounded overflow-hidden cursor-pointer">
                                 <img src={item.image_url} className="w-full h-60 object-cover" />
                                 <div className="p-4">
                                     <p className="text-lg font-semibold">
                                         { item.title }
                                     </p>
                                     <p className="text-base font-semibold text-gray-700">
-                                      { item.instructorName }  
+                                        Created by {' '}
+                                        <span className="cursor-pointer text-blue-700 hover:text-blue-500 transition">
+                                            { item.instructorName }
+                                        </span>  
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-700">
+                                        { `${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}` }  
                                     </p>
                                     <p className="text-lg font-semibold">
-                                      $ { item.price }  
+                                        $ { item.price }  
                                     </p>
                                 </div>
                             </div>

@@ -174,10 +174,10 @@ export const courseCurriculumInitialFormData = [
 ]
 
 export const sortOptions = [
-  { id: 'price-lowtohigh', label: 'Price: Low to High' },
-  { id: 'price-hightolow', label: 'Price: High to Low' },
-  { id: 'title-atoz', label: 'Title: A to Z' },
-  { id: 'title-ztoa', label: 'Title: Z to A' },
+  { id: 'title-a-z', label: 'Title: A to Z' },
+  { id: 'title-z-a', label: 'Title: Z to A' },
+  { id: 'price-low-high', label: 'Price: Low to High' },
+  { id: 'price-high-low', label: 'Price: High to Low' },
 ]
 
 export const filterOptions = {
