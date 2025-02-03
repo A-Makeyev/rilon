@@ -19,7 +19,7 @@ function InstructorCourses({ courses }) {
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between items-center">
-                <CardTitle className="text-2xl">
+                <CardTitle className="text-2xl font-semibold mt-1">
                     All Courses
                 </CardTitle>
                 <Button 
@@ -36,20 +36,21 @@ function InstructorCourses({ courses }) {
             </CardHeader>
             <CardContent>
                 <div className="overflow-x-auto">
-                    <Table> 
-                        <TableHeader>
-                            <TableRow>
-                            <TableHead>Course</TableHead> 
-                            <TableHead>Students</TableHead>
-                            <TableHead>Revenue</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            { courses && courses.length > 0 ? 
-                                courses.map(course => (
-                                    <TableRow key={course._id}>
-                                        <TableCell className="font-medium">
+                    { courses && courses.length > 0 && (
+                        <Table> 
+                            <TableHeader>
+                                <TableRow>
+                                <TableHead>Course</TableHead> 
+                                <TableHead>Students</TableHead>
+                                <TableHead>Price</TableHead>
+                                <TableHead>Revenue</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                { courses.map(course => (
+                                    <TableRow key={course._id} className="text-base font-mono">
+                                        <TableCell>
                                             { course.title }
                                         </TableCell>
                                         <TableCell>
@@ -57,6 +58,9 @@ function InstructorCourses({ courses }) {
                                         </TableCell>
                                         <TableCell>
                                             ₪ { course.price ? course.price : '0' }
+                                        </TableCell>
+                                        <TableCell>
+                                            ₪ { course.price * course.students }
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button 
@@ -71,10 +75,10 @@ function InstructorCourses({ courses }) {
                                             </Button>
                                         </TableCell>
                                     </TableRow>
-                                )) : null
-                            }
-                        </TableBody>
-                    </Table>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </div>
             </CardContent>
         </Card>
