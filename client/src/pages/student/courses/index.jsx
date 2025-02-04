@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { createSearchParams, useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { filterOptions, sortOptions } from "@/config"
 import { getStudentCourses } from "@/services"
 import { StudentContext } from "@/context/student"
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { 
     DropdownMenu, 
     DropdownMenuContent, 
@@ -18,13 +19,13 @@ import {
 
 
 function StudentCoursesPage() {
-    const { studentCourses, setStudentCourses } = useContext(StudentContext)
+    const { studentCourses, setStudentCourses, loading, setLoading } = useContext(StudentContext)
     const [searchParams, setSearchParams] = useSearchParams()
     const [sort, setSort] = useState('price-low-high')
     const [filters, setFilters] = useState({})
 
     function handleFilterChange(section, option) {
-        let copyFilters = {...filters}
+        let copyFilters = { ...filters }
         let currentSectionIndex = Object.keys(copyFilters).indexOf(section)
         
         if (currentSectionIndex === -1) {
@@ -42,14 +43,20 @@ function StudentCoursesPage() {
             }
         }
         setFilters(copyFilters)
-        localStorage.setItem('filters', JSON.stringify(copyFilters))
+        sessionStorage.setItem('filters', JSON.stringify(copyFilters))
     }
 
-    async function getCourses() {
-        const response = await getStudentCourses()
+    async function getCourses(filters, sort) {
+        const query = new URLSearchParams({
+            ...filters,
+            sortBy: sort
+        })
+
+        const response = await getStudentCourses(query)
         
         if (response?.success) {
             setStudentCourses(response?.data)
+            setLoading(false)
         }
     }
 
@@ -71,7 +78,20 @@ function StudentCoursesPage() {
     }, [filters])
 
     useEffect(() => {
-        getCourses()
+        if (filters !== null && sort !== null) {
+            getCourses(filters, sort)
+        }
+    }, [filters, sort])
+
+    useEffect(() => {
+        setSort('title-a-z')
+        setFilters(JSON.parse(sessionStorage.getItem('filters')) || {})
+    }, [])
+
+    useEffect(() => {
+        return () => {
+            sessionStorage.removeItem('filters')
+        }
     }, [])
 
     return (
@@ -80,8 +100,8 @@ function StudentCoursesPage() {
                 All Courses
             </h1>
             <div className="flex flex-col md:flex-row gap-4">
-                <aside className="w-full md:w-64 space-y-4">
-                    <div className="space-y-4">
+                <aside className="w-full md:w-64">
+                    <div>
                         { filterOptions && Object.keys(filterOptions).map(item => (
                             <div key={filterOptions[item].id} className="p-4 space-y-4">
                                 <p className="font-semibold mb-3">
@@ -108,9 +128,9 @@ function StudentCoursesPage() {
                     </div>
                 </aside>
                 <main className="flex-1">
-                    <div className="flex justify-end items-center mb-4 gap-5">
+                    <div className="flex justify-end items-center mb-4 gap-4">
                         <span className="text-gray-700">
-                            10 Results
+                            { `${studentCourses.length} ${studentCourses.length === 1 ? 'Result' : 'Results'}` } 
                         </span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -131,7 +151,9 @@ function StudentCoursesPage() {
                         </DropdownMenu>
                     </div>
                     <div className="space-y-4">
-                        { studentCourses && studentCourses.length > 0 ? (
+                        {  loading ? (
+                            <Skeleton /> 
+                        ) : studentCourses && studentCourses.length > 0 ? (
                             studentCourses.map(item => (
                                 <Card key={item.id} className="cursor-pointer hover:shadow-md transition">
                                     <CardContent className="flex gap-4 p-4">
@@ -159,8 +181,9 @@ function StudentCoursesPage() {
                                 </Card>
                             ))
                         ) : (
-                            <div className="items-center">
-                                <h1>No courses found</h1>
+                            <div className="flex flex-col items-center font-medium text-xl mt-20">
+                                <h1>No Courses Found</h1>
+                                <h1>¯\_(ツ)_/¯</h1>
                             </div>
                         )}
                     </div>

@@ -65,8 +65,8 @@ export async function getInstructorCourseDetails(id) {
     return data
 }
 
-export async function getStudentCourses() {
-    const { data } = await axiosInstance.get('/student/courses/all-courses')
+export async function getStudentCourses(query) {
+    const { data } = await axiosInstance.get(`/student/courses/all-courses?${query}`)
     return data
 }
 

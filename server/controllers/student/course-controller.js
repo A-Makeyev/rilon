@@ -3,15 +3,33 @@ const Course = require('../../models/Course')
 
 const getCourses = async (req, res) => {
     try {
-        const courses = await Course.find({})
+        const { category = [], level = [], language = [], sortBy = 'title-a-z' } = req.query
+        const filters = {}
+        const params = {}
 
-        if (courses.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No courses found',
-                data: []
-            }) 
+        if (category.length) filters.category = { $in: category.split(',') }
+        if (level.length) filters.level = { $in: level.split(',') }
+        if (language.length) filters.language = { $in: language.split(',') }
+
+        switch(sortBy) {
+            case 'title-a-z':
+                params.title = 1
+                break
+            case 'title-z-a':
+                params.title = -1
+                break
+            case 'price-low-high':
+                params.price = 1
+                break
+            case 'price-high-low':
+                params.price = -1
+                break
+            default:
+                params.title = 1
+                break
         }
+
+        const courses = await Course.find(filters).sort(params)
 
         res.status(200).json({
             success: true,
