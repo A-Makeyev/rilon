@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { filterOptions, sortOptions } from "@/config"
 import { getStudentCourses } from "@/services"
 import { StudentContext } from "@/context/student"
@@ -19,6 +19,7 @@ import {
 
 
 function StudentCoursesPage() {
+    const navigate = useNavigate()
     const { studentCourses, setStudentCourses, loading, setLoading } = useContext(StudentContext)
     const [searchParams, setSearchParams] = useSearchParams()
     const [sort, setSort] = useState('price-low-high')
@@ -130,7 +131,7 @@ function StudentCoursesPage() {
                 <main className="flex-1">
                     <div className="flex justify-end items-center mb-4 gap-4">
                         <span className="text-gray-700">
-                            { `${studentCourses.length} ${studentCourses.length === 1 ? 'Result' : 'Results'}` } 
+                            { studentCourses.length ? `${studentCourses.length} ${studentCourses.length === 1 ? 'Result' : 'Results'}` : null }
                         </span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -155,7 +156,7 @@ function StudentCoursesPage() {
                             <Skeleton /> 
                         ) : studentCourses && studentCourses.length > 0 ? (
                             studentCourses.map(item => (
-                                <Card key={item.id} className="cursor-pointer hover:shadow-md transition">
+                                <Card key={item.id} onClick={() => navigate(`/course/details/${item._id}`)} className="cursor-pointer hover:shadow-md transition">
                                     <CardContent className="flex gap-4 p-4">
                                         <div className="w-48 h-32 flex-shrink-0">
                                             <img src={item.image_url} className="w-full h-full object-cover" />

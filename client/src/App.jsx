@@ -9,6 +9,7 @@ import StudentHomePage from "./pages/student/home"
 import NotFound from "./pages/not-found"
 import CreateNewCourse from "./pages/instructor/crerate-new-course"
 import StudentCoursesPage from "./pages/student/courses"
+import StudentCoursesDetailsPage from "./pages/student/course-details"
 
 
 const App = () => {
@@ -69,6 +70,7 @@ const App = () => {
         <Route path="" element={<StudentHomePage />} />
         <Route path="home" element={<StudentHomePage />} />
         <Route path="courses" element={<StudentCoursesPage />} />
+        <Route path="course/details/:id" element={<StudentCoursesDetailsPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

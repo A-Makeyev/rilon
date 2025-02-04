@@ -1,18 +1,19 @@
 import { useContext } from "react"
+import { deleteMedia, uploadMedia } from "@/services"
 import { InstructorContext } from "@/context/instructor"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { uploadMedia } from "@/services"
+import { Button } from "@/components/ui/button"
 import MediaProgressBar from "@/components/media-progress-bar"
 
 
 function CourseSettings() {
-    const { 
-        courseLandingFormData, 
+    const {
+        courseLandingFormData,
         setCourseLandingFormData,
-        mediaUploadProgressPercentage, 
+        mediaUploadProgressPercentage,
         setMediaUploadProgressPercentage,
-        mediaUploadProgress, 
+        mediaUploadProgress,
         setMediaUploadProgress
     } = useContext(InstructorContext)
 
@@ -22,14 +23,15 @@ function CourseSettings() {
         if (image) {
             const imageFormData = new FormData()
             imageFormData.append('file', image)
-    
+
             try {
                 setMediaUploadProgress(true)
                 const response = await uploadMedia(imageFormData, setMediaUploadProgressPercentage)
                 if (response.success) {
                     setCourseLandingFormData({
                         ...courseLandingFormData,
-                        image_url: response.data.url
+                        image_url: response.data.url,
+                        public_id: response.data.public_id
                     })
                     setMediaUploadProgress(false)
                 }
@@ -38,26 +40,44 @@ function CourseSettings() {
             }
         }
     }
-    
+
+    async function handleDeleteImage() {
+        const currentImagePublicId = courseLandingFormData.public_id
+        const response = await deleteMedia(currentImagePublicId)
+
+        if (response?.success) {
+            setCourseLandingFormData({
+                ...courseLandingFormData,
+                image_url: '',
+                public_id: ''
+            })
+        }
+    }
+
     return (
         <Card>
-            <CardHeader>
-                <CardTitle>Course Image</CardTitle>
+            <CardHeader className="flex flex-row justify-between">
+                <CardTitle className="mt-3">Course Image</CardTitle>
+                {courseLandingFormData?.image_url && (
+                    <Button onClick={handleDeleteImage}>
+                        Delete Image
+                    </Button>
+                )}
             </CardHeader>
             <CardContent>
-                { courseLandingFormData?.image_url ? (
-                    <div>
+                {courseLandingFormData?.image_url ? (
+                    <div className="flex flex-col gap-3">
                         <img src={courseLandingFormData.image_url} />
                     </div>
                 ) : (
                     <div>
-                        { mediaUploadProgress ? (
-                            <MediaProgressBar 
-                                isMediaUploading={mediaUploadProgress} 
+                        {mediaUploadProgress ? (
+                            <MediaProgressBar
+                                isMediaUploading={mediaUploadProgress}
                                 progress={mediaUploadProgressPercentage}
                             />
                         ) : (
-                            <Input 
+                            <Input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageUpload}
@@ -68,7 +88,7 @@ function CourseSettings() {
                 )}
             </CardContent>
         </Card>
-    )   
+    )
 }
 
 export default CourseSettings

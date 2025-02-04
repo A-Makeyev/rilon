@@ -11,7 +11,7 @@ function CourseLandingPage() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Course Details</CardTitle>
+                <CardTitle className="mt-3">Course Details</CardTitle>
             </CardHeader>
             <CardContent>
                 <FormControls 

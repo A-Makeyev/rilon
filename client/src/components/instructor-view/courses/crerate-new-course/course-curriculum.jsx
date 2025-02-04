@@ -13,12 +13,12 @@ import VideoPlayer from "@/components/video-player"
 
 
 function CourseCurriculum() {
-    const { 
-        courseCurriculumFormData, 
+    const {
+        courseCurriculumFormData,
         setCourseCurriculumFormData,
-        mediaUploadProgressPercentage, 
+        mediaUploadProgressPercentage,
         setMediaUploadProgressPercentage,
-        mediaUploadProgress, 
+        mediaUploadProgress,
         setMediaUploadProgress
     } = useContext(InstructorContext)
     const [focusedVideoIndex, setFocusedVideoIndex] = useState(null)
@@ -38,7 +38,7 @@ function CourseCurriculum() {
             return newData
         })
     }
-    
+
     function handlePreviewChange(value, index) {
         setCourseCurriculumFormData(prevState => {
             const newData = [...prevState]
@@ -61,9 +61,9 @@ function CourseCurriculum() {
     function isDataValid() {
         return courseCurriculumFormData.every(item => {
             return (
-                item 
-                && typeof item === 'object' 
-                && item.title.trim() !== '' 
+                item
+                && typeof item === 'object'
+                && item.title.trim() !== ''
                 && item.video_url.trim() !== ''
             )
         })
@@ -92,7 +92,7 @@ function CourseCurriculum() {
             const response = await bulkUploadMedia(videosFormData, setMediaUploadProgressPercentage)
             if (response?.success) {
                 let copyCourseCurriculumFormData = checkCourseCurriculumFormDataEmptyObjects(courseCurriculumFormData)
-                ? [] : [...courseCurriculumFormData]
+                    ? [] : [...courseCurriculumFormData]
 
                 copyCourseCurriculumFormData = [
                     ...copyCourseCurriculumFormData,
@@ -114,11 +114,11 @@ function CourseCurriculum() {
 
     async function handleSingleVideoUpload(event, index) {
         const video = event.target.files[0]
-    
+
         if (video) {
             const videoFormData = new FormData()
             videoFormData.append('file', video)
-    
+
             try {
                 setMediaUploadProgress(true)
 
@@ -133,7 +133,6 @@ function CourseCurriculum() {
                         }
                         return newData
                     })
-
                     setMediaUploadProgress(false)
                 }
             } catch (err) {
@@ -145,9 +144,9 @@ function CourseCurriculum() {
     async function handleDeleteVideo(index) {
         const copyCourseCurriculumFormData = [...courseCurriculumFormData]
         const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
-        const responnse = await deleteMedia(currentVideoPublicId)
+        const response = await deleteMedia(currentVideoPublicId)
 
-        if (responnse?.success) {
+        if (response?.success) {
             setCourseCurriculumFormData(prevState => {
                 const newData = [...prevState]
                 newData[index] = {
@@ -163,9 +162,9 @@ function CourseCurriculum() {
     async function handleDeleteLecture(index) {
         const copyCourseCurriculumFormData = [...courseCurriculumFormData]
         const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
-        const responnse = await deleteMedia(currentVideoPublicId)
+        const response = await deleteMedia(currentVideoPublicId)
 
-        if (responnse?.success) {  
+        if (response?.success) {
             const newCourseCurriculumFormData = copyCourseCurriculumFormData.filter((_, currentIndex) => currentIndex !== index)
             setCourseCurriculumFormData(newCourseCurriculumFormData)
         }
@@ -174,9 +173,9 @@ function CourseCurriculum() {
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
-                <CardTitle>Course Lectures</CardTitle>
+                <CardTitle className="mt-3">Course Lectures</CardTitle>
                 <div>
-                    <Input 
+                    <Input
                         multiple
                         type="file"
                         accept="video/*"
@@ -193,33 +192,33 @@ function CourseCurriculum() {
                         disabled={mediaUploadProgress}
                         onClick={() => bulkUploadRef.current?.click()}
                     >
-                    { mediaUploadProgress ? (
-                        <>
-                            <LoadingSpinner />
-                            <span>Uploading..</span>
-                        </>
-                    ) : (
-                        <>
-                            <Upload />
-                            <span>Bulk Upload</span>
-                        </>
-                    )}
+                        {mediaUploadProgress ? (
+                            <>
+                                <LoadingSpinner />
+                                <span>Uploading..</span>
+                            </>
+                        ) : (
+                            <>
+                                <Upload />
+                                <span>Bulk Upload</span>
+                            </>
+                        )}
                     </Button>
                 </div>
             </CardHeader>
             <CardContent>
-                <Button 
+                <Button
                     onClick={handleNewLacture}
                     disabled={!isDataValid() || mediaUploadProgress}
                 >
                     Add Lecture
                 </Button>
                 <div className="mt-4 space-y-4">
-                    { courseCurriculumFormData.map((_, index) => (
+                    {courseCurriculumFormData.map((_, index) => (
                         <div key={index} className="border p-5 rounded-md">
                             <div className="flex gap-5 items-center ml-1">
-                                <h3 className="font-semibold">Lecture { index + 1 }</h3>
-                                <Input 
+                                <h3 className="font-semibold">Lecture {index + 1}</h3>
+                                <Input
                                     name={`lecture-${index + 1}`}
                                     value={courseCurriculumFormData[index]?.title}
                                     onChange={(event) => handleTitleChange(event, index)}
@@ -227,43 +226,43 @@ function CourseCurriculum() {
                                     className="max-w-96"
                                 />
                                 <div className="flex items-center space-x-2">
-                                    <Switch 
-                                        id={`preview-lecture-${index + 1}`} 
-                                        checked={courseCurriculumFormData[index]?.preview} 
+                                    <Switch
+                                        id={`preview-lecture-${index + 1}`}
+                                        checked={courseCurriculumFormData[index]?.preview}
                                         onCheckedChange={(value) => handlePreviewChange(value, index)}
                                     />
                                     <Label htmlFor={`preview-lecture-${index + 1}`}>Preview</Label>
                                 </div>
                             </div>
                             <div className="mt-5">
-                                { courseCurriculumFormData[index]?.video_url ? (
+                                {courseCurriculumFormData[index]?.video_url ? (
                                     <div className="flex gap-3">
-                                        <VideoPlayer 
+                                        <VideoPlayer
                                             data-video-index={index}
-                                            url={courseCurriculumFormData[index]?.video_url} 
+                                            url={courseCurriculumFormData[index]?.video_url}
                                             onFocus={() => unfocusOtherVideos(index)}
-                                            isFocused={focusedVideoIndex === index} 
-                                            width="475px" 
-                                            height="225px"  
+                                            isFocused={focusedVideoIndex === index}
+                                            width="475px"
+                                            height="225px"
                                         />
-                                    <div className="flex gap-3 flex-col">
-                                        <Button onClick={() => handleDeleteVideo(index)}>
-                                            Delete Video
-                                        </Button>
-                                        <Button onClick={() => handleDeleteLecture(index)} className="bg-red-700 hover:bg-red-800">
-                                            Delete Lecture
-                                        </Button>
-                                    </div>
+                                        <div className="flex gap-3 flex-col">
+                                            <Button onClick={() => handleDeleteVideo(index)}>
+                                                Delete Video
+                                            </Button>
+                                            <Button onClick={() => handleDeleteLecture(index)} className="bg-red-700 hover:bg-red-800">
+                                                Delete Lecture
+                                            </Button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <div>
-                                        { mediaUploadProgress ? (
-                                            <MediaProgressBar 
-                                                isMediaUploading={mediaUploadProgress} 
+                                        {mediaUploadProgress ? (
+                                            <MediaProgressBar
+                                                isMediaUploading={mediaUploadProgress}
                                                 progress={mediaUploadProgressPercentage}
                                             />
                                         ) : (
-                                            <Input 
+                                            <Input
                                                 type="file"
                                                 accept="video/*"
                                                 onChange={(event) => handleSingleVideoUpload(event, index)}
@@ -275,10 +274,10 @@ function CourseCurriculum() {
                             </div>
                         </div>
                     ))}
-                </div>  
+                </div>
             </CardContent>
         </Card>
-    )   
+    )
 }
 
 export default CourseCurriculum
