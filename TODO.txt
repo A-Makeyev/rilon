@@ -7,9 +7,9 @@ TODO:
 
 fix video fade out
 fix video fullscreen tooltip
+fix course objectives, make them an array or something
+fix muted video switch on course details?
 
 
-
-
-7 40 40
+8 36 00
 

@@ -103,8 +103,8 @@ function StudentCoursesPage() {
             <div className="flex flex-col md:flex-row gap-4">
                 <aside className="w-full md:w-64">
                     <div>
-                        { filterOptions && Object.keys(filterOptions).map(item => (
-                            <div key={filterOptions[item].id} className="p-4 space-y-4">
+                        { filterOptions && Object.keys(filterOptions).map((item, index) => (
+                            <div key={index} className="p-4 space-y-4">
                                 <p className="font-semibold mb-3">
                                     { item.toUpperCase() }
                                 </p>
@@ -142,8 +142,8 @@ function StudentCoursesPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-[180px]">
                                 <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(value)}>
-                                    { sortOptions && sortOptions.map(item => (
-                                        <DropdownMenuRadioItem key={item.id} value={item.id} className="cursor-pointer">
+                                    { sortOptions && sortOptions.map((item, index) => (
+                                        <DropdownMenuRadioItem key={index} value={item.id} className="cursor-pointer">
                                             { item.label }
                                         </DropdownMenuRadioItem>
                                     ))}
@@ -155,8 +155,8 @@ function StudentCoursesPage() {
                         {  loading ? (
                             <Skeleton /> 
                         ) : studentCourses && studentCourses.length > 0 ? (
-                            studentCourses.map(item => (
-                                <Card key={item.id} onClick={() => navigate(`/course/details/${item._id}`)} className="cursor-pointer hover:shadow-md transition">
+                            studentCourses.map((item, index) => (
+                                <Card key={index} onClick={() => navigate(`/course/details/${item._id}`)} className="cursor-pointer hover:shadow-md transition">
                                     <CardContent className="flex gap-4 p-4">
                                         <div className="w-48 h-32 flex-shrink-0">
                                             <img src={item.image_url} className="w-full h-full object-cover" />

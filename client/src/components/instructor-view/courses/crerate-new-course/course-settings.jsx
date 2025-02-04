@@ -57,15 +57,17 @@ function CourseSettings() {
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
-                <CardTitle className="mt-3">Course Image</CardTitle>
-                {courseLandingFormData?.image_url && (
+                <CardTitle className="text-lg font-medium">
+                    Course Image
+                </CardTitle>
+                { courseLandingFormData?.image_url && (
                     <Button onClick={handleDeleteImage}>
                         Delete Image
                     </Button>
                 )}
             </CardHeader>
             <CardContent>
-                {courseLandingFormData?.image_url ? (
+                { courseLandingFormData?.image_url ? (
                     <div className="flex flex-col gap-3">
                         <img src={courseLandingFormData.image_url} />
                     </div>

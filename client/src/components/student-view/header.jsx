@@ -1,7 +1,8 @@
 import { useContext } from "react"
 import { AuthContext } from "@/context/auth"
 import { Link, useNavigate } from "react-router-dom"
-import { GraduationCap, TvMinimalPlay } from "lucide-react"
+import { GraduationCap, Telescope, TvMinimalPlay } from "lucide-react"
+import { Tooltip } from "react-tooltip"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 
@@ -15,35 +16,35 @@ function StudentHeader() {
     }
 
     return (
-        <header className="flex items-center justify-between p-4 border-b relative">
+        <header className="flex items-center justify-between sticky top-0 p-4 bg-white border-b shadow-sm">
             <div className="flex items-center space-x-4">
-                <Link to="/home" className="flex items-center hover:text-slate-800">
+                <Link to="/home" className="flex items-center ml-4 hover:text-gray-800 transition">
                     <GraduationCap className="w-8 h-8 mr-4 transition ease-in-out hover:scale-110" />
                     <span className="font-extrabold text-xl">Easy Programming</span>
                 </Link>
-                <div className="flex items-center space-x-1">
-                    <Button 
-                        onClick={() => navigate('/courses')} 
-                        className="text-base md:text-lg font-medium"
-                    >
+            </div>
+            <div className="flex items-center space-x-4 mr-4">
+                <div className="flex gap-4 items-center">
+                    <Button variant="outline" onClick={() => navigate('/courses')}>
+                        <Telescope />
                         Explore Courses
                     </Button>
+                    <TvMinimalPlay data-tooltip-id="my-courses" className="w-6 h-6 cursor-pointer transition ease-in-out hover:scale-110" /> 
+                    <LogOut onClick={handleLogout} data-tooltip-id="logout" className="w-6 h-6 cursor-pointer transition ease-in-out hover:scale-110" />
                 </div>
             </div>
-            <div className="flex items-center space-x-4">
-                <div className="flex gap-2 items-center">
-                    <div className="flex items-center flex-col">
-                    <Button>
-                        <TvMinimalPlay className="h-4 w-4" /> 
-                        Courses
-                    </Button>
-                    </div>
-                    <Button onClick={handleLogout}>
-                        <LogOut className="h-4 w-4" /> 
-                        Logout
-                    </Button>
-                </div>
-            </div>
+            <Tooltip
+                id="logout"
+                place="bottom"
+                content="Logout"
+                className="font-medium"
+            />
+            <Tooltip
+                id="my-courses"
+                place="bottom"
+                content="My Courses"
+                className="font-medium"
+            />
         </header>
     )
 }

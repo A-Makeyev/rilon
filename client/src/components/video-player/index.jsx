@@ -272,10 +272,7 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                 style={{ width, height }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                onClick={(e) => {
-                    e.stopPropagation() 
-                    onFocus()
-                }}
+                onClick={(event) => {event.stopPropagation()}}
                 className={`${fullScreen ? "w-screen h-screen" : ""} relative overflow-hidden rounded-lg shadow-xl bg-slate-900 video-player`}
             >
                 <ReactPlayer
@@ -305,7 +302,7 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                             className="mb-2"
                         />
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-4">
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button
@@ -314,11 +311,11 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                                             className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                             onClick={handlePlayAndPause}
                                         >
-                                            {playing ? <Pause /> : <Play />}
+                                            { playing ? <Pause /> : <Play /> }
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{playing ? 'Pause' : 'Play'}</p>
+                                        <p>{ playing ? 'Pause' : 'Play' }</p>
                                     </TooltipContent>
                                 </Tooltip>
                                 <Tooltip>
@@ -366,14 +363,14 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                                             onClick={handleMute}
                                             disabled={!hasAudio}
                                         >
-                                            {muted || !hasAudio ? <VolumeX /> : <Volume2 />}
+                                            { muted || !hasAudio ? <VolumeX /> : <Volume2 /> }
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{muted || !hasAudio ? 'Unmute' : 'Mute'}</p>
+                                        <p>{ muted || !hasAudio ? 'Unmute' : 'Mute' }</p>
                                     </TooltipContent>
                                 </Tooltip>
-                                {hasAudio && (
+                                { hasAudio && (
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Slider
@@ -381,7 +378,6 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                                                 max={100}
                                                 value={[volume * 100]}
                                                 onValueChange={(value) => handleVolumeChange([value[0] / 100])}
-                                                className="w-24"
                                             />
                                         </TooltipTrigger>
                                         <TooltipContent>
@@ -392,9 +388,9 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                             </div>
                             <div className="flex items-center">
                                 <div className="text-white mr-2">
-                                    {timeFormat(played * (playerRef?.current?.getDuration() || 0))}
+                                    { timeFormat(played * (playerRef?.current?.getDuration() || 0)) }
                                     {' '} / {' '}
-                                    {timeFormat(playerRef?.current?.getDuration() || 0)}
+                                    { timeFormat(playerRef?.current?.getDuration() || 0) }
                                 </div>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
@@ -404,11 +400,11 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                                             className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                             onClick={handlePictureInPicture}
                                         >
-                                            {isPip ? <PictureInPicture /> : <PictureInPicture2 />}
+                                            { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{isPip ? 'Exit Picture-In-Picture' : 'Picture-In-Picture'}</p>
+                                        <p>{ isPip ? 'Exit Picture-In-Picture' : 'Picture-In-Picture' }</p>
                                     </TooltipContent>
                                 </Tooltip>
                                 <Tooltip>
@@ -419,11 +415,11 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                                             className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                             onClick={handleFullScreen}
                                         >
-                                            {fullScreen ? <Minimize /> : <Maximize />}
+                                            { fullScreen ? <Minimize /> : <Maximize /> }
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{fullScreen ? 'Exist Full Screen' : 'Full Screen'}</p>
+                                        <p>{ fullScreen ? 'Exist Full Screen' : 'Full Screen' }</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </div>

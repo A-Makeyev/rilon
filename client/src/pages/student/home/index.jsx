@@ -24,11 +24,11 @@ function StudentHomePage() {
     return (
         <div className="min-h-screen bg-white">
             <section className="flex flex-col lg:flex-row items-center justify-between py-8 px-4 lg:px-8">
-                <div className="lg:w-1/2 lg:pr-12">
-                    <h1 className="text-4xl font-bold mb-4">
+                <div className="lg:w-1/2 lg:pr-12 my-10 container">
+                    <h1 className="text-xl lg:text-3xl font-bold mb-4">
                         Software courses for high school and college students
                     </h1>
-                    <p className="text-xl">
+                    <p className="text-lg lg:xl">
                         Be fully confident to pass your next exams and get the career you always desired with our experienced teachers
                     </p>
                 </div>
@@ -52,7 +52,7 @@ function StudentHomePage() {
                 <h2 className="text-2xl font-bold mb-6">
                     Featured Courses
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                     { studentCourses && studentCourses.length > 0 ? (
                         studentCourses.map(item => (
                             <div key={item.title} className="shadow border rounded overflow-hidden cursor-pointer">

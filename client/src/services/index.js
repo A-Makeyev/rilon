@@ -66,7 +66,9 @@ export async function getInstructorCourseDetails(id) {
 }
 
 export async function getStudentCourses(query) {
-    const { data } = await axiosInstance.get(`/student/courses/all-courses?${query}`)
+    const { data } = query !== undefined 
+        ? await axiosInstance.get(`/student/courses/all-courses?${query}`) 
+        : await axiosInstance.get('/student/courses/all-courses')
     return data
 }
 
