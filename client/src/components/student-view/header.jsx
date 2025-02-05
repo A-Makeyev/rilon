@@ -20,7 +20,7 @@ function StudentHeader() {
             <div className="flex items-center space-x-4">
                 <Link to="/home" className="flex items-center ml-4 hover:text-gray-800 transition">
                     <GraduationCap className="w-8 h-8 mr-4 transition ease-in-out hover:scale-110" />
-                    <span className="font-extrabold text-xl">Easy Programming</span>
+                    <span className="font-extrabold text-lg lg:text-xl">Easy Programming</span>
                 </Link>
             </div>
             <div className="flex items-center space-x-4 mr-4">

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { useLocation, useParams } from "react-router-dom"
 import { StudentContext } from "@/context/student"
 import { getStudentCourseDetails } from "@/services"
@@ -31,6 +31,15 @@ function StudentCoursesDetailsPage() {
     const [displayPreview, setDisplayPreview] = useState(null)
     const [currentPreview, setCurrentPreview] = useState(null)
 
+    const getCourseDetails = useCallback(async () => {
+        const response = await getStudentCourseDetails(currentCourseId)
+    
+        if (response?.success) {
+            setStudentCourseDetails(response?.data)
+        }
+        setLoading(false)
+    }, [currentCourseId, setStudentCourseDetails, setLoading])
+    
     function getPreviewVideo() {
         const previewVideoUrl = studentCourseDetails !== null 
             ? studentCourseDetails.curriculum.findIndex(item => item.preview)
@@ -45,21 +54,12 @@ function StudentCoursesDetailsPage() {
         setDisplayPreview(lecture.video_url)
         setCurrentPreview(lecture.title)
     }
-
-    async function getCourseDetails() {
-        const response = await getStudentCourseDetails(currentCourseId)
-
-        if (response?.success) {
-            setStudentCourseDetails(response?.data)
-        } 
-        setLoading(false)
-    }
-
+    
     useEffect(() => {
         if (currentCourseId !== null) {
             getCourseDetails()
         }
-    }, [currentCourseId])
+    }, [currentCourseId, getCourseDetails])
 
     useEffect(() => {
         if (displayPreview !== null) {
@@ -71,14 +71,14 @@ function StudentCoursesDetailsPage() {
         if (id) {
             setCurrentCourseId(id)
         }
-    }, [id])
+    }, [id, setCurrentCourseId])
 
     useEffect(() => {
         if (!location.pathname.includes('/course/details/')) (
             setStudentCourseDetails(null),
             setCurrentCourseId(null)
         ) 
-    }, [location.pathname])
+    }, [location.pathname, setStudentCourseDetails, setCurrentCourseId])
 
     if (loading || !studentCourseDetails) return <Skeleton />
     return (
