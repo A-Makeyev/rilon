@@ -81,37 +81,46 @@ function CourseCurriculum() {
     }
 
     async function handleBulkVideosUpload(event) {
-        const videos = Array.from(event.target.files)
+        setMediaUploadProgress(true)
+    
+        const files = Array.from(event.target.files)
+        if (files.length === 0) return
+    
         const videosFormData = new FormData()
-
-        videos.forEach(file => videosFormData.append('files', file))
-
+        files.forEach(file => videosFormData.append('files', file))
+    
         try {
-            setMediaUploadProgress(true)
-
             const response = await bulkUploadMedia(videosFormData, setMediaUploadProgressPercentage)
+    
             if (response?.success) {
-                let copyCourseCurriculumFormData = checkCourseCurriculumFormDataEmptyObjects(courseCurriculumFormData)
-                    ? [] : [...courseCurriculumFormData]
-
-                copyCourseCurriculumFormData = [
-                    ...copyCourseCurriculumFormData,
-                    ...response?.data?.map((item, index) => ({
-                        title: `Lecture ${copyCourseCurriculumFormData.length + (index + 1)}`,
-                        public_id: item.public_id,
-                        video_url: item.url,
-                        preview: false
-                    }))
-                ]
-
-                setCourseCurriculumFormData(copyCourseCurriculumFormData)
-                setMediaUploadProgress(false)
+                setCourseCurriculumFormData(prevState => {
+                    let copyCourseCurriculumFormData = checkCourseCurriculumFormDataEmptyObjects(prevState)
+                        ? []
+                        : [...prevState]
+    
+                    copyCourseCurriculumFormData = [
+                        ...copyCourseCurriculumFormData,
+                        ...response.data.map((item, index) => ({
+                            title: `Lecture ${copyCourseCurriculumFormData.length + index + 1}`,
+                            public_id: item.public_id,
+                            video_url: item.url,
+                            preview: false
+                        }))
+                    ]
+                    return copyCourseCurriculumFormData
+                })
             }
         } catch (err) {
             console.error(err)
+        } finally {
+            setMediaUploadProgress(false)
+    
+            if (event.target) {
+                event.target.value = ''
+            }
         }
     }
-
+    
     async function handleSingleVideoUpload(event, index) {
         const video = event.target.files[0]
 
@@ -133,8 +142,8 @@ function CourseCurriculum() {
                         }
                         return newData
                     })
-                    setMediaUploadProgress(false)
                 }
+                setMediaUploadProgress(false)
             } catch (err) {
                 console.error(err)
             }
@@ -195,7 +204,7 @@ function CourseCurriculum() {
                         {mediaUploadProgress ? (
                             <>
                                 <LoadingSpinner />
-                                <span>Uploading..</span>
+                                <span>Uploading</span>
                             </>
                         ) : (
                             <>
