@@ -31,7 +31,7 @@ function PaymentReturnPage() {
     }, [paymentId, payerId])
     
     return (
-        <div className="flex items-center justify-center min-h-[50vh] bg-background">
+        <div className="flex items-center justify-center min-h-[70vh] bg-background">
             <Card className="flex justify-around items-center mt-5 p-5">
                 <CardHeader>
                     <CardTitle className="flex flex-row gap-3 text-lg text-gray-700 font-mono">

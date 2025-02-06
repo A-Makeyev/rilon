@@ -60,7 +60,7 @@ function InstructorCourses({ courses }) {
                                             ₪ { course.price ? course.price : '0' }
                                         </TableCell>
                                         <TableCell>
-                                            ₪ { course.price * course.students }
+                                            ₪ { course.price * course.students.length }
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button 

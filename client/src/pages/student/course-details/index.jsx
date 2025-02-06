@@ -36,6 +36,8 @@ function StudentCoursesDetailsPage() {
     const [approvalUrl, setApprovalUrl] = useState('')
 
     const getCourseDetails = useCallback(async () => {
+        setLoading(true)
+
         const response = await getStudentCourseDetails(currentCourseId)
     
         if (response?.success) {
