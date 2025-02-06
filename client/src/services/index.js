@@ -76,3 +76,17 @@ export async function getStudentCourseDetails(id) {
     const { data } = await axiosInstance.get(`/student/courses/course-details/${id}`)
     return data
 }
+
+export async function createPayment(formData) {
+    const { data } = await axiosInstance.post('/student/order/create-order', formData)
+    return data
+}
+
+export async function capturePaymentAndFinalizeOrder(paymentId, payerId, orderId) {
+    const { data } = await axiosInstance.post('/student/order/capture-payment', {
+        paymentId,
+        payerId,
+        orderId
+    })
+    return data
+}

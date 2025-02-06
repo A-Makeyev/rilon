@@ -1,7 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { useLocation, useParams } from "react-router-dom"
+import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
-import { getStudentCourseDetails } from "@/services"
+import { createPayment, getStudentCourseDetails } from "@/services"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CheckCircle, Globe, Lock, PlayCircle, ShoppingBag } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,12 +14,14 @@ import {
     DialogHeader,
     DialogTitle,
   } from "@/components/ui/dialog"
-  import VideoPlayer from "@/components/video-player"
+import VideoPlayer from "@/components/video-player"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 
 function StudentCoursesDetailsPage() {
     const location = useLocation()
     const { id } = useParams()
+    const { auth } = useContext(AuthContext)
     const {             
         studentCourseDetails, 
         setStudentCourseDetails,
@@ -30,6 +33,7 @@ function StudentCoursesDetailsPage() {
     const [openPreview, setOpenPreview] = useState(false)
     const [displayPreview, setDisplayPreview] = useState(null)
     const [currentPreview, setCurrentPreview] = useState(null)
+    const [approvalUrl, setApprovalUrl] = useState('')
 
     const getCourseDetails = useCallback(async () => {
         const response = await getStudentCourseDetails(currentCourseId)
@@ -53,6 +57,36 @@ function StudentCoursesDetailsPage() {
     function handlePreview(lecture) {
         setDisplayPreview(lecture.video_url)
         setCurrentPreview(lecture.title)
+    }
+
+    async function handleCreatePayment() {
+        setLoading(true)
+
+        const paymentPayload = {
+            payerId: '',
+            paymentId: '',
+            userId: auth?.user?._id,
+            userName: auth?.user?.username,
+            userEmail: auth?.user?.email,
+            orderStatus: 'pending',
+            paymentMethod: 'paypal',
+            paymentStatus: 'initiated',
+            orderDate: new Date(),
+            instructorId: studentCourseDetails.instructorId,
+            instructorName: studentCourseDetails.instructorName,
+            courseImage: studentCourseDetails.image_url,
+            courseTitle: studentCourseDetails.title,
+            courseId: studentCourseDetails._id,
+            coursePrice: studentCourseDetails.price
+        }
+
+        const response = await createPayment(paymentPayload)
+
+        if (response?.success) {
+            sessionStorage.setItem('orderId', JSON.stringify(response?.data?.orderId))
+            setApprovalUrl(response?.data?.approvalUrl)
+        }
+        setLoading(false)
     }
     
     useEffect(() => {
@@ -80,7 +114,14 @@ function StudentCoursesDetailsPage() {
         ) 
     }, [location.pathname, setStudentCourseDetails, setCurrentCourseId])
 
-    if (loading || !studentCourseDetails) return <Skeleton />
+    if (approvalUrl !== '') {
+        window.location.href = approvalUrl
+    }
+
+    if (!studentCourseDetails) {
+        return <Skeleton />
+    }
+
     return (
         <div className="xl:container mx-auto p-4 mt-4">
             <div className="bg-gray-800 text-white p-8 rounded-md">
@@ -168,9 +209,17 @@ function StudentCoursesDetailsPage() {
                                 <span className="text-lg font-medium mt-1.5">
                                     $ { studentCourseDetails.price }
                                 </span>
-                                <Button>
-                                    <ShoppingBag />
-                                    Buy Course
+                                <Button onClick={handleCreatePayment} className="flex items-center w-[120px]">
+                                    { loading ? (
+                                        <>
+                                            <LoadingSpinner className="w-5 h-5" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ShoppingBag />
+                                            Buy Course
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                             <span className="font-medium mt-1 mb-2 pl-3">
@@ -212,7 +261,7 @@ function StudentCoursesDetailsPage() {
                            </div> 
                         ))}
                     </div>
-                    <DialogDescription>
+                    <DialogDescription className="pt-2 pl-4">
                         { studentCourseDetails.welcomeMessage }
                     </DialogDescription>
                 </DialogContent>

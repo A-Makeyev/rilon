@@ -10,6 +10,8 @@ import NotFound from "./pages/not-found"
 import CreateNewCourse from "./pages/instructor/crerate-new-course"
 import StudentCoursesPage from "./pages/student/courses"
 import StudentCoursesDetailsPage from "./pages/student/course-details"
+import PaymentReturnPage from "./pages/student/payment-return"
+import AcquiredCoursesPage from "./pages/student/acquired-courses"
 
 
 const App = () => {
@@ -71,6 +73,8 @@ const App = () => {
         <Route path="home" element={<StudentHomePage />} />
         <Route path="courses" element={<StudentCoursesPage />} />
         <Route path="course/details/:id" element={<StudentCoursesDetailsPage />} />
+        <Route path="payment-return" element={<PaymentReturnPage />} />
+        <Route path="acquired-courses" element={<AcquiredCoursesPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

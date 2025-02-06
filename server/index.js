@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth/index')
 const instructorMediaRoutes = require('./routes/instructor-routes/media-routes')
 const instructorCourseRoutes = require('./routes/instructor-routes/course-routes')
 const studentCourseRoutes = require('./routes/student-routes/course-routes')
+const studentOrderRoutes = require('./routes/student-routes/order-routes')
 
 
 const app = express()
@@ -27,6 +28,7 @@ app.use('/auth', authRoutes)
 app.use('/media', instructorMediaRoutes)
 app.use('/instructor/courses', instructorCourseRoutes)
 app.use('/student/courses', studentCourseRoutes)
+app.use('/student/order', studentOrderRoutes)
 
 app.use((err, req, res, next) => {
     console.log('🥞', err.stack)

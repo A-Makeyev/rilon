@@ -11,5 +11,5 @@ fix course objectives, make them an array or something
 fix muted video switch on course details?
 
 
-8 36 00
+9 30 00
 

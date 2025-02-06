@@ -5,7 +5,7 @@ const LectureSchema = new mongoose.Schema({
   title: String,
   video_url: String,
   public_id: String,
-  preview: Boolean,
+  preview: Boolean
 })
 
 const CourseSchema = new mongoose.Schema({
@@ -23,16 +23,16 @@ const CourseSchema = new mongoose.Schema({
   welcomeMessage: String,
   price: Number,
   objectives: String,
+  isPublished: Boolean,
+  curriculum: [LectureSchema],
   students: [
     {
       studentId: String,
       studentName: String,
       studentEmail: String,
-      paidAmount: String,
-    },
-  ],
-  curriculum: [LectureSchema],
-  isPublished: Boolean,
+      paidAmount: String
+    }
+  ]
 })
 
 module.exports = mongoose.model('Course', CourseSchema)
