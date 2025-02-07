@@ -11,7 +11,7 @@ export default function InstructorProvider({ children }) {
     const [mediaUploadProgress, setMediaUploadProgress] = useState(false)
     const [currentEditedCourse, setCurrentEditedCourse] = useState(null)
     const [instructorCourses, setInstructorCourses] = useState([])
-    const [loading, setLoading] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     return (
         <InstructorContext.Provider value={{

@@ -36,14 +36,12 @@ function StudentCoursesDetailsPage() {
     const [approvalUrl, setApprovalUrl] = useState('')
 
     const getCourseDetails = useCallback(async () => {
-        setLoading(true)
-
         const response = await getStudentCourseDetails(currentCourseId)
     
         if (response?.success) {
             setStudentCourseDetails(response?.data)
+            setLoading(false)
         }
-        setLoading(false)
     }, [currentCourseId, setStudentCourseDetails, setLoading])
     
     function getPreviewVideo() {
@@ -87,8 +85,8 @@ function StudentCoursesDetailsPage() {
         if (response?.success) {
             sessionStorage.setItem('orderId', JSON.stringify(response?.data?.orderId))
             setApprovalUrl(response?.data?.approvalUrl)
+            setLoading(false)
         }
-        setLoading(false)
     }
     
     useEffect(() => {
@@ -211,17 +209,9 @@ function StudentCoursesDetailsPage() {
                                 <span className="text-lg font-medium mt-1.5">
                                     $ { studentCourseDetails.price }
                                 </span>
-                                <Button onClick={handleCreatePayment} className="flex items-center w-[120px]">
-                                    { loading ? (
-                                        <>
-                                            <LoadingSpinner className="w-5 h-5" />
-                                        </>
-                                    ) : (
-                                        <>
-                                            <ShoppingBag />
-                                            Buy Course
-                                        </>
-                                    )}
+                                <Button onClick={handleCreatePayment} className="flex items-center">
+                                    { loading ? <LoadingSpinner className="w-4 h-4" /> : <ShoppingBag /> }
+                                    Buy Course
                                 </Button>
                             </div>
                             <span className="font-medium mt-1 mb-2 pl-3">

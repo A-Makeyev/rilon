@@ -48,8 +48,6 @@ function StudentCoursesPage() {
     }
 
     async function getCourses(filters, sort) {
-        setLoading(true)
-        
         const query = new URLSearchParams({
             ...filters,
             sortBy: sort

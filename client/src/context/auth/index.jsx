@@ -10,7 +10,7 @@ export default function AuthProvider({ children }) {
     const [loginFormData, setLoginFormData] = useState(initialLoginFormData)
     const [registerFormData, setRegisterFormData] = useState(initialRegisterFormData)
     const [auth, setAuth] = useState({ user: null, isAuthenticated: false })
-    const [loading, setLoading] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     async function handleRegister(event) {
         event.preventDefault()
@@ -18,7 +18,6 @@ export default function AuthProvider({ children }) {
     }
     
     async function handleLogin(event) {
-        setLoading(true)
         event.preventDefault()
         
         const { data } = await login(loginFormData)
@@ -42,7 +41,6 @@ export default function AuthProvider({ children }) {
     }
 
     async function authenticateUser() {
-        setLoading(true)
         try {
             const { data } = await verify()
 
@@ -65,8 +63,8 @@ export default function AuthProvider({ children }) {
                     user: null,
                     isAuthenticated: false
                 })
+                setLoading(false)
             }
-            setLoading(false)
         }
     }
 
