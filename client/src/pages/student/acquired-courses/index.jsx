@@ -5,6 +5,7 @@ import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
 import { Card, CardContent} from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { Play } from "lucide-react"
 
 
 function AcquiredCoursesPage() {
@@ -24,21 +25,28 @@ function AcquiredCoursesPage() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-semibold mb-16 p-4">
+            <h1 className="text-2xl font-semibold mb-6 p-4">
                 My Courses
             </h1>
             <div className="flex items-center justify-center">
                 { acquiredCourses && acquiredCourses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                         { acquiredCourses.map((item, index) => (
-                            <Card key={index} onClick={() => navigate(`/course-progress/${item.courseId}`)} className="flex flex-col items-center hover:shadow-lg transition duration-500">
-                                <CardContent className="flex-grow p-4">
-                                    <img 
-                                        src={item.courseImage} 
-                                        alt={item.title} 
-                                        className="w-full object-cover h-52 mb-4 rounded-lg cursor-pointer" 
-                                    />
-                                    <div className="pl-1">
+                            <Card key={index} className="flex flex-col items-center hover:shadow-lg duration-500">
+                                <CardContent className="relative flex-grow w-full p-4">
+                                    <div 
+                                        onClick={() => navigate(`/course-progress/${item.courseId}`)} 
+                                        className="relative sm:h-52 rounded-lg overflow-hidden cursor-pointer group"
+                                    >
+                                        <img 
+                                            alt={item.title} 
+                                            src={item.courseImage} 
+                                            className="w-full h-full object-cover rounded-lg duration-500"
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 duration-500 group-hover:opacity-100"></div>
+                                        <Play className="w-10 h-10 absolute inset-0 m-auto opacity-0 duration-500 group-hover:opacity-100 group-hover:scale-125 text-white" />
+                                    </div>
+                                    <div className="mt-4 pl-1">
                                         <h3 className="font-semibold text-base text-gray-900">
                                             { item.title }
                                         </h3>

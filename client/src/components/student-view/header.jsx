@@ -16,7 +16,7 @@ function StudentHeader() {
     }
 
     return (
-        <header className="flex items-center justify-between sticky top-0 p-4 bg-white border-b shadow-sm">
+        <header className="flex items-center justify-between sticky top-0 z-50 p-4 bg-white border-b shadow-sm">
             <div className="flex items-center space-x-4">
                 <Link to="/home" className="flex items-center ml-4 hover:text-gray-800 transition">
                     <GraduationCap className="w-8 h-8 mr-4 transition ease-in-out hover:scale-110" />
