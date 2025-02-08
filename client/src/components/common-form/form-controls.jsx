@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 function FormControls({ formControls = [], formData, setFormData }) {
   function renderComponentByType(item) {
     let element = null
-    const currentControlItemValue = formData[item.name] || ""
+    const currentControlItemValue = formData[item.name] || ''
 
     switch (item.componentType) {
       case 'input':

@@ -1,4 +1,5 @@
-const Course = require('../../models/Course')
+const Course = require("../../models/Course")
+const StudentCourses = require("../../models/StudentCourses")
 
 
 const getCourses = async (req, res) => {
@@ -68,7 +69,26 @@ const getCourseDetails = async (req, res) => {
     }
 }
 
+const getCoursePurchaseInfo = async (req, res) => {
+    try {
+        const { id, studentId } = req.params
+        const acquiredCourses = await StudentCourses.findOne({ userId: studentId })
+        const alreadyAcquiredCourse = acquiredCourses.courses.findIndex(item => item.courseId === id) > -1
+
+        res.status(200).json({
+            success: true,
+            data: alreadyAcquiredCourse
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error'
+        })
+    }
+}
+
 module.exports = {
     getCourses,
-    getCourseDetails
+    getCourseDetails,
+    getCoursePurchaseInfo
 }

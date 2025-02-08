@@ -46,7 +46,7 @@ const AuthPage = () => {
             <header className="flex items-center border-b px-4 lg:px-6 h-14">
                 <Link to={"/"} className="flex items-center justify-center">
                     <GraduationCap className="h-8 w-8 mr-4" />
-                    <span className="font-extrabold text-xl">Easy Programming</span>
+                    <span className="font-bold text-xl">Easy Programming</span>
                 </Link>
             </header>
             <div className="flex items-center justify-center min-h-[70vh] bg-background">

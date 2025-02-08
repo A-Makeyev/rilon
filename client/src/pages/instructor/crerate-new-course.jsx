@@ -53,8 +53,22 @@ function CreateNewCourse() {
         return hasPreview
     }
 
+    function removeWhiteSpace(obj) {
+        if (Array.isArray(obj)) {
+            return obj.map(removeWhiteSpace)
+        } else if (obj && typeof obj === 'object' && !(obj instanceof Date)) {
+            return Object.fromEntries(
+                Object.entries(obj).map(([key, value]) => [
+                    key,
+                    typeof value === 'string' ? value.trim() : removeWhiteSpace(value)
+                ])
+            )
+        }
+        return obj
+    }
+
     async function handleCreateNewCourse() {
-        const courseData = {
+        const courseData = removeWhiteSpace({
             date: new Date(),
             instructorId: auth?.user?._id,
             instructorName: auth?.user?.username,
@@ -62,7 +76,7 @@ function CreateNewCourse() {
             isPublished: true,
             students: [],
             ...courseLandingFormData
-        }
+        })
 
         const response = currentEditedCourse !== null ? await updateCourse(currentEditedCourse, courseData) : await addNewCourse(courseData)
         if (response?.success) {

@@ -12,6 +12,7 @@ import StudentCoursesPage from "./pages/student/courses"
 import StudentCoursesDetailsPage from "./pages/student/course-details"
 import PaymentReturnPage from "./pages/student/payment-return"
 import AcquiredCoursesPage from "./pages/student/acquired-courses"
+import CourseProgressPage from "./pages/student/course-progress"
 
 
 const App = () => {
@@ -75,6 +76,7 @@ const App = () => {
         <Route path="course/details/:id" element={<StudentCoursesDetailsPage />} />
         <Route path="payment-return" element={<PaymentReturnPage />} />
         <Route path="acquired-courses" element={<AcquiredCoursesPage />} />
+        <Route path="course-progress/:id" element={<CourseProgressPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

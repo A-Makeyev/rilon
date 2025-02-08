@@ -90,3 +90,13 @@ export async function capturePaymentAndFinalizeOrder(paymentId, payerId, orderId
     })
     return data
 }
+
+export async function getAcquiredCourses(studentId) {
+    const { data } = await axiosInstance.get(`/student/acquired-courses/${studentId}`)
+    return data
+}
+
+export async function getCoursePurchaseInfo(id, studentId) {
+    const { data } = await axiosInstance.get(`/student/courses/purchase-info/${id}/${studentId}`) 
+    return data
+}

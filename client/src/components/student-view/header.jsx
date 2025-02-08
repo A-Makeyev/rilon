@@ -20,7 +20,7 @@ function StudentHeader() {
             <div className="flex items-center space-x-4">
                 <Link to="/home" className="flex items-center ml-4 hover:text-gray-800 transition">
                     <GraduationCap className="w-8 h-8 mr-4 transition ease-in-out hover:scale-110" />
-                    <span className="font-extrabold text-lg lg:text-xl">Easy Programming</span>
+                    <span className="font-bold text-lg lg:text-xl">Easy Programming</span>
                 </Link>
             </div>
             <div className="flex items-center space-x-4 mr-4">
@@ -29,7 +29,7 @@ function StudentHeader() {
                         <Telescope />
                         Explore Courses
                     </Button>
-                    <TvMinimalPlay data-tooltip-id="my-courses" className="w-6 h-6 cursor-pointer transition ease-in-out hover:scale-110" /> 
+                    <TvMinimalPlay onClick={() => navigate('/acquired-courses')} data-tooltip-id="my-courses" className="w-6 h-6 cursor-pointer transition ease-in-out hover:scale-110" /> 
                     <LogOut onClick={handleLogout} data-tooltip-id="logout" className="w-6 h-6 cursor-pointer transition ease-in-out hover:scale-110" />
                 </div>
             </div>

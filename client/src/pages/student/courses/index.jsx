@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { filterOptions, sortOptions } from "@/config"
-import { getStudentCourses } from "@/services"
+import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
-import { ArrowUpDownIcon } from "lucide-react"
+import { filterOptions, sortOptions } from "@/config"
+import { getCoursePurchaseInfo, getStudentCourses } from "@/services"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { ArrowUpDownIcon } from "lucide-react"
 import { 
     DropdownMenu, 
     DropdownMenuContent, 
@@ -16,10 +16,12 @@ import {
     DropdownMenuRadioItem, 
     DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 
 function StudentCoursesPage() {
     const navigate = useNavigate()
+    const { auth } = useContext(AuthContext)
     const { studentCourses, setStudentCourses, loading, setLoading } = useContext(StudentContext)
     const [searchParams, setSearchParams] = useSearchParams()
     const [sort, setSort] = useState('price-low-high')
@@ -58,6 +60,18 @@ function StudentCoursesPage() {
         if (response?.success) {
             setStudentCourses(response?.data)
             setLoading(false)
+        }
+    }
+
+    async function handleCourseNavigation(id) {
+        const response = await getCoursePurchaseInfo(id, auth?.user?._id)
+
+        if (response?.success) {
+            if (response?.data) {
+                navigate(`/course-progress/${id}`)
+            } else {
+                navigate(`/course/details/${id}`)
+            }
         }
     }
 
@@ -153,10 +167,16 @@ function StudentCoursesPage() {
                     </div>
                     <div className="space-y-4">
                         {  loading ? (
-                            <Skeleton /> 
+                            <div className="flex justify-center">
+                                <LoadingSpinner className="mt-40 w-12 h-12" />
+                            </div>
                         ) : studentCourses && studentCourses.length > 0 ? (
-                            studentCourses.map((item, index) => (
-                                <Card key={index} onClick={() => navigate(`/course/details/${item._id}`)} className="cursor-pointer hover:shadow-md transition">
+                            studentCourses.map(item => (
+                                <Card 
+                                    key={item._id} 
+                                    onClick={() => handleCourseNavigation(item._id)} 
+                                    className="cursor-pointer hover:shadow-md transition"
+                                >
                                     <CardContent className="flex gap-4 p-4">
                                         <div className="w-48 h-32 flex-shrink-0">
                                             <img src={item.image_url} className="w-full h-full object-cover" />

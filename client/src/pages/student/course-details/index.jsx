@@ -1,11 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import { useLocation, useParams } from "react-router-dom"
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
-import { createPayment, getStudentCourseDetails } from "@/services"
+import { createPayment, getCoursePurchaseInfo, getStudentCourseDetails } from "@/services"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CheckCircle, Globe, Lock, PlayCircle, ShoppingBag } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -15,11 +16,11 @@ import {
     DialogTitle,
   } from "@/components/ui/dialog"
 import VideoPlayer from "@/components/video-player"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 
 function StudentCoursesDetailsPage() {
     const location = useLocation()
+    const navigate = useNavigate()
     const { id } = useParams()
     const { auth } = useContext(AuthContext)
     const {             
@@ -36,10 +37,22 @@ function StudentCoursesDetailsPage() {
     const [approvalUrl, setApprovalUrl] = useState('')
 
     const getCourseDetails = useCallback(async () => {
+        const isCourseAcquired = await getCoursePurchaseInfo(currentCourseId, auth?.user?._id)
+        
+        if (isCourseAcquired?.success && isCourseAcquired?.data) {
+            navigate(`/course-progress/${currentCourseId}`)
+            setCurrentCourseId(null)
+            setLoading(false)
+            return
+        }
+
         const response = await getStudentCourseDetails(currentCourseId)
     
         if (response?.success) {
             setStudentCourseDetails(response?.data)
+            setLoading(false)
+        } else {
+            setStudentCourseDetails(null)
             setLoading(false)
         }
     }, [currentCourseId, setStudentCourseDetails, setLoading])
@@ -209,13 +222,16 @@ function StudentCoursesDetailsPage() {
                                 <span className="text-lg font-medium mt-1.5">
                                     $ { studentCourseDetails.price }
                                 </span>
-                                <Button onClick={handleCreatePayment} className="flex items-center">
+                                <Button onClick={handleCreatePayment} disabled={loading} className="flex items-center">
                                     { loading ? <LoadingSpinner className="w-4 h-4" /> : <ShoppingBag /> }
                                     Buy Course
                                 </Button>
                             </div>
-                            <span className="font-medium mt-1 mb-2 pl-3">
-                                { studentCourseDetails.students.length ? `${studentCourseDetails.students.length === 1 ? 'Student' : 'Students'} enrolled` : null }
+                            <span className="font-medium mt-1 mb-2 pl-2.5">
+                                { studentCourseDetails.students.length 
+                                    ? `${studentCourseDetails.students.length} ${studentCourseDetails.students.length === 1 ? 'Student' : 'Students'} enrolled` 
+                                    : null
+                                }
                             </span>
                         </CardContent>
                     </Card>
