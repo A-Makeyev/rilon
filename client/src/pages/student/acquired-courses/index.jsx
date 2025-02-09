@@ -36,7 +36,7 @@ function AcquiredCoursesPage() {
                                 <CardContent className="relative flex-grow w-full p-4">
                                     <div 
                                         onClick={() => navigate(`/course-progress/${item.courseId}`)} 
-                                        className="relative sm:h-52 rounded-lg overflow-hidden cursor-pointer group"
+                                        className="relative h-52 rounded-lg overflow-hidden cursor-pointer group"
                                     >
                                         <img 
                                             alt={item.title} 

@@ -1,6 +1,6 @@
 import { useContext } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "@/context/auth"
-import { Link, useNavigate } from "react-router-dom"
 import { GraduationCap, Telescope, TvMinimalPlay } from "lucide-react"
 import { Tooltip } from "react-tooltip"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { LogOut } from "lucide-react"
 
 function StudentHeader() {
     const navigate = useNavigate()
+    const location = useLocation()
     const { logout } = useContext(AuthContext)
 
     function handleLogout() {
@@ -25,7 +26,7 @@ function StudentHeader() {
             </div>
             <div className="flex items-center space-x-4 mr-4">
                 <div className="flex gap-4 items-center">
-                    <Button variant="outline" onClick={() => navigate('/courses')}>
+                    <Button variant="outline" onClick={() => {location.pathname.includes('/courses') ? null : navigate('/courses')}}>
                         <Telescope />
                         Explore Courses
                     </Button>

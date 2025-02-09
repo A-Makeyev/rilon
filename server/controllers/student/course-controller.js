@@ -77,7 +77,7 @@ const getCoursePurchaseInfo = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: alreadyAcquiredCourse
+            courseAcquired: alreadyAcquiredCourse
         })
     } catch (err) {
         res.status(500).json({

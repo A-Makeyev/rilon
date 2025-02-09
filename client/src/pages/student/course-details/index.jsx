@@ -39,7 +39,7 @@ function StudentCoursesDetailsPage() {
     const getCourseDetails = useCallback(async () => {
         const isCourseAcquired = await getCoursePurchaseInfo(currentCourseId, auth?.user?._id)
         
-        if (isCourseAcquired?.success && isCourseAcquired?.data) {
+        if (isCourseAcquired?.success && isCourseAcquired?.courseAcquired) {
             navigate(`/course-progress/${currentCourseId}`)
             setCurrentCourseId(null)
             setLoading(false)

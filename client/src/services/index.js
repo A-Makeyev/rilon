@@ -100,3 +100,8 @@ export async function getCoursePurchaseInfo(id, studentId) {
     const { data } = await axiosInstance.get(`/student/courses/purchase-info/${id}/${studentId}`) 
     return data
 }
+
+export async function getCourseProgress(userId, courseId) {
+    const { data } = await axiosInstance.get(`/student/course-progress/${userId}/${courseId}`) 
+    return data
+}
