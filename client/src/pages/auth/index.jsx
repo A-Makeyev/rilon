@@ -4,7 +4,7 @@ import { GraduationCap } from "lucide-react"
 import { AuthContext } from "@/context/auth"
 import { loginFormControls, registerFormControls } from "@/config"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import CommonForm from "@/components/common-form"
 
 
@@ -43,13 +43,7 @@ const AuthPage = () => {
 
     return (
         <div className="flex flex-col">
-            <header className="flex items-center sticky top-0 z-50 border-b px-4 lg:px-6 h-14">
-                <Link to={"/"} className="flex items-center justify-center">
-                    <GraduationCap className="h-8 w-8 mr-4" />
-                    <span className="font-bold text-xl">Easy Programming</span>
-                </Link>
-            </header>
-            <div className="flex items-center justify-center min-h-[70vh] bg-background">
+            <div className="flex items-center justify-center min-h-[85vh] bg-background">
                 <Tabs
                     value={activeTab}
                     defaultValue="login"
@@ -61,14 +55,22 @@ const AuthPage = () => {
                         <TabsTrigger value="register">Sign Up</TabsTrigger>
                     </TabsList>
                     <TabsContent value="login">
-                        <Card className="p-6 space-y-4">
-                            <CardHeader>
-                                <CardTitle className="text-center text-lg">Log in to your account</CardTitle>
+                        <Card className="p-6 space-y-6">
+                            <CardHeader className="flex items-center font-medium">
+                                <CardTitle className="flex flex-col items-center">
+                                    <GraduationCap className="w-8 h-8 mr-2 transition ease-in-out hover:scale-110" />
+                                    <span className="font-bold text-lg lg:text-xl">
+                                        Easy Programming
+                                    </span>
+                                </CardTitle>
+                                <CardDescription>
+                                    Log in to your account
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <CommonForm
-                                    formControls={loginFormControls}
                                     buttonText={'Login'}
+                                    formControls={loginFormControls}
                                     formData={loginFormData}
                                     setFormData={setLoginFormData}
                                     isButtonDisabled={!isLoginValid()}
@@ -78,14 +80,22 @@ const AuthPage = () => {
                         </Card>
                     </TabsContent>
                     <TabsContent value="register">
-                        <Card className="p-6 space-y-4">
-                            <CardHeader>
-                                <CardTitle className="text-center text-lg">Create a new account</CardTitle>
+                        <Card className="p-6 space-y-6">
+                            <CardHeader className="flex items-center font-medium">
+                                <CardTitle className="flex flex-col items-center">
+                                    <GraduationCap className="w-8 h-8 mr-2 transition ease-in-out hover:scale-110" />
+                                    <span className="font-bold text-lg lg:text-xl">
+                                        Easy Programming
+                                    </span>
+                                </CardTitle>
+                                <CardDescription>
+                                    Create a new account
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <CommonForm
-                                    formControls={registerFormControls}
                                     buttonText={'Register'}
+                                    formControls={registerFormControls}
                                     formData={registerFormData}
                                     setFormData={setRegisterFormData}
                                     isButtonDisabled={!isRegisterValid()}
