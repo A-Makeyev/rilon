@@ -11,7 +11,7 @@ function StudentHomePage() {
 
     async function getCourses() {
         const response = await getStudentCourses()
-        
+
         if (response?.success) {
             setStudentCourses(response?.data)
         }
@@ -41,7 +41,7 @@ function StudentHomePage() {
                     Categories
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                    { courseCategories.map(item => (
+                    {courseCategories.map(item => (
                         <Button key={item.id} variant="outline" className="justify-start">
                             { item.label }
                         </Button>
@@ -53,7 +53,7 @@ function StudentHomePage() {
                     Featured Courses
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-                    { studentCourses && studentCourses.length > 0 ? (
+                    {studentCourses && studentCourses.length > 0 ? (
                         studentCourses.map(item => (
                             <div key={item.title} className="shadow border rounded overflow-hidden cursor-pointer">
                                 <img src={item.image_url} className="w-full h-60 object-cover" />
@@ -65,13 +65,13 @@ function StudentHomePage() {
                                         Created by {' '}
                                         <span className="cursor-pointer text-blue-700 hover:text-blue-500 transition">
                                             { item.instructorName }
-                                        </span>  
+                                        </span>
                                     </p>
                                     <p className="text-base font-semibold text-gray-700">
-                                        { `${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}` }  
+                                        {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                     </p>
                                     <p className="text-lg font-semibold">
-                                        $ { item.price }  
+                                        { item.price }$
                                     </p>
                                 </div>
                             </div>

@@ -2,8 +2,8 @@ import { useContext } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "@/context/auth"
 import { GraduationCap, Telescope, TvMinimalPlay } from "lucide-react"
-import { Tooltip } from "react-tooltip"
 import { Button } from "@/components/ui/button"
+import { Tooltip } from "react-tooltip"
 import { LogOut } from "lucide-react"
 
 

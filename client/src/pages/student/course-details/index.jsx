@@ -14,31 +14,31 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-  } from "@/components/ui/dialog"
+} from "@/components/ui/dialog"
 import VideoPlayer from "@/components/video-player"
-
 
 function StudentCoursesDetailsPage() {
     const location = useLocation()
     const navigate = useNavigate()
     const { id } = useParams()
     const { auth } = useContext(AuthContext)
-    const {             
-        studentCourseDetails, 
+    const {
+        studentCourseDetails,
         setStudentCourseDetails,
-        currentCourseId, 
-        setCurrentCourseId, 
-        loading, 
+        currentCourseId,
+        setCurrentCourseId,
+        loading,
         setLoading
     } = useContext(StudentContext)
     const [openPreview, setOpenPreview] = useState(false)
     const [displayPreview, setDisplayPreview] = useState(null)
     const [currentPreview, setCurrentPreview] = useState(null)
     const [approvalUrl, setApprovalUrl] = useState('')
+    const [refreshKey, setRefreshKey] = useState(0)
 
     const getCourseDetails = useCallback(async () => {
         const isCourseAcquired = await getCoursePurchaseInfo(currentCourseId, auth?.user?._id)
-        
+
         if (isCourseAcquired?.success && isCourseAcquired?.courseAcquired) {
             navigate(`/course-progress/${currentCourseId}`)
             setCurrentCourseId(null)
@@ -47,7 +47,7 @@ function StudentCoursesDetailsPage() {
         }
 
         const response = await getStudentCourseDetails(currentCourseId)
-    
+
         if (response?.success) {
             setStudentCourseDetails(response?.data)
             setLoading(false)
@@ -56,20 +56,21 @@ function StudentCoursesDetailsPage() {
             setLoading(false)
         }
     }, [currentCourseId, setStudentCourseDetails, setLoading])
-    
+
     function getPreviewVideo() {
-        const previewVideoUrl = studentCourseDetails !== null 
+        const previewVideoUrl = studentCourseDetails !== null
             ? studentCourseDetails.curriculum.findIndex(item => item.preview)
             : -1
-            
-        return previewVideoUrl !== -1 
-            ? studentCourseDetails.curriculum[previewVideoUrl].video_url 
+
+        return previewVideoUrl !== -1
+            ? studentCourseDetails.curriculum[previewVideoUrl].video_url
             : null
     }
 
     function handlePreview(lecture) {
         setDisplayPreview(lecture.video_url)
         setCurrentPreview(lecture.title)
+        setRefreshKey(oldKey => oldKey + 1)
     }
 
     async function handleCreatePayment() {
@@ -101,7 +102,7 @@ function StudentCoursesDetailsPage() {
             setLoading(false)
         }
     }
-    
+
     useEffect(() => {
         if (currentCourseId !== null) {
             getCourseDetails()
@@ -121,10 +122,10 @@ function StudentCoursesDetailsPage() {
     }, [id, setCurrentCourseId])
 
     useEffect(() => {
-        if (!location.pathname.includes('/course/details/')) (
-            setStudentCourseDetails(null),
+        if (!location.pathname.includes('/course/details/')) {
+            setStudentCourseDetails(null)
             setCurrentCourseId(null)
-        ) 
+        }
     }, [location.pathname, setStudentCourseDetails, setCurrentCourseId])
 
     if (approvalUrl !== '') {
@@ -139,21 +140,21 @@ function StudentCoursesDetailsPage() {
         <div className="xl:container mx-auto p-4 mt-4">
             <div className="bg-gray-800 text-white p-8 rounded-md">
                 <h1 className="text-3xl font-bold mb-4">
-                    { studentCourseDetails.title }
+                    {studentCourseDetails.title}
                 </h1>
                 <p className="text-xl mb-4">
-                    { studentCourseDetails.subtitle }
+                    {studentCourseDetails.subtitle}
                 </p>
                 <div className="flex items-center space-x-4 mt-2 text-base">
                     <span>
-                        Created By { studentCourseDetails.instructorName }
+                        Created By {studentCourseDetails.instructorName}
                     </span>
                     <span>
-                        { studentCourseDetails.date.split('T')[0] }
+                        {studentCourseDetails.date.split('T')[0]}
                     </span>
                     <span className="flex items-center">
                         <Globe className="w-4 h-4 mr-1" />
-                        { studentCourseDetails.language }
+                        {studentCourseDetails.language}
                     </span>
                 </div>
             </div>
@@ -167,7 +168,7 @@ function StudentCoursesDetailsPage() {
                         </CardHeader>
                         <CardContent>
                             <ul className="grid lg:grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-2 mb-3">
-                                { studentCourseDetails.objectives.split(',').map((item, index) => (
+                                {studentCourseDetails.objectives.split(',').map((item, index) => (
                                     <li key={index} className="flex items-start gap-2 w-11/12">
                                         <CheckCircle className="w-4 h-4 mt-1 flex-shrink-0 text-green-500" />
                                         <span className="font-medium text-gray-800">
@@ -186,7 +187,7 @@ function StudentCoursesDetailsPage() {
                         </CardHeader>
                         <CardContent>
                             <p className="font-medium">
-                                { studentCourseDetails.description }
+                                {studentCourseDetails.description}
                             </p>
                         </CardContent>
                     </Card>
@@ -198,10 +199,10 @@ function StudentCoursesDetailsPage() {
                         </CardHeader>
                         <CardContent>
                             { studentCourseDetails.curriculum.map((item, index) => (
-                                <li 
-                                    key={index} 
+                                <li
+                                    key={index}
                                     onClick={item.preview ? () => handlePreview(item) : null}
-                                    className={`${item.preview ? 'cursor-pointer hover:text-gray-700 transition' : 'cursor-not-allowed'} flex items-center mb-4`}
+                                    className={`${item.preview ? 'cursor-pointer hover:text-gray-700 transition' : null} flex items-center mb-4`}
                                 >
                                     { item.preview ? <PlayCircle className="w-5 h-5 mr-2" /> : <Lock className="w-5 h-5 mr-2" /> }
                                     <span className="font-medium">
@@ -219,8 +220,8 @@ function StudentCoursesDetailsPage() {
                                 <VideoPlayer url={getPreviewVideo()} />
                             </div>
                             <div className="flex flex-row justify-between pl-2">
-                                <span className="text-lg font-medium mt-1.5">
-                                    $ { studentCourseDetails.price }
+                                <span className="text-lg font-medium font-mono mt-1.5">
+                                    { studentCourseDetails.price }$
                                 </span>
                                 <Button onClick={handleCreatePayment} disabled={loading} className="flex items-center">
                                     { loading ? <LoadingSpinner className="w-4 h-4" /> : <ShoppingBag /> }
@@ -228,8 +229,8 @@ function StudentCoursesDetailsPage() {
                                 </Button>
                             </div>
                             <span className="font-medium mt-1 mb-2 pl-2.5">
-                                { studentCourseDetails.students.length 
-                                    ? `${studentCourseDetails.students.length} ${studentCourseDetails.students.length === 1 ? 'Student' : 'Students'} enrolled` 
+                                { studentCourseDetails.students.length
+                                    ? `${studentCourseDetails.students.length} ${studentCourseDetails.students.length === 1 ? 'Student' : 'Students'} enrolled`
                                     : null
                                 }
                             </span>
@@ -237,8 +238,8 @@ function StudentCoursesDetailsPage() {
                     </Card>
                 </aside>
             </div>
-            <Dialog 
-                open={openPreview} 
+            <Dialog
+                open={openPreview}
                 onOpenChange={() => {
                     setOpenPreview(false)
                     setDisplayPreview(null)
@@ -251,25 +252,25 @@ function StudentCoursesDetailsPage() {
                         </DialogTitle>
                     </DialogHeader>
                     <div className="flex items-center justify-center aspect-video mt-2 rounded-md">
-                        <VideoPlayer url={displayPreview} />
+                        <VideoPlayer url={displayPreview} key={refreshKey} />
                     </div>
-                    <div className="flex flex-col gap-2">
-                        { studentCourseDetails.curriculum.filter(lecture => lecture.preview).map((item, index)=> (
-                           <div 
+                    <div className="flex flex-col gap-2 font-medium">
+                        { studentCourseDetails.curriculum.filter(lecture => lecture.preview).map((item, index) => (
+                            <div
                                 key={index}
-                                onClick={() => handlePreview(item)} 
-                                className="font-medium pl-2 cursor-pointer hover:text-gray-700 transition"
-                           >
+                                onClick={() => handlePreview(item)}
+                                className={`${item.title === currentPreview ? 'underline pointer-events-none' : 'cursor-pointer hover:text-gray-700 transition'} pl-2`}
+                            >
                                 <div className="flex flex-row">
                                     <PlayCircle className="w-5 h-5 mr-2 mt-2" />
-                                    <p className={`${item.title === currentPreview ? 'underline' : null} mt-1.5`}>
+                                    <p className="mt-1.5">
                                         { item.title }
                                     </p>
                                 </div>
-                           </div> 
+                            </div>
                         ))}
                     </div>
-                    <DialogDescription className="pt-2 pl-4">
+                    <DialogDescription className="pt-2 pl-4 font-medium">
                         { studentCourseDetails.welcomeMessage }
                     </DialogDescription>
                 </DialogContent>

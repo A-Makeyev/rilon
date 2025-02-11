@@ -9,12 +9,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { ArrowUpDownIcon } from "lucide-react"
-import { 
-    DropdownMenu, 
-    DropdownMenuContent, 
-    DropdownMenuRadioGroup, 
-    DropdownMenuRadioItem, 
-    DropdownMenuTrigger 
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
@@ -30,7 +30,7 @@ function StudentCoursesPage() {
     function handleFilterChange(section, option) {
         let copyFilters = { ...filters }
         let currentSectionIndex = Object.keys(copyFilters).indexOf(section)
-        
+
         if (currentSectionIndex === -1) {
             copyFilters = {
                 ...copyFilters,
@@ -56,7 +56,7 @@ function StudentCoursesPage() {
         })
 
         const response = await getStudentCourses(query)
-        
+
         if (response?.success) {
             setStudentCourses(response?.data)
             setLoading(false)
@@ -117,24 +117,24 @@ function StudentCoursesPage() {
             <div className="flex flex-col md:flex-row gap-4">
                 <aside className="w-full md:w-64">
                     <div>
-                        { filterOptions && Object.keys(filterOptions).map((item, index) => (
+                        {filterOptions && Object.keys(filterOptions).map((item, index) => (
                             <div key={index} className="p-4 space-y-4">
                                 <p className="font-semibold mb-3">
                                     { item.toUpperCase() }
                                 </p>
                                 <div className="grid gap-2 mt-2">
-                                    { filterOptions[item].map(option => (
+                                    {filterOptions[item].map(option => (
                                         <Label key={option.id} className="flex font-medium items-center gap-3">
-                                            <Checkbox 
+                                            <Checkbox
+                                                onCheckedChange={() => handleFilterChange(item, option)}
                                                 checked={
                                                     filters
-                                                    && Object.keys(filters).length > 0 
+                                                    && Object.keys(filters).length > 0
                                                     && filters[item]
                                                     && filters[item].indexOf(option.id) > -1
                                                 }
-                                                onCheckedChange={() => handleFilterChange(item, option)}
                                             />
-                                            { option.label }
+                                            {option.label}
                                         </Label>
                                     ))}
                                 </div>
@@ -156,7 +156,7 @@ function StudentCoursesPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-[180px]">
                                 <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(value)}>
-                                    { sortOptions && sortOptions.map((item, index) => (
+                                    {sortOptions && sortOptions.map((item, index) => (
                                         <DropdownMenuRadioItem key={index} value={item.id} className="cursor-pointer">
                                             { item.label }
                                         </DropdownMenuRadioItem>
@@ -166,15 +166,15 @@ function StudentCoursesPage() {
                         </DropdownMenu>
                     </div>
                     <div className="space-y-4">
-                        {  loading ? (
+                        {loading ? (
                             <div className="flex justify-center">
                                 <LoadingSpinner className="mt-40 w-12 h-12" />
                             </div>
                         ) : studentCourses && studentCourses.length > 0 ? (
                             studentCourses.map(item => (
-                                <Card 
-                                    key={item._id} 
-                                    onClick={() => handleCourseNavigation(item._id)} 
+                                <Card
+                                    key={item._id}
+                                    onClick={() => handleCourseNavigation(item._id)}
                                     className="cursor-pointer hover:shadow-md transition"
                                 >
                                     <CardContent className="flex gap-4 p-4">
@@ -189,13 +189,13 @@ function StudentCoursesPage() {
                                                 Created by {' '}
                                                 <span className="cursor-pointer text-blue-700 hover:text-blue-500 transition">
                                                     { item.instructorName }
-                                                </span>  
+                                                </span>
                                             </p>
                                             <p className="text-base font-semibold text-gray-700">
-                                                { `${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}` }  
+                                                {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                             </p>
                                             <p className="text-lg font-semibold my-1">
-                                                $ { item.price }  
+                                                { item.price }$
                                             </p>
                                         </div>
                                     </CardContent>

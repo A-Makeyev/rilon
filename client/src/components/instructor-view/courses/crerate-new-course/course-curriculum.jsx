@@ -1,6 +1,6 @@
-import { useContext, useRef, useState } from "react"
+import { useContext, useRef } from "react"
 import { InstructorContext } from "@/context/instructor"
-import { uploadMedia, deleteMedia, bulkUploadMedia, addNewCourse } from "@/services"
+import { uploadMedia, deleteMedia, bulkUploadMedia } from "@/services"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Input } from "@/components/ui/input"
@@ -21,7 +21,6 @@ function CourseCurriculum() {
         mediaUploadProgress,
         setMediaUploadProgress
     } = useContext(InstructorContext)
-    const [focusedVideoIndex, setFocusedVideoIndex] = useState(null)
     const bulkUploadRef = useRef(null)
 
     function handleNewLacture() {
@@ -45,17 +44,6 @@ function CourseCurriculum() {
             newData[index] = { ...newData[index], preview: value }
             return newData
         })
-    }
-
-    function unfocusOtherVideos(currentIndex) {
-        setFocusedVideoIndex(currentIndex)
-        setTimeout(() => {
-            courseCurriculumFormData.forEach((_, index) => {
-                if (index !== currentIndex) {
-                    document.querySelector(`[data-video-index="${index}"]`)?.blur()
-                }
-            })
-        }, 0)
     }
 
     function isDataValid() {
@@ -249,8 +237,6 @@ function CourseCurriculum() {
                                         <VideoPlayer
                                             data-video-index={index}
                                             url={courseCurriculumFormData[index]?.video_url}
-                                            onFocus={() => unfocusOtherVideos(index)}
-                                            isFocused={focusedVideoIndex === index}
                                             width="475px"
                                             height="225px"
                                         />

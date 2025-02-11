@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import ReactPlayer from "react-player"
 
 
-function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' }) {
+function VideoPlayer({ url, width = '100%', height = '100%' }) {
     const [played, setPlayed] = useState(0)
     const [volume, setVolume] = useState(1)
     const [prevVolume, setPrevVolume] = useState(volume)
@@ -15,8 +15,11 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
     const [seeking, setSeeking] = useState(false)
     const [fullScreen, setFullScreen] = useState(false)
     const [showControls, setShowControls] = useState(true)
+    const [holdControls, setHoldControls] = useState(false)
+    const [isFocused, setIsFocused] = useState(true)
     const [hasAudio, setHasAudio] = useState(true)
     const [isPip, setIsPip] = useState(false)
+    const [duration, setDuration] = useState(null)
     const playerContainerRef = useRef(null)
     const controlsTimeoutRef = useRef(null)
     const playerRef = useRef(null)
@@ -80,8 +83,10 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
         videoPlayers.forEach((x) => { x.style.cursor = 'auto' })
         clearTimeout(controlsTimeoutRef.current)
         controlsTimeoutRef.current = setTimeout(() => {
-            videoPlayers.forEach((x) => { x.style.cursor = 'none' })
-            setShowControls(false)
+            if (playing && !holdControls) {  
+                videoPlayers.forEach((x) => { x.style.cursor = 'none' })
+                setShowControls(false)
+            }
         }, 3000)
     }
 
@@ -89,7 +94,9 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
         const videoPlayers = document.querySelectorAll('.video-player')
         videoPlayers.forEach((x) => { x.style.cursor = 'auto' })
         clearTimeout(controlsTimeoutRef.current)
-        setShowControls(false)
+        if (playing) {  
+            setShowControls(false)
+        }
     }
 
     function handleMute() {
@@ -162,6 +169,19 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
     }
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            if (playerRef.current) {
+                const videoDuration = playerRef.current.getDuration()
+                if (videoDuration && videoDuration > 0) {
+                    setDuration(videoDuration)
+                }
+            }
+        }, 100)
+
+        return () => clearInterval(interval)
+    }, [])
+
+    useEffect(() => {
         const checkPipStatus = () => {
             if (document.pictureInPictureElement) {
                 setIsPip(true)
@@ -197,12 +217,12 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
         const handlePlay = () => setPlaying(true)
         const handlePause = () => setPlaying(false)
 
-        player.addEventListener("play", handlePlay)
-        player.addEventListener("pause", handlePause)
+        player.addEventListener('play', handlePlay)
+        player.addEventListener('pause', handlePause)
 
         return () => {
-            player.removeEventListener("play", handlePlay)
-            player.removeEventListener("pause", handlePause)
+            player.removeEventListener('play', handlePlay)
+            player.removeEventListener('pause', handlePause)
         }
     }, [])
 
@@ -258,7 +278,6 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
         } else {
             window.removeEventListener('keydown', handleKeyDown)
         }
-
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [isFocused, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
@@ -267,13 +286,17 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
         <TooltipProvider>
             <div
                 tabIndex={0}
-                onFocus={onFocus}
                 ref={playerContainerRef}
                 style={{ width, height }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                onClick={(event) => {event.stopPropagation()}}
-                className={`${fullScreen ? "w-screen h-screen" : ""} relative overflow-hidden rounded-lg shadow-xl bg-slate-900 video-player`}
+                onBlur={() => setIsFocused(false)}
+                
+                onClick={(event) => {
+                    event.stopPropagation()
+                    setIsFocused(true)
+                }}
+                className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden rounded-lg shadow-xl bg-slate-900 video-player`}
             >
                 <ReactPlayer
                     url={url}
@@ -291,141 +314,143 @@ function VideoPlayer({ url, onFocus, isFocused, width = '100%', height = '100%' 
                     height="100%"
                 />
                 <div onClick={handlePlayAndPause} className="bg-transparent w-full absolute h-3/4"></div>
-                { showControls && (
-                    <div className="absolute block bottom-0 left-0 right-0 pb-1 px-3">
-                        <Slider
-                            step={1}
-                            max={100}
-                            value={[played * 100]}
-                            onValueCommit={handleSeekHover}
-                            onValueChange={(value) => handleSeekChange([value[0] / 100])}
-                            className="mb-2"
-                        />
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
+                <div 
+                    onMouseEnter={useCallback(() => setHoldControls(true), [])} 
+                    onMouseLeave={useCallback(() => setHoldControls(false), [])} 
+                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-1 px-3 transition-opacity duration-300`}
+                >
+                    <Slider
+                        step={1}
+                        max={100}
+                        value={[played * 100]}
+                        onValueCommit={handleSeekHover}
+                        onValueChange={(value) => handleSeekChange([value[0] / 100])}
+                        className="mb-2"
+                    />
+                    <div className="flex items-center justify-between">
+                        <div className={`${hasAudio ? 'space-x-4' : null} flex items-center`}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        onClick={handlePlayAndPause}
+                                    >
+                                        { playing ? <Pause /> : <Play /> }
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{ playing ? 'Pause' : 'Play' }</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        onClick={handleBackward}
+                                    >
+                                        <RotateCcw />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p className="flex flex-row">
+                                        <ArrowLeft size={16} strokeWidth={2.5} className="mr-0.5 mt-[0.5px]" />
+                                        <span>Backward</span>
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        onClick={handleForward}
+                                    >
+                                        <RotateCw />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p className="flex flex-row">
+                                        <span>Forward</span>
+                                        <ArrowRight size={16} strokeWidth={2.5} className="ml-0.5 mt-[0.5px]" />
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        onClick={handleMute}
+                                        disabled={!hasAudio}
+                                    >
+                                        { muted || !hasAudio ? <VolumeX /> : <Volume2 /> }
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{ muted || !hasAudio ? 'Unmute' : 'Mute' }</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            { hasAudio && (
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            onClick={handlePlayAndPause}
-                                        >
-                                            { playing ? <Pause /> : <Play /> }
-                                        </Button>
+                                        <Slider
+                                            step={1}
+                                            max={100}
+                                            value={[volume * 100]}
+                                            onValueChange={(value) => handleVolumeChange([value[0] / 100])}
+                                        />
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{ playing ? 'Pause' : 'Play' }</p>
+                                        <p>Volume</p>
                                     </TooltipContent>
                                 </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            onClick={handleBackward}
-                                        >
-                                            <RotateCcw />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p className="flex flex-row">
-                                            <ArrowLeft size={16} strokeWidth={2.5} className="mr-0.5 mt-[0.5px]" />
-                                            <span>Backward</span>
-                                        </p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            onClick={handleForward}
-                                        >
-                                            <RotateCw />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p className="flex flex-row">
-                                            <span>Forward</span>
-                                            <ArrowRight size={16} strokeWidth={2.5} className="ml-0.5 mt-[0.5px]" />
-                                        </p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            onClick={handleMute}
-                                            disabled={!hasAudio}
-                                        >
-                                            { muted || !hasAudio ? <VolumeX /> : <Volume2 /> }
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>{ muted || !hasAudio ? 'Unmute' : 'Mute' }</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                { hasAudio && (
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Slider
-                                                step={1}
-                                                max={100}
-                                                value={[volume * 100]}
-                                                onValueChange={(value) => handleVolumeChange([value[0] / 100])}
-                                            />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Volume</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                )}
+                            )}
+                        </div>
+                        <div className="flex items-center">
+                            <div className="text-white mr-2 select-none cursor-default">
+                                { timeFormat(played * (duration)) || 0 }
+                                {' '} / {' '}
+                                { timeFormat(duration) || 0 }
                             </div>
-                            <div className="flex items-center">
-                                <div className="text-white mr-2">
-                                    { timeFormat(played * (playerRef?.current?.getDuration() || 0)) }
-                                    {' '} / {' '}
-                                    { timeFormat(playerRef?.current?.getDuration() || 0) }
-                                </div>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            onClick={handlePictureInPicture}
-                                        >
-                                            { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>{ isPip ? 'Exit Picture-In-Picture' : 'Picture-In-Picture' }</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            onClick={handleFullScreen}
-                                        >
-                                            { fullScreen ? <Minimize /> : <Maximize /> }
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>{ fullScreen ? 'Exist Full Screen' : 'Full Screen' }</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </div>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        onClick={handlePictureInPicture}
+                                    >
+                                        { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{ isPip ? 'Exit Picture-In-Picture' : 'Picture-In-Picture' }</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        onClick={handleFullScreen}
+                                    >
+                                        { fullScreen ? <Minimize /> : <Maximize /> }
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{ fullScreen ? 'Exit Full Screen' : 'Full Screen' }</p>
+                                </TooltipContent>
+                            </Tooltip>
                         </div>
                     </div>
-                )}
+                </div>
             </div>
         </TooltipProvider>
     )

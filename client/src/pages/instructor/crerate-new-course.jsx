@@ -115,15 +115,15 @@ function CreateNewCourse() {
     return (
         <div className="container mx-auto p-4 mt-4">
             <div className="flex justify-between">
-                <h1 className="text-3xl font-bold mb-5">
-                    New Course
+                <h1 className="text-3xl font-bold mb-5 ml-3">
+                    { courseLandingFormData?.title ? courseLandingFormData?.title : 'New Course' }
                 </h1>
                 <Button 
                     disabled={!validateFormData()} 
                     onClick={handleCreateNewCourse}
-                    className="text-md tracking-wider font-bold px-8"
+                    className="text-md tracking-wider font-bold px-8 mr-3"
                     >
-                    Create
+                    { currentEditedCourse ? 'Update' : 'Create' }
                 </Button>
             </div>
             <Card>
