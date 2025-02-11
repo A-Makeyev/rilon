@@ -4,6 +4,8 @@ import { getCourseProgress } from "@/services"
 import { StudentContext } from "@/context/student"
 import { AuthContext } from "@/context/auth"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
     ArrowLeft, 
     ChevronLeft, 
@@ -22,8 +24,7 @@ import {
 } from "@/components/ui/dialog"
 import ConfettiExplosion from "react-confetti-explosion"
 import VideoPlayer from "@/components/video-player"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea } from "@/components/ui/scroll-area"
+
 
 
 function CourseProgressPage() {

@@ -1,9 +1,9 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom"
 import { getAcquiredCourses } from "@/services"
 import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
-import { Card, CardContent} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Play } from "lucide-react"
 
@@ -66,7 +66,7 @@ function AcquiredCoursesPage() {
                         <h1>¯\_(ツ)_/¯</h1>
                     </div>
                 )}
-            </div>
+            </div>        
         </div>
     )
 }
