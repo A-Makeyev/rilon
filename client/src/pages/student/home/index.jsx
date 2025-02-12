@@ -3,6 +3,7 @@ import { StudentContext } from "@/context/student"
 import { courseCategories } from "@/config"
 import { getStudentCourses } from "@/services"
 import { Button } from "@/components/ui/button"
+import { adjustPrice } from "@/utils"
 import banner from "/src/assets/banner.jpg"
 
 
@@ -70,8 +71,8 @@ function StudentHomePage() {
                                     <p className="text-base font-semibold text-gray-700">
                                         {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                     </p>
-                                    <p className="text-lg font-semibold">
-                                        { item.price }$
+                                    <p className="text-lg font-semibold font-mono">
+                                        { adjustPrice(item.price) }
                                     </p>
                                 </div>
                             </div>

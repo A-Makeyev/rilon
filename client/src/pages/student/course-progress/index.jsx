@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
+    Lock, 
     ArrowLeft, 
     ChevronLeft, 
     ChevronRight, 
-    Lock, 
     PartyPopper, 
     PlayCircle, 
     RotateCcw, 
@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/dialog"
 import ConfettiExplosion from "react-confetti-explosion"
 import VideoPlayer from "@/components/video-player"
-
 
 
 function CourseProgressPage() {
@@ -92,7 +91,7 @@ function CourseProgressPage() {
                             <ArrowLeft className="w-4 h-4" />
                             My Courses
                         </Button>
-                        <h1 className="text-lg font-semibold hidden md:block">
+                        <h1 className="text-lg font-semibold hidden lg:block">
                             { studentCourseProgress?.courseDetails?.title }
                         </h1>
                     </div>
@@ -103,7 +102,7 @@ function CourseProgressPage() {
                 <div className="relative flex flex-1">
                     <div className={`flex-1 transition-all duration-300 ${displaySideBar ? 'mr-[400px]' : ''}`}>
                         <div className="border-b border-gray-500">
-                            <VideoPlayer width="100%" height="800px" url={currentLecture?.video_url} />
+                            <VideoPlayer url={currentLecture?.video_url} videoId={currentLecture?.public_id} width="100%" height="800px" />
                         </div>
                         <div className="p-6 bg-gray-900">
                             <h2 className="mb-2 text-lg font-semibold">
@@ -111,7 +110,7 @@ function CourseProgressPage() {
                             </h2>
                         </div>
                     </div>
-                    <div className={`${displaySideBar ? 'translate-x-0' : 'translate-x-full'} absolute right-0 h-screen w-[400px] bg-gray-900 border-l border-gray-500 transition-all duration-300`}>
+                    <div className={`${displaySideBar ? 'translate-x-0' : 'translate-x-full'} absolute right-0 h-screen w-full lg:w-[400px] bg-gray-900 border-l border-gray-500 transition-all duration-300`}>
                         <Tabs defaultValue="content" className="flex flex-col h-full">
                             <TabsList className="grid grid-cols-2 gap-0.5 w-full bg-gray-900 p-0 h-14">
                                 <TabsTrigger value="content" className="h-full text-gray-900 hover:bg-gray-200 text-base font-semibold rounded-none">

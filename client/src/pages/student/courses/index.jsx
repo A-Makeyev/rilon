@@ -5,10 +5,12 @@ import { StudentContext } from "@/context/student"
 import { filterOptions, sortOptions } from "@/config"
 import { getCoursePurchaseInfo, getStudentCourses } from "@/services"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { ArrowUpDownIcon } from "lucide-react"
+import { adjustPrice } from "@/utils"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,7 +18,6 @@ import {
     DropdownMenuRadioItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 
 function StudentCoursesPage() {
@@ -194,8 +195,8 @@ function StudentCoursesPage() {
                                             <p className="text-base font-semibold text-gray-700">
                                                 {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                             </p>
-                                            <p className="text-lg font-semibold my-1">
-                                                { item.price }$
+                                            <p className="text-lg font-semibold font-mono my-1">
+                                                { adjustPrice(item.price) }
                                             </p>
                                         </div>
                                     </CardContent>

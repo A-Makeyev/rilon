@@ -1,12 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ArrowLeft, ArrowRight, Maximize, Minimize, Pause, PictureInPicture, PictureInPicture2, Play, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
+import { 
+    Play, 
+    Pause,
+    Maximize, 
+    Minimize, 
+    RotateCcw, 
+    RotateCw, 
+    Volume2, 
+    VolumeX,
+    ArrowLeft, 
+    ArrowRight, 
+    ArrowUpDownIcon, 
+    PictureInPicture, 
+    PictureInPicture2
+} from "lucide-react"
 import ReactPlayer from "react-player"
 
 
-function VideoPlayer({ url, width = '100%', height = '100%' }) {
+function VideoPlayer({ url, videoId, width = '100%', height = '100%' }) {
     const [played, setPlayed] = useState(0)
     const [volume, setVolume] = useState(1)
     const [prevVolume, setPrevVolume] = useState(volume)
@@ -24,7 +38,7 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
     const controlsTimeoutRef = useRef(null)
     const playerRef = useRef(null)
     const isReadyRef = useRef(false)
-
+    
     const handleFullScreen = useCallback(async () => {
         if (document.pictureInPictureElement) {
             await document.exitPictureInPicture()
@@ -250,6 +264,7 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                     handleBackward()
                     break
                 case 'ArrowUp':
+                    event.preventDefault()
                     setVolume((prevVolume) => {
                         let increasedVolume = prevVolume * 100 + 5
                         if (increasedVolume > 100) increasedVolume = 100
@@ -258,12 +273,19 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                     })
                     break
                 case 'ArrowDown':
+                    event.preventDefault()
                     setVolume((prevVolume) => {
                         let decreasedVolume = prevVolume * 100 - 5
                         if (decreasedVolume < 0) decreasedVolume = 0
                         handleVolumeChange([decreasedVolume])
                         return decreasedVolume / 100
                     })
+                    break
+                case 'm':
+                    document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume').click()
+                    break
+                case 'p':
+                    document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip').click()
                     break
                 case 'f':
                     handleFullScreen()
@@ -273,11 +295,6 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
             }
         }
 
-        if (isFocused) {
-            window.addEventListener('keydown', handleKeyDown)
-        } else {
-            window.removeEventListener('keydown', handleKeyDown)
-        }
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [isFocused, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
@@ -290,10 +307,13 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                 style={{ width, height }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                onBlur={() => setIsFocused(false)}
-                
+                onBlur={() => {
+                    playerContainerRef.current?.blur()
+                    setIsFocused(false)
+                }}
                 onClick={(event) => {
                     event.stopPropagation()
+                    playerContainerRef.current?.focus()
                     setIsFocused(true)
                 }}
                 className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden rounded-lg shadow-xl bg-slate-900 video-player`}
@@ -386,6 +406,7 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                                         size="icon"
                                         variant="none"
                                         className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        id={`${videoId !== undefined ? `volume-for-video-${videoId}` : 'volume'}`}
                                         onClick={handleMute}
                                         disabled={!hasAudio}
                                     >
@@ -393,7 +414,7 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{ muted || !hasAudio ? 'Unmute' : 'Mute' }</p>
+                                    <p>{ muted || !hasAudio ? 'Unmute (M)' : 'Mute (M)' }</p>
                                 </TooltipContent>
                             </Tooltip>
                             { hasAudio && (
@@ -407,7 +428,10 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                                         />
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>Volume</p>
+                                        <p className="flex flex-row">
+                                            Volume
+                                            (<ArrowUpDownIcon className="w-3.5 h-3.5 mt-0.5" />)
+                                        </p>
                                     </TooltipContent>
                                 </Tooltip>
                             )}
@@ -424,13 +448,14 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                                         size="icon"
                                         variant="none"
                                         className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
                                         onClick={handlePictureInPicture}
                                     >
                                         { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{ isPip ? 'Exit Picture-In-Picture' : 'Picture-In-Picture' }</p>
+                                    <p>{ isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)' }</p>
                                 </TooltipContent>
                             </Tooltip>
                             <Tooltip>
@@ -445,7 +470,7 @@ function VideoPlayer({ url, width = '100%', height = '100%' }) {
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{ fullScreen ? 'Exit Full Screen' : 'Full Screen' }</p>
+                                    <p>{ fullScreen ? 'Exit Full Screen (F)' : 'Full Screen (F)' }</p>
                                 </TooltipContent>
                             </Tooltip>
                         </div>

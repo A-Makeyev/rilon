@@ -8,6 +8,7 @@ import { CheckCircle, Globe, Lock, PlayCircle, ShoppingBag } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Button } from "@/components/ui/button"
+import { adjustPrice } from "@/utils"
 import {
     Dialog,
     DialogContent,
@@ -16,6 +17,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import VideoPlayer from "@/components/video-player"
+
 
 function StudentCoursesDetailsPage() {
     const location = useLocation()
@@ -31,7 +33,7 @@ function StudentCoursesDetailsPage() {
         setLoading
     } = useContext(StudentContext)
     const [openPreview, setOpenPreview] = useState(false)
-    const [displayPreview, setDisplayPreview] = useState(null)
+    const [displayPreview, setDisplayPreview] = useState({})
     const [currentPreview, setCurrentPreview] = useState(null)
     const [approvalUrl, setApprovalUrl] = useState('')
     const [refreshKey, setRefreshKey] = useState(0)
@@ -63,12 +65,12 @@ function StudentCoursesDetailsPage() {
             : -1
 
         return previewVideoUrl !== -1
-            ? studentCourseDetails.curriculum[previewVideoUrl].video_url
+            ? studentCourseDetails.curriculum[previewVideoUrl]
             : null
     }
 
     function handlePreview(lecture) {
-        setDisplayPreview(lecture.video_url)
+        setDisplayPreview(lecture)
         setCurrentPreview(lecture.title)
         setRefreshKey(oldKey => oldKey + 1)
     }
@@ -110,7 +112,7 @@ function StudentCoursesDetailsPage() {
     }, [currentCourseId, getCourseDetails])
 
     useEffect(() => {
-        if (displayPreview !== null) {
+        if (displayPreview !== null && typeof displayPreview === 'object' && Object.keys(displayPreview).length > 0) {
             setOpenPreview(true)
         }
     }, [displayPreview])
@@ -140,21 +142,21 @@ function StudentCoursesDetailsPage() {
         <div className="xl:container mx-auto p-4 mt-4">
             <div className="bg-gray-800 text-white p-8 rounded-md">
                 <h1 className="text-3xl font-bold mb-4">
-                    {studentCourseDetails.title}
+                    { studentCourseDetails.title }
                 </h1>
                 <p className="text-xl mb-4">
-                    {studentCourseDetails.subtitle}
+                    { studentCourseDetails.subtitle }
                 </p>
                 <div className="flex items-center space-x-4 mt-2 text-base">
                     <span>
-                        Created By {studentCourseDetails.instructorName}
+                        Created By { studentCourseDetails.instructorName }
                     </span>
                     <span>
-                        {studentCourseDetails.date.split('T')[0]}
+                        { studentCourseDetails.date.split('T')[0]}
                     </span>
                     <span className="flex items-center">
                         <Globe className="w-4 h-4 mr-1" />
-                        {studentCourseDetails.language}
+                        { studentCourseDetails.language }
                     </span>
                 </div>
             </div>
@@ -168,7 +170,7 @@ function StudentCoursesDetailsPage() {
                         </CardHeader>
                         <CardContent>
                             <ul className="grid lg:grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-2 mb-3">
-                                {studentCourseDetails.objectives.split(',').map((item, index) => (
+                                { studentCourseDetails.objectives.split(',').map((item, index) => (
                                     <li key={index} className="flex items-start gap-2 w-11/12">
                                         <CheckCircle className="w-4 h-4 mt-1 flex-shrink-0 text-green-500" />
                                         <span className="font-medium text-gray-800">
@@ -187,7 +189,7 @@ function StudentCoursesDetailsPage() {
                         </CardHeader>
                         <CardContent>
                             <p className="font-medium">
-                                {studentCourseDetails.description}
+                                { studentCourseDetails.description }
                             </p>
                         </CardContent>
                     </Card>
@@ -217,11 +219,11 @@ function StudentCoursesDetailsPage() {
                     <Card className="sticky top-20">
                         <CardContent className="p-4">
                             <div className="flex items-center justify-center aspect-video rounded-md mb-6">
-                                <VideoPlayer url={getPreviewVideo()} />
+                                <VideoPlayer url={getPreviewVideo().video_url} videoId={getPreviewVideo().public_id} />
                             </div>
                             <div className="flex flex-row justify-between pl-2">
-                                <span className="text-lg font-medium font-mono mt-1.5">
-                                    { studentCourseDetails.price }$
+                                <span className="text-lg font-semibold font-mono mt-1.5">
+                                    { adjustPrice(studentCourseDetails.price) }
                                 </span>
                                 <Button onClick={handleCreatePayment} disabled={loading} className="flex items-center">
                                     { loading ? <LoadingSpinner className="w-4 h-4" /> : <ShoppingBag /> }
@@ -242,7 +244,7 @@ function StudentCoursesDetailsPage() {
                 open={openPreview}
                 onOpenChange={() => {
                     setOpenPreview(false)
-                    setDisplayPreview(null)
+                    setDisplayPreview({})
                 }}
             >
                 <DialogContent>
@@ -252,7 +254,7 @@ function StudentCoursesDetailsPage() {
                         </DialogTitle>
                     </DialogHeader>
                     <div className="flex items-center justify-center aspect-video mt-2 rounded-md">
-                        <VideoPlayer url={displayPreview} key={refreshKey} />
+                        <VideoPlayer url={displayPreview.video_url} videoId={displayPreview.public_id} key={refreshKey} />
                     </div>
                     <div className="flex flex-col gap-2 font-medium">
                         { studentCourseDetails.curriculum.filter(lecture => lecture.preview).map((item, index) => (

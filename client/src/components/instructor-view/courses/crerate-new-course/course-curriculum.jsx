@@ -234,9 +234,9 @@ function CourseCurriculum() {
                             <div className="mt-5">
                                 {courseCurriculumFormData[index]?.video_url ? (
                                     <div className="flex gap-3">
-                                        <VideoPlayer
-                                            data-video-index={index}
+                                        <VideoPlayer 
                                             url={courseCurriculumFormData[index]?.video_url}
+                                            videoId={courseCurriculumFormData[index]?.public_id}
                                             width="475px"
                                             height="225px"
                                         />
