@@ -102,10 +102,6 @@ export const timeSince = (time) => {
     return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token
 }
 
-export const capitalize = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
 export const generateId = () => {
     return `${Date.now().toString(36).slice(-5)}-${Math.random().toString(36).slice(3, 6)}`
 }

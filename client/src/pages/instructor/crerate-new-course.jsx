@@ -119,10 +119,10 @@ function CreateNewCourse() {
                     { courseLandingFormData?.title ? courseLandingFormData?.title : 'New Course' }
                 </h1>
                 <Button 
+                    className="text-md tracking-wider font-bold px-8 mr-3"
                     disabled={!validateFormData()} 
                     onClick={handleCreateNewCourse}
-                    className="text-md tracking-wider font-bold px-8 mr-3"
-                    >
+                >
                     { currentEditedCourse ? 'Update' : 'Create' }
                 </Button>
             </div>

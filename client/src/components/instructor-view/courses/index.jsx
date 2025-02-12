@@ -1,11 +1,12 @@
 import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { InstructorContext } from "@/context/instructor"
-import { Edit, Trash } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Edit, Trash } from "lucide-react"
+import { adjustPrice } from "@/utils"
 
 
 function InstructorCourses({ courses }) {
@@ -57,10 +58,10 @@ function InstructorCourses({ courses }) {
                                             { course.students.length > 0 ? course.students.length : 'None' }
                                         </TableCell>
                                         <TableCell>
-                                            ₪ { course.price ? course.price : '0' }
+                                            { adjustPrice(course.price) }
                                         </TableCell>
                                         <TableCell>
-                                            ₪ { course.price * course.students.length }
+                                            { adjustPrice(course.price * course.students.length) }
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button 
