@@ -2,7 +2,7 @@ export const CURRENCY_SYMBOL = '₪' // $ €
 
 export const adjustPrice = (num) => {
     let price = (Math.round(num * 100) / 100).toFixed(2)
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + CURRENCY_SYMBOL
+    return CURRENCY_SYMBOL + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export const formatDateAndTime = (date, includeTime) => {

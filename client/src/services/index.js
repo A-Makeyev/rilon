@@ -66,8 +66,8 @@ export async function getInstructorCourseDetails(id) {
 }
 
 export async function getStudentCourses(query) {
-    const { data } = query !== undefined 
-        ? await axiosInstance.get(`/student/courses/all-courses?${query}`) 
+    const { data } = query !== undefined
+        ? await axiosInstance.get(`/student/courses/all-courses?${query}`)
         : await axiosInstance.get('/student/courses/all-courses')
     return data
 }
@@ -84,9 +84,7 @@ export async function createPayment(formData) {
 
 export async function capturePaymentAndFinalizeOrder(paymentId, payerId, orderId) {
     const { data } = await axiosInstance.post('/student/order/capture-payment', {
-        paymentId,
-        payerId,
-        orderId
+        paymentId, payerId, orderId
     })
     return data
 }
@@ -97,11 +95,25 @@ export async function getAcquiredCourses(studentId) {
 }
 
 export async function getCoursePurchaseInfo(id, studentId) {
-    const { data } = await axiosInstance.get(`/student/courses/purchase-info/${id}/${studentId}`) 
+    const { data } = await axiosInstance.get(`/student/courses/purchase-info/${id}/${studentId}`)
     return data
 }
 
 export async function getCourseProgress(userId, courseId) {
-    const { data } = await axiosInstance.get(`/student/course-progress/${userId}/${courseId}`) 
+    const { data } = await axiosInstance.get(`/student/course-progress/${userId}/${courseId}`)
+    return data
+}
+
+export async function resetCourseProgress(userId, courseId) {
+    const { data } = await axiosInstance.post('/student/course-progress/reset-progress', {
+        userId, courseId
+    })
+    return data
+}
+
+export async function viewLecture(userId, courseId, lectureId) {
+    const { data } = await axiosInstance.post('/student/course-progress/view-lecture', {
+        userId, courseId, lectureId
+    })
     return data
 }

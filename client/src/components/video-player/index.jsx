@@ -20,7 +20,7 @@ import {
 import ReactPlayer from "react-player"
 
 
-function VideoPlayer({ url, videoId, width = '100%', height = '100%' }) {
+function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '100%', height = '100%' }) {
     const [played, setPlayed] = useState(0)
     const [volume, setVolume] = useState(1)
     const [prevVolume, setPrevVolume] = useState(volume)
@@ -249,11 +249,20 @@ function VideoPlayer({ url, videoId, width = '100%', height = '100%' }) {
     }, [isFocused])
 
     useEffect(() => {
+        if (played === 1) {
+            onProgressUpdate({
+                ...progressData,
+                progressValue: played
+            })
+        } 
+    }, [played])
+
+    useEffect(() => {
         const handleKeyDown = (event) => {
             if (!isFocused) return
 
-            switch (event.key) {
-                case ' ':
+            switch (event.code) {
+                case 'Space': 
                     handlePlayAndPause()
                     event.preventDefault()
                     break
@@ -281,13 +290,13 @@ function VideoPlayer({ url, videoId, width = '100%', height = '100%' }) {
                         return decreasedVolume / 100
                     })
                     break
-                case 'm':
+                case 'KeyM':
                     document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume').click()
                     break
-                case 'p':
+                case 'KeyP':
                     document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip').click()
                     break
-                case 'f':
+                case 'KeyF':
                     handleFullScreen()
                     break
                 default:
@@ -298,6 +307,7 @@ function VideoPlayer({ url, videoId, width = '100%', height = '100%' }) {
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [isFocused, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
+
 
     return (
         <TooltipProvider>
