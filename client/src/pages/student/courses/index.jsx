@@ -157,7 +157,7 @@ function StudentCoursesPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-[180px]">
                                 <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(value)}>
-                                    {sortOptions && sortOptions.map((item, index) => (
+                                    { sortOptions && sortOptions.map((item, index) => (
                                         <DropdownMenuRadioItem key={index} value={item.id} className="cursor-pointer">
                                             { item.label }
                                         </DropdownMenuRadioItem>
@@ -167,7 +167,7 @@ function StudentCoursesPage() {
                         </DropdownMenu>
                     </div>
                     <div className="space-y-4">
-                        {loading ? (
+                        { loading ? (
                             <div className="flex justify-center">
                                 <LoadingSpinner className="mt-40 w-12 h-12" />
                             </div>
@@ -177,16 +177,20 @@ function StudentCoursesPage() {
                                     key={item._id}
                                     className="hover:shadow-lg duration-300"
                                 >
-                                    <CardContent className="flex gap-4 p-4">
+                                    <CardContent className="flex gap-4 p-4 cursor-default">
                                         <div className="w-48 h-32 flex-shrink-0">
                                             <img 
+                                                alt={item.title}
                                                 src={item.image_url} 
                                                 onClick={() => handleCourseNavigation(item._id)} 
                                                 className="w-full h-full object-cover cursor-pointer" 
                                             />
                                         </div>
                                         <div className="flex-1">
-                                            <CardTitle className="text-lg font-semibold my-1">
+                                            <CardTitle 
+                                                onClick={() => handleCourseNavigation(item._id)} 
+                                                className="text-lg font-semibold my-1 cursor-pointer hover:text-gray-700"
+                                            >
                                                 { item.title }
                                             </CardTitle>
                                             <p className="text-base font-semibold text-gray-700">

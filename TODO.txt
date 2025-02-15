@@ -10,9 +10,6 @@ fix video fullscreen tooltip
 fix course objectives, make them an array or something
 fix muted video switch on course details?
 add success and error pop ups -> search response?.success
-add cart, rating, sharing
+add cart, rating, sharing, likes?
 add instructor preview page
 
-
-
-12 03  25
