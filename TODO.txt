@@ -9,8 +9,8 @@ fix video fade out
 fix video fullscreen tooltip
 fix course objectives, make them an array or something
 fix muted video switch on course details?
-add success and error pop ups
+add success and error pop ups -> search response?.success
 
 
 
-11 56 29
+12 03  25

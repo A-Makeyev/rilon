@@ -1,13 +1,18 @@
 import { useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
 import { courseCategories } from "@/config"
-import { getStudentCourses } from "@/services"
+import { getCoursePurchaseInfo, getStudentCourses } from "@/services"
 import { Button } from "@/components/ui/button"
 import { adjustPrice } from "@/utils"
 import banner from "/src/assets/banner.jpg"
+import { Play } from "lucide-react"
 
 
 function StudentHomePage() {
+    const navigate = useNavigate()
+    const { auth } = useContext(AuthContext)
     const { studentCourses, setStudentCourses } = useContext(StudentContext)
 
     async function getCourses() {
@@ -16,6 +21,29 @@ function StudentHomePage() {
         if (response?.success) {
             setStudentCourses(response?.data)
         }
+    }
+
+    async function handleCourseNavigation(id) {
+        const response = await getCoursePurchaseInfo(id, auth?.user?._id)
+
+        if (response?.success) {
+            if (response?.data) {
+                navigate(`/course-progress/${id}`)
+            } else {
+                navigate(`/course/details/${id}`)
+            }
+        }
+    }
+
+    async function handleCategoriesNavigation(id) {
+        sessionStorage.removeItem('filters')
+
+        const newFilters = {
+            category: [id]
+        }
+
+        sessionStorage.setItem('filters', JSON.stringify(newFilters))
+        navigate('/courses')
     }
 
     useEffect(() => {
@@ -42,8 +70,8 @@ function StudentHomePage() {
                     Categories
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                    {courseCategories.map(item => (
-                        <Button key={item.id} variant="outline" className="justify-start">
+                    { courseCategories.map(item => (
+                        <Button key={item.id} onClick={() => handleCategoriesNavigation(item.id)} variant="outline" className="justify-start">
                             { item.label }
                         </Button>
                     ))}
@@ -54,10 +82,21 @@ function StudentHomePage() {
                     Featured Courses
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-                    {studentCourses && studentCourses.length > 0 ? (
+                    { studentCourses && studentCourses.length > 0 ? (
                         studentCourses.map(item => (
-                            <div key={item.title} className="shadow border rounded overflow-hidden cursor-pointer">
-                                <img src={item.image_url} className="w-full h-60 object-cover" />
+                            <div key={item.title} className="shadow border rounded overflow-hidden hover:shadow-lg duration-300">
+                                <div 
+                                    onClick={() => handleCourseNavigation(item._id)} 
+                                    className="relative h-60 cursor-pointer group overflow-hidden"
+                                >
+                                    <img 
+                                        src={item.image_url} 
+                                        alt={item.title} 
+                                        className="w-full h-full object-cover duration-500"
+                                    />
+                                    <div className="absolute inset-0 bg-black/50 opacity-0 duration-500 group-hover:opacity-100"></div>
+                                    <Play className="w-10 h-10 absolute inset-0 m-auto opacity-0 duration-500 group-hover:opacity-100 group-hover:scale-125 text-white" />
+                                </div>
                                 <div className="p-4">
                                     <p className="text-lg font-semibold">
                                         { item.title }

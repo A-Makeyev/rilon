@@ -211,7 +211,7 @@ function CourseCurriculum() {
                     Add Lecture
                 </Button>
                 <div className="mt-4 space-y-4">
-                    {courseCurriculumFormData.map((_, index) => (
+                    { courseCurriculumFormData.map((_, index) => (
                         <div key={index} className="border p-5 rounded-md">
                             <div className="flex gap-5 items-center ml-1">
                                 <h3 className="font-semibold">Lecture {index + 1}</h3>
@@ -232,7 +232,7 @@ function CourseCurriculum() {
                                 </div>
                             </div>
                             <div className="mt-5">
-                                {courseCurriculumFormData[index]?.video_url ? (
+                                { courseCurriculumFormData[index]?.video_url ? (
                                     <div className="flex gap-3">
                                         <VideoPlayer 
                                             url={courseCurriculumFormData[index]?.video_url}
@@ -251,7 +251,7 @@ function CourseCurriculum() {
                                     </div>
                                 ) : (
                                     <div>
-                                        {mediaUploadProgress ? (
+                                        { mediaUploadProgress ? (
                                             <MediaProgressBar
                                                 isMediaUploading={mediaUploadProgress}
                                                 progress={mediaUploadProgressPercentage}

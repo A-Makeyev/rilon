@@ -76,31 +76,35 @@ function StudentCoursesDetailsPage() {
     }
 
     async function handleCreatePayment() {
-        setLoading(true)
+        try {
+            setLoading(true)
 
-        const paymentPayload = {
-            payerId: '',
-            paymentId: '',
-            userId: auth?.user?._id,
-            userName: auth?.user?.username,
-            userEmail: auth?.user?.email,
-            orderStatus: 'pending',
-            paymentMethod: 'paypal',
-            paymentStatus: 'initiated',
-            orderDate: new Date(),
-            instructorId: studentCourseDetails.instructorId,
-            instructorName: studentCourseDetails.instructorName,
-            courseImage: studentCourseDetails.image_url,
-            courseTitle: studentCourseDetails.title,
-            courseId: studentCourseDetails._id,
-            coursePrice: studentCourseDetails.price
-        }
-
-        const response = await createPayment(paymentPayload)
-
-        if (response?.success) {
-            sessionStorage.setItem('orderId', JSON.stringify(response?.data?.orderId))
-            setApprovalUrl(response?.data?.approvalUrl)
+            const paymentPayload = {
+                payerId: '',
+                paymentId: '',
+                userId: auth?.user?._id,
+                userName: auth?.user?.username,
+                userEmail: auth?.user?.email,
+                orderStatus: 'pending',
+                paymentMethod: 'paypal',
+                paymentStatus: 'initiated',
+                orderDate: new Date(),
+                instructorId: studentCourseDetails.instructorId,
+                instructorName: studentCourseDetails.instructorName,
+                courseImage: studentCourseDetails.image_url,
+                courseTitle: studentCourseDetails.title,
+                courseId: studentCourseDetails._id,
+                coursePrice: studentCourseDetails.price,
+                courseCategory: studentCourseDetails.category
+            }
+    
+            const response = await createPayment(paymentPayload)
+    
+            if (response?.success) {
+                sessionStorage.setItem('orderId', JSON.stringify(response?.data?.orderId))
+                setApprovalUrl(response?.data?.approvalUrl)
+            }
+        } catch(err) {
             setLoading(false)
         }
     }
@@ -160,16 +164,16 @@ function StudentCoursesDetailsPage() {
                     </span>
                 </div>
             </div>
-            <div className="flex flex-col lg:flex-row lg:gap-8 mt-8">
-                <main className="flex-grow">
-                    <Card className="mb-8">
+            <div className="flex flex-col lg:flex-row lg:gap-4 mt-8">
+                <main className="flex-grow w-full lg:w-[800px]">
+                    <Card className="mb-4">
                         <CardHeader>
                             <CardTitle className="text-lg">
                                 Objectives
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ul className="grid lg:grid-cols-1 xl:grid-cols-2 md:grid-cols-2 gap-2 mb-3">
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
                                 { studentCourseDetails.objectives.split(',').map((item, index) => (
                                     <li key={index} className="flex items-start gap-2 w-11/12">
                                         <CheckCircle className="w-4 h-4 mt-1 flex-shrink-0 text-green-500" />
@@ -181,7 +185,7 @@ function StudentCoursesDetailsPage() {
                             </ul>
                         </CardContent>
                     </Card>
-                    <Card className="mb-8">
+                    <Card className="mb-4">
                         <CardHeader>
                             <CardTitle className="text-lg">
                                 Description
@@ -193,7 +197,7 @@ function StudentCoursesDetailsPage() {
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="mb-8">
+                    <Card className="my-4">
                         <CardHeader>
                             <CardTitle className="text-lg">
                                 Curriculum

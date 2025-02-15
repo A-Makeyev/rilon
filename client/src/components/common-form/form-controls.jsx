@@ -35,18 +35,18 @@ function FormControls({ formControls = [], formData, setFormData }) {
                     [item.name]: value,
                 })}
             >
-            <SelectTrigger className="w-full">
-                <SelectValue placeholder={item.placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-                { item.options && item.options.length > 0 &&
-                     item.options.map((option) => (
-                        <SelectItem key={option.id} value={option.id}>
-                            { option.label }
-                        </SelectItem>
-                    )
-                )}
-            </SelectContent>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder={item.placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                    { item.options && item.options.length > 0 &&
+                        item.options.map((option) => (
+                            <SelectItem key={option.id} value={option.label}>
+                                { option.label }
+                            </SelectItem>
+                        )
+                    )}
+                </SelectContent>
             </Select>
         )
         break
@@ -58,11 +58,11 @@ function FormControls({ formControls = [], formData, setFormData }) {
                 name={item.name}
                 placeholder={item.placeholder}
                 value={currentControlItemValue}
+                className="h-20 max-h-60"
                 onChange={(event) => setFormData({
                     ...formData,
                     [item.name]: event.target.value,
                 })}
-                className="h-20 max-h-60"
             />
         )
         break
@@ -89,7 +89,7 @@ function FormControls({ formControls = [], formData, setFormData }) {
 
     return (
         <div className="flex flex-col gap-3">
-        { formControls.map((controleItem) => (
+            { formControls.map((controleItem) => (
                 <div key={controleItem.name}>
                     <Label htmlFor={controleItem.name} className="ml-1">
                         { controleItem.label }

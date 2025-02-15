@@ -21,7 +21,8 @@ const createOrder = async (req, res) => {
             courseImage,
             courseTitle,
             courseId,
-            coursePrice
+            coursePrice,
+            courseCategory
         } = req.body
 
         const createPaymentJson = {
@@ -50,7 +51,7 @@ const createOrder = async (req, res) => {
                         currency: 'ILS',
                         total: coursePrice.toFixed(2)
                     },
-                    description: courseTitle
+                    description: courseCategory
                 }
             ]
         }
@@ -77,7 +78,8 @@ const createOrder = async (req, res) => {
                     courseImage,
                     courseTitle,
                     courseId,
-                    coursePrice
+                    coursePrice,
+                    courseCategory
                 })
 
                 await newlyCreatedCourseOrder.save()
@@ -108,8 +110,8 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
 
         if (!order) {
             return res.status(404).json({
-            success: false,
-            message: 'Order Not Found',
+                success: false,
+                message: 'Order Not Found'
             })
         }
 
@@ -128,7 +130,8 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
                 instructorId: order.instructorId,
                 instructorName: order.instructorName,
                 purchaseDate: order.orderDate,
-                courseImage: order.courseImage
+                courseImage: order.courseImage,
+                courseCategory: order.courseCategory
             })
 
             await studentCourses.save()
@@ -142,7 +145,8 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
                         instructorId: order.instructorId,
                         instructorName: order.instructorName,
                         purchaseDate: order.orderDate,
-                        courseImage: order.courseImage
+                        courseImage: order.courseImage,
+                        courseCategory: order.courseCategory
                     }
                 ]
             })

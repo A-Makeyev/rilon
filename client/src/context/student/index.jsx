@@ -9,6 +9,7 @@ export default function StudentProvider({ children }) {
     const [studentCourseDetails, setStudentCourseDetails] = useState(null)
     const [currentCourseId, setCurrentCourseId] = useState(null)
     const [studentCourseProgress, setStudentCourseProgress] = useState({})
+    const [acquiredCoursesProgresses, setAcquiredCoursesProgresses] = useState({})
     const [loading, setLoading] = useState(true)
 
     return (
@@ -23,6 +24,8 @@ export default function StudentProvider({ children }) {
             setCurrentCourseId,
             studentCourseProgress, 
             setStudentCourseProgress,
+            acquiredCoursesProgresses, 
+            setAcquiredCoursesProgresses,
             loading, 
             setLoading
         }}>
