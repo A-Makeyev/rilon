@@ -103,7 +103,7 @@ function AcquiredCoursesPage() {
                                                     }
                                                 </h3>
                                                 <h4 className="text-sm text-gray-700">
-                                                    { item.courseCategory }
+                                                    { item.courseCategory.replace('-', ' ') }
                                                 </h4>
                                                 <p className="text-sm text-gray-700">
                                                     { item.instructorName }
@@ -111,7 +111,7 @@ function AcquiredCoursesPage() {
                                             </div>
                                             <div  
                                                 data-tooltip-id="progress"
-                                                className={acquiredCoursesProgresses[index]?.progressPercentage !== 100 && 'cursor-pointer hover:scale-105 duration-300'}
+                                                className={acquiredCoursesProgresses[index]?.progressPercentage !== 100 ? 'cursor-pointer hover:opacity-80 duration-200' : null}
                                                 onClick={() => navigate(`/course-progress/${item.courseId}`)}
                                                 onMouseEnter={() => {
                                                     setNextLecture(
@@ -124,7 +124,7 @@ function AcquiredCoursesPage() {
                                                 <p className={`${acquiredCoursesProgresses[index]?.progressPercentage !== 100 ? 'mt-12' : null} text-sm mb-2`}>
                                                     { acquiredCoursesProgresses[index]?.progressPercentage === 100 && (
                                                         <span>
-                                                            You have finished this course
+                                                            Rate this course
                                                         </span>
                                                     )}
                                                 </p>

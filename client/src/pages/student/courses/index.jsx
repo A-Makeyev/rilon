@@ -118,14 +118,14 @@ function StudentCoursesPage() {
             <div className="flex flex-col md:flex-row gap-4">
                 <aside className="w-full md:w-64">
                     <div>
-                        {filterOptions && Object.keys(filterOptions).map((item, index) => (
+                        { filterOptions && Object.keys(filterOptions).map((item, index) => (
                             <div key={index} className="p-4 space-y-4">
                                 <p className="font-semibold mb-3">
                                     { item.toUpperCase() }
                                 </p>
                                 <div className="grid gap-2 mt-2">
-                                    {filterOptions[item].map(option => (
-                                        <Label key={option.id} className="flex font-medium items-center gap-3">
+                                    { filterOptions[item].map(option => (
+                                        <Label key={index} className="flex font-medium items-center gap-3">
                                             <Checkbox
                                                 onCheckedChange={() => handleFilterChange(item, option)}
                                                 checked={
@@ -135,7 +135,7 @@ function StudentCoursesPage() {
                                                     && filters[item].indexOf(option.id) > -1
                                                 }
                                             />
-                                            {option.label}
+                                            { option.label }
                                         </Label>
                                     ))}
                                 </div>
@@ -175,12 +175,15 @@ function StudentCoursesPage() {
                             studentCourses.map(item => (
                                 <Card
                                     key={item._id}
-                                    onClick={() => handleCourseNavigation(item._id)}
-                                    className="cursor-pointer hover:shadow-md transition"
+                                    className="hover:shadow-lg duration-300"
                                 >
                                     <CardContent className="flex gap-4 p-4">
                                         <div className="w-48 h-32 flex-shrink-0">
-                                            <img src={item.image_url} className="w-full h-full object-cover" />
+                                            <img 
+                                                src={item.image_url} 
+                                                onClick={() => handleCourseNavigation(item._id)} 
+                                                className="w-full h-full object-cover cursor-pointer" 
+                                            />
                                         </div>
                                         <div className="flex-1">
                                             <CardTitle className="text-lg font-semibold my-1">
@@ -188,11 +191,11 @@ function StudentCoursesPage() {
                                             </CardTitle>
                                             <p className="text-base font-semibold text-gray-700">
                                                 Created by {' '}
-                                                <span className="cursor-pointer text-blue-700 hover:text-blue-500 transition">
+                                                <span className="cursor-pointer text-gray-700 hover:text-gray-500 transition">
                                                     { item.instructorName }
                                                 </span>
                                             </p>
-                                            <p className="text-base font-semibold text-gray-700">
+                                            <p className="text-base font-semibold capitalize text-gray-700">
                                                 {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                             </p>
                                             <p className="text-lg font-semibold font-mono my-1">

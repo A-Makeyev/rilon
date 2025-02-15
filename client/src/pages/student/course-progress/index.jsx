@@ -219,7 +219,7 @@ function CourseProgressPage() {
                         </DialogTitle>
                     </DialogHeader>
                     <p className="font-medium mt-2 ml-1">
-                        You have successfully completed this course
+                        You have completed this course
                     </p>
                     <div className="flex flex-row mt-2 gap-3">
                         <Button onClick={() => navigate('/acquired-courses')} variant="outline">

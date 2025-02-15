@@ -41,7 +41,7 @@ function FormControls({ formControls = [], formData, setFormData }) {
                 <SelectContent>
                     { item.options && item.options.length > 0 &&
                         item.options.map((option) => (
-                            <SelectItem key={option.id} value={option.label}>
+                            <SelectItem key={option.id} value={option.id}>
                                 { option.label }
                             </SelectItem>
                         )

@@ -6,8 +6,8 @@ import { courseCategories } from "@/config"
 import { getCoursePurchaseInfo, getStudentCourses } from "@/services"
 import { Button } from "@/components/ui/button"
 import { adjustPrice } from "@/utils"
-import banner from "/src/assets/banner.jpg"
 import { Play } from "lucide-react"
+import banner from "/src/assets/banner.jpg"
 
 
 function StudentHomePage() {
@@ -103,11 +103,11 @@ function StudentHomePage() {
                                     </p>
                                     <p className="text-base font-semibold text-gray-700">
                                         Created by {' '}
-                                        <span className="cursor-pointer text-blue-700 hover:text-blue-500 transition">
+                                        <span className="cursor-pointer text-gray-700 hover:text-gray-500 transition">
                                             { item.instructorName }
                                         </span>
                                     </p>
-                                    <p className="text-base font-semibold text-gray-700">
+                                    <p className="text-base font-semibold capitalize text-gray-700">
                                         {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                     </p>
                                     <p className="text-lg font-semibold font-mono">

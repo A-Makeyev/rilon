@@ -59,7 +59,7 @@ function CourseCurriculum() {
 
     function checkCourseCurriculumFormDataEmptyObjects(arr) {
         return arr.every(obj => {
-            return Object.entries(obj).every(([key, value]) => {
+            return Object.entries(obj).every(([_, value]) => {
                 if (typeof value === 'boolean') {
                     return true
                 }
