@@ -1,6 +1,6 @@
 import { useContext, useRef } from "react"
 import { InstructorContext } from "@/context/instructor"
-import { uploadMedia, deleteMedia, bulkUploadMedia } from "@/services"
+import { uploadMedia, bulkUploadMedia, deleteVideoMedia } from "@/services"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Input } from "@/components/ui/input"
@@ -141,7 +141,7 @@ function CourseCurriculum() {
     async function handleDeleteVideo(index) {
         const copyCourseCurriculumFormData = [...courseCurriculumFormData]
         const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
-        const response = await deleteMedia(currentVideoPublicId)
+        const response = await deleteVideoMedia(currentVideoPublicId)
 
         if (response?.success) {
             setCourseCurriculumFormData(prevState => {
@@ -159,7 +159,7 @@ function CourseCurriculum() {
     async function handleDeleteLecture(index) {
         const copyCourseCurriculumFormData = [...courseCurriculumFormData]
         const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
-        const response = await deleteMedia(currentVideoPublicId)
+        const response = await deleteVideoMedia(currentVideoPublicId)
 
         if (response?.success) {
             const newCourseCurriculumFormData = copyCourseCurriculumFormData.filter((_, currentIndex) => currentIndex !== index)

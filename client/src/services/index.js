@@ -40,10 +40,21 @@ export async function bulkUploadMedia(formData, onProgressCallback) {
     return data
 }
 
-export async function deleteMedia(id) {
-    const { data } = await axiosInstance.delete(`/media/delete/${id}`)
+export async function deleteImageMedia(id) {
+    const { data } = await axiosInstance.delete(`/media/delete-image/${id}`)
     return data
 }
+
+export async function deleteVideoMedia(id) {
+    if (Array.isArray(id)) {
+        const { data } = await axiosInstance.delete('/media/delete-video', { data: { public_ids: id } })
+        return data
+    } else {
+        const { data } = await axiosInstance.delete(`/media/delete-video/${id}`)
+        return data
+    }
+}
+
 
 export async function addNewCourse(formData) {
     const { data } = await axiosInstance.post('/instructor/courses/new-course', formData)

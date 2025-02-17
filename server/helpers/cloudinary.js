@@ -17,12 +17,28 @@ const uploadMedia = async (filePath) => {
     }
 }
 
-const deleteMedia = async (public_id, resource_type = 'video') => {
+const deleteImageMedia = async (public_id, resource_type = 'image') => {
     try {
-        await cloudinary.uploader.destroy(public_id, { resource_type: resource_type });
+        await cloudinary.uploader.destroy(public_id, { resource_type, invalidate: true })
     } catch (err) {
-        throw new Error('Failed to delete asset from Cloudinary -> ' + err);
+        throw new Error('Failed to delete image asset from Cloudinary ->' + err)
     }
 }
 
-module.exports = { uploadMedia, deleteMedia }
+const deleteVideoMedia = async (public_id, resource_type = 'video') => {
+    try {
+        if (Array.isArray(public_id)) {
+            await cloudinary.api.delete_resources(public_id, { resource_type })
+        } else {
+            await cloudinary.uploader.destroy(public_id, { resource_type })
+        }
+    } catch (err) {
+        throw new Error('Failed to delete video asset(s) from Cloudinary ->' + err)
+    }
+}
+
+module.exports = { 
+    uploadMedia, 
+    deleteImageMedia,
+    deleteVideoMedia
+}

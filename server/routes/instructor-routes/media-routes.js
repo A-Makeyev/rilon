@@ -1,4 +1,4 @@
-const { uploadMedia, deleteMedia } = require('../../helpers/cloudinary')
+const { uploadMedia, deleteImageMedia, deleteVideoMedia } = require('../../helpers/cloudinary')
 const express = require('express')
 const multer = require('multer')
 
@@ -22,9 +22,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 })
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete-image/:id', async (req, res) => {
     try {
-        const { id } = req.params
+        const { id} = req.params
 
         if (!id) {
             return res.status(400).json({
@@ -33,7 +33,7 @@ router.delete('/delete/:id', async (req, res) => {
             })
         }
 
-        const result = await deleteMedia(id)
+        const result = await deleteImageMedia(id)
         res.status(200).json({
             success: true,
             data: result,
@@ -47,6 +47,40 @@ router.delete('/delete/:id', async (req, res) => {
         })
     }
 })
+
+router.delete('/delete-video/:id?', async (req, res) => {
+    try {
+        const { id } = req.params
+        const { public_ids } = req.body  // Check if there are multiple IDs in the request body
+
+        let idsToDelete = []
+
+        if (public_ids && Array.isArray(public_ids) && public_ids.length > 0) {
+            idsToDelete = public_ids  // Multiple IDs passed in body
+        } else if (id) {
+            idsToDelete = [id]  // Single ID passed in URL
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: 'Asset id(s) are required'
+            })
+        }
+
+        const result = await deleteVideoMedia(idsToDelete)  // Pass array to deletion function
+        res.status(200).json({
+            success: true,
+            data: result,
+            message: 'Deleted Media'
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            message: `Error deleting file -> ${err}`
+        })
+    }
+})
+
 
 router.post('/bulk-upload', upload.array('files', 10), async (req, res) => {
     try {
