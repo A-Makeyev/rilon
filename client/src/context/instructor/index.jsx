@@ -2,7 +2,7 @@ import { createContext, useState } from "react";
 import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config";
 
 
-export const  InstructorContext = createContext(null)
+export const InstructorContext = createContext(null)
 
 export default function InstructorProvider({ children }) {
     const [courseLandingFormData, setCourseLandingFormData] = useState(courseLandingInitialFormData)

@@ -17,11 +17,11 @@ const uploadMedia = async (filePath) => {
     }
 }
 
-const deleteMedia = async (public_id) => {
+const deleteMedia = async (public_id, resource_type = 'video') => {
     try {
-        await cloudinary.uploader.destroy(public_id)
+        await cloudinary.uploader.destroy(public_id, { resource_type: resource_type });
     } catch (err) {
-        throw new Error('Failed to delete assert from cloudinary -> ' + err)
+        throw new Error('Failed to delete asset from Cloudinary -> ' + err);
     }
 }
 
