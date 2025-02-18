@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { uploadMedia, deleteImageMedia } from "@/services"
+import { uploadMedia, deleteMedia } from "@/services"
 import { InstructorContext } from "@/context/instructor"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -43,7 +43,7 @@ function CourseSettings() {
 
     async function handleDeleteImage() {
         const currentImagePublicId = courseLandingFormData.public_id
-        const response = await deleteImageMedia(currentImagePublicId)
+        const response = await deleteMedia(currentImagePublicId, 'image')
 
         if (response?.success) {
             setCourseLandingFormData({

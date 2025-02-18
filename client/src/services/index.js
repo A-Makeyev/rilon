@@ -40,21 +40,19 @@ export async function bulkUploadMedia(formData, onProgressCallback) {
     return data
 }
 
-export async function deleteImageMedia(id) {
-    const { data } = await axiosInstance.delete(`/media/delete-image/${id}`)
-    return data
-}
-
-export async function deleteVideoMedia(id) {
+export async function deleteMedia(id, type) {
+    if (!['image', 'video'].includes(type)) {
+        throw new Error('Invalid media type. Must be "image" or "video"')
+    }
+    
     if (Array.isArray(id)) {
-        const { data } = await axiosInstance.delete('/media/delete-video', { data: { public_ids: id } })
+        const { data } = await axiosInstance.delete(`/media/delete/${type}`, { data: { public_ids: id } })
         return data
     } else {
-        const { data } = await axiosInstance.delete(`/media/delete-video/${id}`)
+        const { data } = await axiosInstance.delete(`/media/delete/${type}/${id}`)
         return data
     }
 }
-
 
 export async function addNewCourse(formData) {
     const { data } = await axiosInstance.post('/instructor/courses/new-course', formData)

@@ -1,4 +1,4 @@
-const { uploadMedia, deleteImageMedia, deleteVideoMedia } = require('../../helpers/cloudinary')
+const { uploadMedia, deleteMedia } = require('../../helpers/cloudinary')
 const express = require('express')
 const multer = require('multer')
 
@@ -22,43 +22,24 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 })
 
-router.delete('/delete-image/:id', async (req, res) => {
+router.delete('/delete/:type/:id?', async (req, res) => {
     try {
-        const { id} = req.params
+        const { type, id } = req.params
+        const { public_ids } = req.body 
 
-        if (!id) {
+        if (!['image', 'video'].includes(type)) {
             return res.status(400).json({
                 success: false,
-                message: 'Asset id is required'
+                message: 'Invalid media type. Must be "image" or "video"'
             })
         }
 
-        const result = await deleteImageMedia(id)
-        res.status(200).json({
-            success: true,
-            data: result,
-            message: 'Deleted Media'
-        })
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            success: false,
-            message: `Error deleting file -> ${err}`
-        })
-    }
-})
-
-router.delete('/delete-video/:id?', async (req, res) => {
-    try {
-        const { id } = req.params
-        const { public_ids } = req.body  // Check if there are multiple IDs in the request body
-
-        let idsToDelete = []
+        let mediaToDelete = []
 
         if (public_ids && Array.isArray(public_ids) && public_ids.length > 0) {
-            idsToDelete = public_ids  // Multiple IDs passed in body
+            mediaToDelete = public_ids  
         } else if (id) {
-            idsToDelete = [id]  // Single ID passed in URL
+            mediaToDelete = [id]  
         } else {
             return res.status(400).json({
                 success: false,
@@ -66,7 +47,7 @@ router.delete('/delete-video/:id?', async (req, res) => {
             })
         }
 
-        const result = await deleteVideoMedia(idsToDelete)  // Pass array to deletion function
+        const result = await deleteMedia(mediaToDelete, type) 
         res.status(200).json({
             success: true,
             data: result,
@@ -80,7 +61,6 @@ router.delete('/delete-video/:id?', async (req, res) => {
         })
     }
 })
-
 
 router.post('/bulk-upload', upload.array('files', 10), async (req, res) => {
     try {
