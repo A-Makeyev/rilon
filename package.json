@@ -21,8 +21,8 @@
     "test": "npx playwright test --project=chromium --headed",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build": "npm i && npm i --prefix client && npm run build --prefix client",
-    "destroy-data": "node server/seeder.js -d",
-    "import-data": "node server/seeder.js"
+    "destroy-data": "node server/helpers/seeder.js -d",
+    "import-data": "node server/helpers/seeder.js"
   },
   "keywords": [],
   "author": "",

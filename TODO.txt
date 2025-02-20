@@ -14,4 +14,6 @@ fix setActiveTab(item.value)
 add success and error pop ups -> search response?.success
 add cart, rating, sharing, likes?
 add instructor preview page
+change revenue to orders -> ?
+payment cancel page
 

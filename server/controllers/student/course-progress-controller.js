@@ -21,7 +21,7 @@ const getCourseProgress = async (req, res) => {
         const course = await Course.findById(courseId)
 
         if (!course) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: 'Course Not Found'
             })

@@ -1,10 +1,9 @@
 import { useContext, useState } from "react"
-import { Link } from "react-router-dom"
-import { GraduationCap } from "lucide-react"
 import { AuthContext } from "@/context/auth"
 import { loginFormControls, registerFormControls } from "@/config"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { GraduationCap } from "lucide-react"
 import CommonForm from "@/components/common-form"
 
 

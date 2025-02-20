@@ -1,4 +1,7 @@
-const Course = require('../../models/Course')
+const mongoose = require("mongoose")
+const Course = require("../../models/Course")
+const Progress = require("../../models/CourseProgress")
+const StudentCourses = require("../../models/StudentCourses")
 
 
 const addNewCourse = async (req, res) => {
@@ -89,30 +92,45 @@ const updateCourse = async (req, res) => {
 }
 
 const deleteCourse = async (req, res) => {
+    const session = await mongoose.startSession()
+    session.startTransaction()
+  
     try {
         const { id } = req.params
-        const course = await Course.findByIdAndDelete(id)
+
+        const course = await Course.findByIdAndDelete(id).session(session)
 
         if (!course) {
-            return res.status(404).json({
-                success: false,
-                message: 'Course Not Found'
+            await session.abortTransaction()
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Course Not Found' 
             })
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Course Deleted Successfully'
+        await StudentCourses.updateMany(
+            { "courses.courseId": id },
+            { $pull: { courses: { courseId: id } } }
+        ).session(session)
+
+        await Progress.deleteMany({ courseId: id }).session(session)
+        await session.commitTransaction()
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Course Deleted' 
         })
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error',
-            error: err.message
+        await session.abortTransaction()
+        
+        res.status(500).json({ 
+            success: false, 
+            message: "Internal Server Error"
         })
+    } finally {
+      session.endSession()
     }
 }
-
 
 module.exports = {
     addNewCourse,

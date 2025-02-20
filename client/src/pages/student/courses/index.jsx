@@ -118,14 +118,14 @@ function StudentCoursesPage() {
             <div className="flex flex-col md:flex-row gap-4">
                 <aside className="w-full md:w-64">
                     <div>
-                        { filterOptions && Object.keys(filterOptions).map((item, index) => (
-                            <div key={index} className="p-4 space-y-4">
+                        { filterOptions && Object.keys(filterOptions).map(item => (
+                            <div key={item} className="p-4 space-y-4">
                                 <p className="font-semibold mb-3">
                                     { item.toUpperCase() }
                                 </p>
                                 <div className="grid gap-2 mt-2">
                                     { filterOptions[item].map(option => (
-                                        <Label key={index} className="flex font-medium items-center gap-3">
+                                        <Label key={option.id} className="flex font-medium items-center gap-3">
                                             <Checkbox
                                                 onCheckedChange={() => handleFilterChange(item, option)}
                                                 checked={
@@ -157,8 +157,8 @@ function StudentCoursesPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-[180px]">
                                 <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(value)}>
-                                    { sortOptions && sortOptions.map((item, index) => (
-                                        <DropdownMenuRadioItem key={index} value={item.id} className="cursor-pointer">
+                                    { sortOptions && sortOptions.map(item => (
+                                        <DropdownMenuRadioItem key={item.id} value={item.id} className="cursor-pointer">
                                             { item.label }
                                         </DropdownMenuRadioItem>
                                     ))}
