@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
 import { createPayment, getCoursePurchaseInfo, getStudentCourseDetails } from "@/services"

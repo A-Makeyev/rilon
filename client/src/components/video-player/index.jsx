@@ -33,6 +33,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     const [isFocused, setIsFocused] = useState(true)
     const [hasAudio, setHasAudio] = useState(true)
     const [isPip, setIsPip] = useState(false)
+    const [isPipAvailable, setIsPipAvailable] = useState(false)
     const [duration, setDuration] = useState(null)
     const playerContainerRef = useRef(null)
     const controlsTimeoutRef = useRef(null)
@@ -173,27 +174,32 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }
 
     async function handlePictureInPicture() {
-        if (playerRef.current && !isPip) {
-            await playerRef.current.getInternalPlayer().requestPictureInPicture()
-            setIsPip(true)
-        } else if (document.pictureInPictureElement) {
-            await document.exitPictureInPicture()
-            setIsPip(false)
+        if (!document.pictureInPictureEnabled) {
+            console.warn('Picture-in-Picture is not supported in this browser')
+            return
+        }
+    
+        if (playerRef.current) {
+            const videoElement = playerRef.current.wrapper || playerRef.current.getInternalPlayer()
+    
+            if (videoElement && videoElement.requestPictureInPicture) {
+                if (!isPip) {
+                    await videoElement.requestPictureInPicture()
+                    setIsPip(true)
+                } else if (document.pictureInPictureElement) {
+                    await document.exitPictureInPicture()
+                    setIsPip(false)
+                }
+            }  
         }
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            if (playerRef.current) {
-                const videoDuration = playerRef.current.getDuration()
-                if (videoDuration && videoDuration > 0) {
-                    setDuration(videoDuration)
-                }
-            }
-        }, 100)
-
-        return () => clearInterval(interval)
-    }, [])
+        if (document.pictureInPictureEnabled && playerRef.current) {
+            const videoElement = playerRef.current.wrapper || playerRef.current.getInternalPlayer()
+            setIsPipAvailable(!!(videoElement && videoElement.requestPictureInPicture))
+        }
+    }, [playerRef])
 
     useEffect(() => {
         const checkPipStatus = () => {
@@ -206,10 +212,22 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         }
 
         requestAnimationFrame(checkPipStatus)
-
         return () => {
             cancelAnimationFrame(checkPipStatus)
         }
+    }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (playerRef.current) {
+                const videoDuration = playerRef.current.getDuration()
+                if (videoDuration && videoDuration > 0) {
+                    setDuration(videoDuration)
+                }
+            }
+        }, 100)
+
+        return () => clearInterval(interval)
     }, [])
 
     useEffect(() => {
@@ -307,7 +325,6 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [isFocused, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
-
 
     return (
         <TooltipProvider>
@@ -452,22 +469,24 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                 {' '} / {' '}
                                 { timeFormat(duration) || 0 }
                             </div>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        size="icon"
-                                        variant="none"
-                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                        id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
-                                        onClick={handlePictureInPicture}
-                                    >
-                                        { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{ isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)' }</p>
-                                </TooltipContent>
-                            </Tooltip>
+                            { isPipAvailable && (
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            size="icon"
+                                            variant="none"
+                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                            id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
+                                            onClick={handlePictureInPicture}
+                                        >
+                                            {isPip ? <PictureInPicture /> : <PictureInPicture2 />}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)'}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            )}
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button

@@ -6,6 +6,14 @@ const getAcquiredCourses = async (req, res) => {
         const { studentId } = req.params
         const acquiredCourses = await StudentCourses.findOne({ userId: studentId })
 
+        if (!acquiredCourses) {
+            return res.status(200).json({
+                success: true,
+                message: 'No Acquired Courses',
+                data: null
+            })
+        }
+
         res.status(200).json({
             success: true,
             data: acquiredCourses.courses

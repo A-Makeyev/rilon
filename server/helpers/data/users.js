@@ -3,21 +3,22 @@ const bcrypt = require('bcryptjs')
 
 module.exports = [
     {
-        username: 'Admin',
+        username: 'Rilon',
         email: 'admin@email.com',
-        password: bcrypt.hashSync('admin', 12),
+        password: bcrypt.hashSync('admin', 10),
         role: 'instructor',
     },
     {
-        username: 'AnatolyMakeyev',
-        email: 'anatoly.makeyev@cloudbeat.io',
+        username: 'Makeykin',
+        email: 'anatoly.makeyev@gmail.com',
         password: bcrypt.hashSync('Pa$sW0rD', 10),
         role: 'student'
     },
     {
-        username: 'AvitalShtivelberg',
-        email: 'tallishtiv@gmail.com',
-        password: bcrypt.hashSync('ASH1997', 10),
+        username: 'Jilo',
+        email: 'oriello.jilo@jilo.oriello',
+        password: bcrypt.hashSync('1', 10),
         role: 'student'
     }
+
 ]

@@ -218,7 +218,7 @@ function CourseProgressPage() {
                             </p>
                         </DialogTitle>
                     </DialogHeader>
-                    <p className="font-medium mt-2 ml-1">
+                    <p className="font-medium mt-2 mb-1 ml-0.5">
                         You have completed this course
                     </p>
                     <div className="flex flex-row mt-2 gap-3">

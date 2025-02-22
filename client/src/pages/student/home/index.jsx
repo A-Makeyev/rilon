@@ -79,10 +79,10 @@ function StudentHomePage() {
             </section>
             <section className="py-12 px-4 lg:px-8">
                 <h2 className="text-2xl font-bold mb-6">
-                    Featured Courses
+                    { studentCourses.length > 0 ? 'Featured Courses' : 'No Available Courses' }
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-                    { studentCourses && studentCourses.length > 0 ? (
+                    { studentCourses && studentCourses.length > 0 && (
                         studentCourses.map(item => (
                             <div key={item.title} className="shadow border rounded overflow-hidden hover:shadow-lg duration-300">
                                 <div 
@@ -99,7 +99,12 @@ function StudentHomePage() {
                                 </div>
                                 <div className="p-4">
                                     <p className="text-lg font-semibold">
-                                        { item.title }
+                                        <span 
+                                            onClick={() => handleCourseNavigation(item._id)} 
+                                            className="cursor-pointer text-gray-700 hover:text-gray-500 transition"
+                                        >
+                                            { item.title }
+                                        </span>
                                     </p>
                                     <p className="text-base font-semibold text-gray-700">
                                         Created by {' '}
@@ -116,10 +121,6 @@ function StudentHomePage() {
                                 </div>
                             </div>
                         ))
-                    ) : (
-                        <div className="items-center">
-                            <h1>No courses found</h1>
-                        </div>
                     )}
                 </div>
             </section>

@@ -34,26 +34,32 @@ function AcquiredCoursesPage() {
 
     async function getAcquiredCourseProgresses() {
         setLoading(true)
-        const courseProgress = []
-        for (let i = 0; i < acquiredCourses.length; i++) {
-            const response = await getCourseProgress(auth?.user?._id, acquiredCourses[i].courseId)
 
-            if (response?.success) {
-                const lectures = response?.data?.courseDetails?.curriculum
-                const completedLectures = response?.data?.progress?.length
-                const nextLecture = response?.data?.courseDetails?.curriculum[completedLectures]?.title
+        try {
+            const courseProgress = []
+            for (let i = 0; i < acquiredCourses.length; i++) {
+                const response = await getCourseProgress(auth?.user?._id, acquiredCourses[i].courseId)
     
-                courseProgress.push({
-                    lectures,
-                    nextLecture,
-                    completedLectures,
-                    courseId: response?.data?.courseDetails?._id,
-                    progressPercentage: Math.round((completedLectures / lectures?.length) * 100)
-                })
+                if (response?.success) {
+                    const lectures = response?.data?.courseDetails?.curriculum
+                    const completedLectures = response?.data?.progress?.length
+                    const nextLecture = response?.data?.courseDetails?.curriculum[completedLectures]?.title
+        
+                    courseProgress.push({
+                        lectures,
+                        nextLecture,
+                        completedLectures,
+                        courseId: response?.data?.courseDetails?._id,
+                        progressPercentage: Math.round((completedLectures / lectures?.length) * 100)
+                    })
+    
+                    setAcquiredCoursesProgresses(courseProgress)
+                    setLoading(false)
+                }
             }
+        } catch(err) {
+            setLoading(false)
         }
-        setAcquiredCoursesProgresses(courseProgress)
-        setLoading(false)
     }
 
     useEffect(() => {
@@ -69,7 +75,7 @@ function AcquiredCoursesPage() {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-semibold mb-6 p-4">
-                My Courses
+                { acquiredCourses?.length > 0 && 'My Courses' }
             </h1>
             { loading ? (
                 <div className="flex flex-col items-center mt-20">
@@ -151,7 +157,7 @@ function AcquiredCoursesPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center mt-20 text-xl font-medium text-gray-700">
-                            <h1>No Courses Found</h1>
+                            <h1>You didn't enroll in any courses yet</h1>
                             <h1>¯\_(ツ)_/¯</h1>
                         </div>
                     )}

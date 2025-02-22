@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { ArrowUpDownIcon } from "lucide-react"
+import { ArrowUpDownIcon, ScrollText } from "lucide-react"
 import { adjustPrice } from "@/utils"
 import {
     DropdownMenu,
@@ -23,86 +23,78 @@ import {
 function StudentCoursesPage() {
     const navigate = useNavigate()
     const { auth } = useContext(AuthContext)
-    const { studentCourses, setStudentCourses, loading, setLoading } = useContext(StudentContext)
+    const { 
+        studentCourses, 
+        setStudentCourses, 
+        loading, 
+        setLoading 
+    } = useContext(StudentContext)
+    const [filters, setFilters] = useState(JSON.parse(sessionStorage.getItem('filters')) || {})
     const [searchParams, setSearchParams] = useSearchParams()
     const [sort, setSort] = useState('price-low-high')
-    const [filters, setFilters] = useState({})
 
+
+    async function handleCourseNavigation(id) {
+        const response = await getCoursePurchaseInfo(id, auth?.user?._id)
+        if (response?.success) {
+            navigate(response?.data ? `/course-progress/${id}` : `/course/details/${id}`)
+        }
+    }
+    
     function handleFilterChange(section, option) {
         let copyFilters = { ...filters }
-        let currentSectionIndex = Object.keys(copyFilters).indexOf(section)
+        const sectionValues = copyFilters[section] || []
 
-        if (currentSectionIndex === -1) {
-            copyFilters = {
-                ...copyFilters,
-                [section]: [option.id]
-            }
+        if (!sectionValues.includes(option.id)) {
+            copyFilters[section] = [...sectionValues, option.id]
         } else {
-            const currentOptionIndex = copyFilters[section].indexOf(option.id)
-
-            if (currentOptionIndex === -1) {
-                copyFilters[section].push(option.id)
-            } else {
-                copyFilters[section].splice(currentOptionIndex, 1)
-            }
+            copyFilters[section] = sectionValues.filter(id => id !== option.id)
         }
+
+        if (copyFilters[section].length === 0) {
+            delete copyFilters[section]
+        }
+
         setFilters(copyFilters)
-        sessionStorage.setItem('filters', JSON.stringify(copyFilters))
     }
 
     async function getCourses(filters, sort) {
+        if (!filters || !sort) return
+
+        setLoading(true)
+        
         const query = new URLSearchParams({
             ...filters,
             sortBy: sort
         })
-
+        
         const response = await getStudentCourses(query)
 
-        if (response?.success) {
-            setStudentCourses(response?.data)
-            setLoading(false)
+        if (response?.data) {
+            setStudentCourses(response.data)
         }
+        setLoading(false)
     }
 
-    async function handleCourseNavigation(id) {
-        const response = await getCoursePurchaseInfo(id, auth?.user?._id)
+    function updateSearchParams(filterParams) {
+        if (!filterParams) return
+        
+        const params = Object.entries(filterParams)
+            .filter(([_, value]) => Array.isArray(value) && value.length > 0)
+            .map(([key, value]) => [key, value.join(',')])
 
-        if (response?.success) {
-            if (response?.data) {
-                navigate(`/course-progress/${id}`)
-            } else {
-                navigate(`/course/details/${id}`)
-            }
-        }
-    }
-
-    function createSearchParams(filterParams) {
-        const params = []
-
-        for (const [key, value] of Object.entries(filterParams)) {
-            if (Array.isArray(value) && value.length > 0) {
-                const paramsValue = value.join(',')
-                params.push(`${key}=${encodeURIComponent(paramsValue)}`)
-            }
-        }
-        return params.join('&')
+        setSearchParams(new URLSearchParams(params))
+        return Object.fromEntries(searchParams)
     }
 
     useEffect(() => {
-        const query = createSearchParams(filters)
-        setSearchParams(new URLSearchParams(query))
-    }, [filters])
-
-    useEffect(() => {
-        if (filters !== null && sort !== null) {
-            getCourses(filters, sort)
-        }
+        getCourses(filters, sort)
     }, [filters, sort])
 
     useEffect(() => {
-        setSort('title-a-z')
-        setFilters(JSON.parse(sessionStorage.getItem('filters')) || {})
-    }, [])
+        sessionStorage.setItem('filters', JSON.stringify(filters))
+        updateSearchParams(filters)
+    }, [filters])
 
     useEffect(() => {
         return () => {
@@ -199,7 +191,8 @@ function StudentCoursesPage() {
                                                     { item.instructorName }
                                                 </span>
                                             </p>
-                                            <p className="text-base font-semibold capitalize text-gray-700">
+                                            <p className="flex flex-row text-base font-semibold capitalize text-gray-700">
+                                                <ScrollText className="w-4 h-4 mt-1 mr-1" />
                                                 {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                             </p>
                                             <p className="text-lg font-semibold font-mono my-1">
