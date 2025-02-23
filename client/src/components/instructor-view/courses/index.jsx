@@ -22,8 +22,8 @@ function InstructorCourses({ courses }) {
       setInstructorCourses,
       setCurrentEditedCourse,
     } = useContext(InstructorContext)
-    const [loadingCourseId, setLoadingCourseId] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(null)
+    const [loadingCourseId, setLoadingCourseId] = useState(null)
     const [confirmDeleteCourseValue, setConfirmDeleteCourseValue] = useState('')
     const [open, setOpen] = useState(false)
 
@@ -32,7 +32,8 @@ function InstructorCourses({ courses }) {
     
       try {
         setOpen(false)
-    
+        setLoadingCourseId(selectedCourse._id)
+
         const course = courses.find((course) => course._id === selectedCourse._id)
         const courseImage = course.public_id
         const courseCurriculum = course.curriculum
@@ -43,45 +44,51 @@ function InstructorCourses({ courses }) {
         let secondsLeft = 5
 
         const toastId = toast(
-          `Course will be permanently deleted in ${secondsLeft}`,
-          {
-            duration: timeout,
-            position: "top-right", 
-            action: {
-              label: "Undo",
-              onClick: () => {
-                undo = true
-                toast.dismiss(toastId)
-                setLoadingCourseId(null)
+            <div className="flex items-center gap-2">
+              <LoadingSpinner className="w-4 h-4" />
+              <span>Course will be permanently deleted in {secondsLeft}</span>
+            </div>,
+            {
+              duration: timeout,
+              position: "top-right",
+              action: {
+                label: "Undo",
+                onClick: () => {
+                  undo = true
+                  toast.dismiss(toastId)
+                  setLoadingCourseId(null)
+                  return
+                }
               }
             }
-          }
-        )
+          )
     
-        const countdownInterval = setInterval(() => {
-          if (undo || secondsLeft <= 1) {
-            toast.dismiss(toastId)
-            setLoadingCourseId(null)
-            clearInterval(countdownInterval)
-            return
-          }
-          secondsLeft -= 1
-          toast.message(`Course will be permanently deleted in ${secondsLeft}`, {
-            position: "top-right",
-            id: toastId
-          })
-        }, 1000)
+          const countdownInterval = setInterval(() => {
+            if (undo || secondsLeft <= 1) {
+              clearInterval(countdownInterval)
+              return
+            }
+      
+            secondsLeft -= 1
+            toast(
+              <div className="flex items-center gap-2">
+                <LoadingSpinner className="w-4 h-4" />
+                <span>Course will be permanently deleted in {secondsLeft}</span>
+              </div>,
+              {
+                id: toastId,
+                position: "top-right",
+                duration: timeout
+              }
+            )
+          }, 1000)
     
         await new Promise((resolve) => setTimeout(resolve, timeout))
     
         if (undo) {
             toast.dismiss(toastId)
-            setLoadingCourseId(null)
             return
         }
-    
-        toast.dismiss(toastId)
-        setLoadingCourseId(selectedCourse._id)
 
         const deleteImageResponse = await deleteMedia(courseImage, 'image')
         const deleteVideoResponse = await deleteMedia(curriculumVideos, 'video')
@@ -93,16 +100,19 @@ function InstructorCourses({ courses }) {
             setInstructorCourses((prevCourses) =>
               prevCourses.filter((course) => course._id !== selectedCourse._id)
             )
-            setConfirmDeleteCourseValue("")
-            setLoadingCourseId(null)
             
-            toast.success(`${course.title} course was deleted`, {
-              position: "top-right"
+            setConfirmDeleteCourseValue('')
+            setLoadingCourseId(null)
+
+            toast.success(`${course.title} was deleted`, {
+                id: toastId,
+                position: "top-right",
+                action: null
             })
           }
         }
       } catch (err) {
-        setConfirmDeleteCourseValue("")
+        setConfirmDeleteCourseValue('')
         setLoadingCourseId(null)
         console.log(err)
       }
@@ -132,7 +142,7 @@ function InstructorCourses({ courses }) {
                     Create New Course
                 </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-5">
                 <div className="overflow-x-auto">
                     { courses && courses.length > 0 && (
                         <Table className="table-fixed">
@@ -149,14 +159,7 @@ function InstructorCourses({ courses }) {
                                 { courses?.map((course) => (
                                     <TableRow key={course?._id} className="text-base font-mono">
                                         { loadingCourseId === course?._id ? (
-                                            <TableCell colSpan={5} className="w-full">
-                                            <div className="flex justify-center items-center h-full my-0.5">
-                                                <LoadingSpinner className="w-5 h-5 mr-4" />
-                                                <span className="text-lg font-semibold">
-                                                    Deleting course...
-                                                </span>
-                                            </div>
-                                            </TableCell>
+                                            <></>
                                         ) : (
                                             <>
                                                 <TableCell>
@@ -179,7 +182,7 @@ function InstructorCourses({ courses }) {
                                                     >
                                                         <Edit className="h-6 w-6" />
                                                     </Button>
-                                                    <Dialog open={open} onOpenChange={setOpen}>
+                                                    <Dialog open={open} onOpenChange={setOpen} tabindex="-1">
                                                         <DialogTrigger asChild>
                                                             <Button
                                                                 size="sm"
@@ -194,7 +197,6 @@ function InstructorCourses({ courses }) {
                                                         </DialogTrigger>
                                                         <DialogContent 
                                                             aria-describedby={confirmDeleteCourseValue === selectedCourse?.title ? "delete-description" : undefined}
-                                                            aria-hidden={open ? "false" : "true"}
                                                             className="sm:w-[425px]"
                                                         >
                                                             <DialogTitle className="font-semibold text-xl">
@@ -214,9 +216,11 @@ function InstructorCourses({ courses }) {
                                                                 { confirmDeleteCourseValue === selectedCourse?.title && (
                                                                     <DialogDescription id="delete-description" className="absolute text-red-700 duration-300">
                                                                         { selectedCourse?.students?.length > 0 ? (
-                                                                            `${selectedCourse?.students?.length} ${selectedCourse?.students?.length > 1 
+                                                                            `${selectedCourse?.students?.length} 
+                                                                             ${selectedCourse?.students?.length > 1 
                                                                                 ? 'Students' 
-                                                                                : 'Student'} 
+                                                                                : 'Student'
+                                                                             } 
                                                                                 will no longer have access to this course` 
                                                                         ) : (
                                                                             <>

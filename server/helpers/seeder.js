@@ -18,7 +18,7 @@ const rl = readline.createInterface({
 
 const confirmAction = (message, callback) => {
     rl.question(`${message} (y/n):`, (answer) => {
-        if (answer.toLowerCase() === 'y') {
+        if (answer.toLowerCase().trim() === 'y') {
             callback()
         } else {
             process.exit()
