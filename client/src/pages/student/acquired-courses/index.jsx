@@ -21,7 +21,7 @@ function AcquiredCoursesPage() {
         loading, 
         setLoading 
     } = useContext(StudentContext)
-    const [nextLecture, setNextLecture] = useState(null)
+    const [nextLecture, setNextLecture] = useState([])
 
     async function getStudentAcquiredCourses() {
         const response = await getAcquiredCourses(auth?.user?._id)
@@ -33,35 +33,41 @@ function AcquiredCoursesPage() {
     }
 
     async function getAcquiredCourseProgresses() {
-        setLoading(true)
-
-        try {
-            const courseProgress = []
-            for (let i = 0; i < acquiredCourses.length; i++) {
-                const response = await getCourseProgress(auth?.user?._id, acquiredCourses[i].courseId)
+        if (!acquiredCourses.length) return
     
+        try {
+            const newCourseProgress = await Promise.all(acquiredCourses.map(async (course) => {
+                const response = await getCourseProgress(auth?.user?._id, course.courseId)
+
                 if (response?.success) {
-                    const lectures = response?.data?.courseDetails?.curriculum
-                    const completedLectures = response?.data?.progress?.length
-                    const nextLecture = response?.data?.courseDetails?.curriculum[completedLectures]?.title
-        
-                    courseProgress.push({
+                    const lectures = response?.data?.courseDetails?.curriculum || []
+                    const completedLectures = response?.data?.progress?.length || 0
+                    const nextLecture = lectures[completedLectures]?.title || null
+
+                    return {
                         lectures,
                         nextLecture,
                         completedLectures,
                         courseId: response?.data?.courseDetails?._id,
-                        progressPercentage: Math.round((completedLectures / lectures?.length) * 100)
-                    })
-    
-                    setAcquiredCoursesProgresses(courseProgress)
-                    setLoading(false)
+                        progressPercentage: lectures.length > 0 
+                            ? Math.round((completedLectures / lectures.length) * 100) 
+                            : 0,
+                    }
                 }
+                return null
+            }))
+            
+            if (JSON.stringify(acquiredCoursesProgresses) !== JSON.stringify(newCourseProgress.filter(Boolean))) {
+                setAcquiredCoursesProgresses(newCourseProgress.filter(Boolean))
             }
-        } catch(err) {
+            
+        } catch (err) {
+            console.error(err)
+        } finally {
             setLoading(false)
         }
     }
-
+    
     useEffect(() => {
         getStudentAcquiredCourses()
     }, [])

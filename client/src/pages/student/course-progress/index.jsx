@@ -209,7 +209,7 @@ function CourseProgressPage() {
                 </DialogContent>
             </Dialog>
             <Dialog open={displayCompletedCourse}>
-                <DialogContent showOverlay={false} className="sm:w-[425px]">
+                <DialogContent className="sm:w-[425px]">
                     <DialogHeader>
                         <DialogTitle className="flex flex-row gap-3">
                             <PartyPopper />

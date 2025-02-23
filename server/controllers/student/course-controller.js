@@ -50,7 +50,7 @@ const getCourseDetails = async (req, res) => {
         const course = await Course.findById(id)
 
         if (!course) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: 'Course Not Found',
                 data: null,

@@ -3,7 +3,7 @@ module.exports = [
     instructorId: "a1b2c3d4e5",
     instructorName: "Rilon David",
     date: new Date("2024-01-15T10:00:00Z"),
-    title: "JavaScript for Beginners - Free",
+    title: "JavaScript for Beginners",
     category: "web-development",
     level: "beginner",
     language: "hebrew",
@@ -19,12 +19,12 @@ module.exports = [
       { title: "Introduction to JavaScript", video_url: "https://www.youtube.com/watch?v=W6NZfCO5SIk", public_id: "2149v23sdv", preview: true },
       { title: "Variables and Data Types", video_url: "https://www.youtube.com/watch?v=hdI2bqOjy3c", public_id: "b23n58cx1v", preview: true },
       { title: "Functions Basics", video_url: "https://www.youtube.com/watch?v=N8ap4k_1QEQ", public_id: "3j8q5t7r9w2", preview: true },
-      { title: "Working with Arrays", video_url: "https://www.youtube.com/watch?v=R8rmfD9Y5-c", public_id: "9m4p2k6v8x3", preview: true },
-      { title: "Conditionals and Loops", video_url: "https://www.youtube.com/watch?v=mrYMzpbFz18", public_id: "js6a1", preview: true },
-      { title: "DOM Manipulation", video_url: "https://www.youtube.com/watch?v=y17RuWkWdn8", public_id: "js6b2", preview: true },
-      { title: "Error Handling", video_url: "https://www.youtube.com/watch?v=FIORjGvT0kk", public_id: "js6c3", preview: true },
-      { title: "Project: Calculator", video_url: "https://www.youtube.com/watch?v=j59qQ7YWLxw", public_id: "js6g7", preview: true },
-      { title: "Final Review", video_url: "https://www.youtube.com/watch?v=PkZNo7MFNFg", public_id: "js6h8", preview: true }
+      { title: "Working with Arrays", video_url: "https://www.youtube.com/watch?v=R8rmfD9Y5-c", public_id: "9m4p2k6v8x3", preview: false },
+      { title: "Conditionals and Loops", video_url: "https://www.youtube.com/watch?v=mrYMzpbFz18", public_id: "js6a1", preview: false },
+      { title: "DOM Manipulation", video_url: "https://www.youtube.com/watch?v=y17RuWkWdn8", public_id: "js6b2", preview: false },
+      { title: "Error Handling", video_url: "https://www.youtube.com/watch?v=FIORjGvT0kk", public_id: "js6c3", preview: false },
+      { title: "Project: Calculator", video_url: "https://www.youtube.com/watch?v=j59qQ7YWLxw", public_id: "js6g7", preview: false },
+      { title: "Final Review", video_url: "https://www.youtube.com/watch?v=PkZNo7MFNFg", public_id: "js6h8", preview: false }
     ],
     students: []
   },

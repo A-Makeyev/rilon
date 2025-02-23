@@ -173,11 +173,11 @@ function StudentCoursesDetailsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                                 { studentCourseDetails.objectives.split(',').map((item, index) => (
-                                    <li key={index} className="flex items-start gap-2 w-11/12">
-                                        <CheckCircle className="w-4 h-4 mt-1 flex-shrink-0 text-green-500" />
-                                        <span className="font-medium text-gray-800">
+                                    <li key={index} className="flex items-start gap-2">
+                                        <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
+                                        <span className="text-sm font-medium text-gray-800">
                                             { item }
                                         </span>
                                     </li>

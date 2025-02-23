@@ -35,7 +35,7 @@ function PaymentReturnPage() {
                 setTimeout(() => setDisplayConfetti(false), 3000)
             }
         }
-    }, [paymentId, payerId, displayConfetti])
+    }, [])
     
     return (
         <div className="flex items-center justify-center min-h-[70vh] bg-background">
