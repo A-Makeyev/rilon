@@ -257,10 +257,12 @@ function StudentCoursesDetailsPage() {
                             Course Preview
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="flex items-center justify-center aspect-video mt-2">
-                        <VideoPlayer url={displayPreview.video_url} videoId={displayPreview.public_id} key={refreshKey} />
+                    <div className="flex justify-center mt-2">
+                        <div className="w-full max-w-[650px] h-[350px]">
+                            <VideoPlayer url={displayPreview.video_url} videoId={displayPreview.public_id} key={refreshKey} />
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-2 font-medium text-gray-50">
+                    <div className="flex flex-col gap-2 font-medium text-gray-50 mt-2">
                         { studentCourseDetails.curriculum.filter(lecture => lecture.preview).map((item, index) => (
                             <div
                                 key={index}
@@ -276,7 +278,7 @@ function StudentCoursesDetailsPage() {
                             </div>
                         ))}
                     </div>
-                    <DialogDescription className="pt-2 pl-4 font-medium text-gray-300">
+                    <DialogDescription className="py-4 pl-4 font-medium text-gray-300">
                         { studentCourseDetails.welcomeMessage }
                     </DialogDescription>
                 </DialogContent>

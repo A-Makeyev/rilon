@@ -158,19 +158,17 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }
 
     function timeFormat(seconds) {
-        const padStart = (str) => {
-            return ('0' + str).slice(-2)
-        }
+        const padStart = (num) => ('0' + num).slice(-2)
 
         const date = new Date(seconds * 1000)
         const hh = date.getUTCHours()
         const mm = date.getUTCMinutes()
         const ss = padStart(date.getUTCSeconds())
 
-        if (hh) {
+        if (hh > 0) {
             return `${hh}:${padStart(mm)}:${ss}`
         }
-        return `${hh}:${ss}`
+        return `${mm}:${ss}`
     }
 
     async function handlePictureInPicture() {
@@ -343,7 +341,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     playerContainerRef.current?.focus()
                     setIsFocused(true)
                 }}
-                className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden rounded-lg bg-slate-900 video-player`}
+                className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden bg-slate-900 video-player`}
             >
                 <ReactPlayer
                     url={url}
@@ -469,24 +467,22 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                 {' '} / {' '}
                                 { timeFormat(duration) || 0 }
                             </div>
-                            { isPipAvailable && (
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            size="icon"
-                                            variant="none"
-                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                            id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
-                                            onClick={handlePictureInPicture}
-                                        >
-                                            {isPip ? <PictureInPicture /> : <PictureInPicture2 />}
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>{isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)'}</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            )}
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="none"
+                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                        id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
+                                        onClick={handlePictureInPicture}
+                                    >
+                                        { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{ isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)' }</p>
+                                </TooltipContent>
+                            </Tooltip>
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
