@@ -105,3 +105,14 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #4b5563; 
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

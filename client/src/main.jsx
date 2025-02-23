@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client"
+import { Toaster } from "./components/ui/sonner"
 import { BrowserRouter } from "react-router-dom"
 import AuthProvider from "./context/auth/index.jsx"
 import InstructorProdiver from "./context/instructor/index.jsx"
@@ -16,5 +17,6 @@ createRoot(document.getElementById('root')).render(
         </StudentProvider>
       </InstructorProdiver>
     </AuthProvider>
+    <Toaster />
   </BrowserRouter>
 )
