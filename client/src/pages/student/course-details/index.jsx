@@ -192,7 +192,7 @@ function StudentCoursesDetailsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="font-medium">
+                            <p className="font-medium mb-2">
                                 { studentCourseDetails.description }
                             </p>
                         </CardContent>
@@ -222,7 +222,7 @@ function StudentCoursesDetailsPage() {
                 <aside className="w-full lg:w-[600px]">
                     <Card className="sticky top-20">
                         <CardContent className="p-4">
-                            <div className="flex items-center justify-center aspect-video rounded-md mb-6">
+                            <div className="flex items-center justify-center aspect-video mb-6">
                                 <VideoPlayer url={getPreviewVideo().video_url} videoId={getPreviewVideo().public_id} />
                             </div>
                             <div className="flex flex-row justify-between pl-2">
@@ -251,21 +251,21 @@ function StudentCoursesDetailsPage() {
                     setDisplayPreview({})
                 }}
             >
-                <DialogContent>
+                <DialogContent className="border-none bg-gray-900">
                     <DialogHeader>
-                        <DialogTitle className="ml-2 mt-0.5">
+                        <DialogTitle className="ml-2 mt-0.5 text-gray-50">
                             Course Preview
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="flex items-center justify-center aspect-video mt-2 rounded-md">
+                    <div className="flex items-center justify-center aspect-video mt-2">
                         <VideoPlayer url={displayPreview.video_url} videoId={displayPreview.public_id} key={refreshKey} />
                     </div>
-                    <div className="flex flex-col gap-2 font-medium">
+                    <div className="flex flex-col gap-2 font-medium text-gray-50">
                         { studentCourseDetails.curriculum.filter(lecture => lecture.preview).map((item, index) => (
                             <div
                                 key={index}
                                 onClick={() => handlePreview(item)}
-                                className={`${item.title === currentPreview ? 'underline pointer-events-none' : 'cursor-pointer hover:text-gray-700 transition'} pl-2`}
+                                className={`${item.title === currentPreview ? 'underline pointer-events-none' : 'cursor-pointer hover:text-gray-300 transition'} pl-2`}
                             >
                                 <div className="flex flex-row">
                                     <PlayCircle className="w-5 h-5 mr-2 mt-2" />
@@ -276,7 +276,7 @@ function StudentCoursesDetailsPage() {
                             </div>
                         ))}
                     </div>
-                    <DialogDescription className="pt-2 pl-4 font-medium">
+                    <DialogDescription className="pt-2 pl-4 font-medium text-gray-300">
                         { studentCourseDetails.welcomeMessage }
                     </DialogDescription>
                 </DialogContent>

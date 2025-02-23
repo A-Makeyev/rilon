@@ -343,7 +343,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     playerContainerRef.current?.focus()
                     setIsFocused(true)
                 }}
-                className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden rounded-lg shadow-xl bg-slate-900 video-player`}
+                className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden rounded-lg bg-slate-900 video-player`}
             >
                 <ReactPlayer
                     url={url}
@@ -360,11 +360,11 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     width="100%"
                     height="100%"
                 />
-                <div onClick={handlePlayAndPause} className="bg-transparent w-full absolute h-3/4"></div>
+                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-3/4"></div>
                 <div 
                     onMouseEnter={useCallback(() => setHoldControls(true), [])} 
                     onMouseLeave={useCallback(() => setHoldControls(false), [])} 
-                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-1 px-3 transition-opacity duration-300`}
+                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 bg-gray-800 transition-opacity duration-300`}
                 >
                     <Slider
                         step={1}
@@ -374,7 +374,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         onValueChange={(value) => handleSeekChange([value[0] / 100])}
                         className="mb-2"
                     />
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between px-3">
                         <div className={`${hasAudio ? 'space-x-4' : null} flex items-center`}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
