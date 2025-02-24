@@ -259,7 +259,7 @@ function StudentCoursesDetailsPage() {
                     </DialogHeader>
                     <div className="flex justify-center mt-2">
                         <div className="w-full max-w-[650px] h-[350px]">
-                            <VideoPlayer url={displayPreview.video_url} videoId={displayPreview.public_id} key={refreshKey} />
+                            <VideoPlayer key={refreshKey} url={displayPreview.video_url} videoId={displayPreview.public_id} />
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 font-medium text-gray-50 mt-2">

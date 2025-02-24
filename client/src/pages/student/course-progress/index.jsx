@@ -40,6 +40,7 @@ function CourseProgressPage() {
     const [displayCompletedCourse, setDisplayCompletedCourse] = useState(false)
     const [displayConfetti, setDisplayConfetti] = useState(false)
     const [displaySideBar, setDisplaySideBar] = useState(true)
+    const [refreshKey, setRefreshKey] = useState(0)
 
     async function getCurrentCourseProgress() {
         const response = await getCourseProgress(auth?.user?._id, id)
@@ -67,7 +68,8 @@ function CourseProgressPage() {
                         return acc === -1 && obj.viewed ? index : acc
                     }, -1)
 
-                    setCurrentLecture(response?.data?.courseDetails?.curriculum[lastLectureViewed + 1])
+                    // setCurrentLecture(response?.data?.courseDetails?.curriculum[lastLectureViewed + 1])
+                    setCurrentLecture(response?.data?.courseDetails?.curriculum[lastLectureViewed])
                 }
             }
         }
@@ -98,6 +100,11 @@ function CourseProgressPage() {
         }
     }
 
+    function handleChangeLecture(item) {
+        setCurrentLecture(item)
+        setRefreshKey(oldKey => oldKey + 1)
+    }
+    
     useEffect(() => {
         if (currentLecture?.progressValue === 1) {
             updateCourseProgress()
@@ -127,7 +134,7 @@ function CourseProgressPage() {
                             <TvMinimalPlay className="w-4 h-4" />
                             My Courses
                         </Button>
-                        <h1 className="text-lg font-semibold hidden lg:block pl-2">
+                        <h1 className="text-lg font-semibold hidden lg:block pl-3">
                             { studentCourseProgress?.courseDetails?.title }
                         </h1>
                     </div>
@@ -139,6 +146,7 @@ function CourseProgressPage() {
                     <div className={`flex-1 transition-all duration-300 ${displaySideBar ? 'mr-[400px]' : ''}`}>
                         <div className="border-b border-gray-500">
                             <VideoPlayer
+                                key={refreshKey}
                                 url={currentLecture?.video_url}
                                 videoId={currentLecture?.public_id}
                                 onProgressUpdate={setCurrentLecture}
@@ -167,14 +175,21 @@ function CourseProgressPage() {
                                 <ScrollArea className="h-full">
                                     <div className="p-4 space-y-4">
                                         { studentCourseProgress?.courseDetails?.curriculum.map((item, index) => (
-                                            <div key={index} className="flex items-center text-gray-50 space-x-2 curssor-pointer">
+                                            <div 
+                                                key={index} 
+                                                onClick={() => handleChangeLecture(item)} 
+                                                className={
+                                                    `${currentLecture?._id === item._id ? 'underline font-bold text-gray-100' : null}
+                                                    flex items-center w-full text-gray-300 hover:text-gray-100 transition space-x-2 cursor-pointer`
+                                                }
+                                            >
                                                 <div className="flex flex-row items-center gap-3">
                                                     { studentCourseProgress.progress.find(lecture => lecture.lectureId === item._id)?.viewed ? (
-                                                        <CheckCircle className="w-5 h-5" />
+                                                        <CheckCircle className="w-5 h-5 text-green-400" />
                                                     ) : (
                                                         <PlayCircle className="w-5 h-5" />
                                                     )}
-                                                    <h3 className="font-semibold">
+                                                    <h3 className="font-medium">
                                                         { item.title }
                                                     </h3>
                                                 </div>
