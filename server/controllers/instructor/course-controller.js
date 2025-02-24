@@ -109,7 +109,7 @@ const deleteCourse = async (req, res) => {
         }
 
         await StudentCourses.updateMany(
-            { "courses.courseId": id },
+            { 'courses.courseId': id },
             { $pull: { courses: { courseId: id } } }
         ).session(session)
 
@@ -125,7 +125,7 @@ const deleteCourse = async (req, res) => {
         
         res.status(500).json({ 
             success: false, 
-            message: "Internal Server Error"
+            message: 'Internal Server Error'
         })
     } finally {
       session.endSession()

@@ -177,7 +177,7 @@ function StudentCoursesDetailsPage() {
                                 { studentCourseDetails.objectives.split(',').map((item, index) => (
                                     <li key={index} className="flex items-start gap-2">
                                         <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
-                                        <span className="text-sm font-medium text-gray-800">
+                                        <span className="text-sm font-medium capitalize text-gray-800">
                                             { item }
                                         </span>
                                     </li>

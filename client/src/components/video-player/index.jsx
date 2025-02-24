@@ -28,7 +28,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     const [playing, setPlaying] = useState(false)
     const [seeking, setSeeking] = useState(false)
     const [fullScreen, setFullScreen] = useState(false)
-    const [showControls, setShowControls] = useState(true)
+    const [showControls, setShowControls] = useState(false)
     const [holdControls, setHoldControls] = useState(false)
     const [isFocused, setIsFocused] = useState(true)
     const [hasAudio, setHasAudio] = useState(true)
@@ -56,6 +56,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
 
     const handlePlayAndPause = useCallback(() => {
         setPlaying(!playing)
+        setShowControls(playing && !showControls)
     }, [playing])
 
     const handleBackward = useCallback(() => {
@@ -95,19 +96,19 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     function handleMouseMove() {
         setShowControls(true)
         const videoPlayers = document.querySelectorAll('.video-player')
-        videoPlayers.forEach((x) => { x.style.cursor = 'auto' })
+        videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
         clearTimeout(controlsTimeoutRef.current)
         controlsTimeoutRef.current = setTimeout(() => {
             if (playing && !holdControls) {  
-                videoPlayers.forEach((x) => { x.style.cursor = 'none' })
+                videoPlayers.forEach(x => { x.style.setProperty('cursor', 'none', 'important') })
                 setShowControls(false)
             }
-        }, 3000)
+        }, 2000)
     }
 
     function handleMouseLeave() {
         const videoPlayers = document.querySelectorAll('.video-player')
-        videoPlayers.forEach((x) => { x.style.cursor = 'auto' })
+        videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
         clearTimeout(controlsTimeoutRef.current)
         if (playing) {  
             setShowControls(false)
@@ -265,7 +266,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }, [isFocused])
 
     useEffect(() => {
-        if (played === 1) {
+        if (progressData !== undefined && played === 1) {
             onProgressUpdate({
                 ...progressData,
                 progressValue: played
@@ -274,47 +275,73 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }, [played])
 
     useEffect(() => {
+        const videoPlayers = document.querySelectorAll('.video-player')
+        videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
+        if (playing && !holdControls) {  
+            videoPlayers.forEach(x => { x.style.setProperty('cursor', 'none', 'important') })
+            setShowControls(false)
+        }
+    }, [playing, holdControls])
+
+    useEffect(() => {
         const handleKeyDown = (event) => {
             if (!isFocused) return
 
+            setShowControls(true)
+            clearTimeout(controlsTimeoutRef.current)
+            controlsTimeoutRef.current = setTimeout(() => {
+                if (playing && !holdControls) {  
+                    setShowControls(false)
+                }
+            }, 2000)
+
             switch (event.code) {
-                case 'Space': 
+                case 'Space':
                     handlePlayAndPause()
-                    event.preventDefault()
+                    event.preventDefault()                    
                     break
                 case 'ArrowRight':
                     handleForward()
                     break
+    
                 case 'ArrowLeft':
                     handleBackward()
                     break
+    
                 case 'ArrowUp':
                     event.preventDefault()
                     setVolume((prevVolume) => {
-                        let increasedVolume = prevVolume * 100 + 5
-                        if (increasedVolume > 100) increasedVolume = 100
-                        handleVolumeChange([increasedVolume])
-                        return increasedVolume / 100
+                        let newVolume = Math.min(prevVolume + 0.05, 1)
+                        setMuted(newVolume === 0)
+                        return newVolume
                     })
                     break
+    
                 case 'ArrowDown':
                     event.preventDefault()
                     setVolume((prevVolume) => {
-                        let decreasedVolume = prevVolume * 100 - 5
-                        if (decreasedVolume < 0) decreasedVolume = 0
-                        handleVolumeChange([decreasedVolume])
-                        return decreasedVolume / 100
+                        let newVolume = Math.max(prevVolume - 0.05, 0)
+                        setMuted(newVolume === 0)
+                        return newVolume
                     })
                     break
-                case 'KeyM':
-                    document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume').click()
+    
+                case 'KeyM': {
+                    const volumeButton = document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume')
+                    if (volumeButton) volumeButton.click()
                     break
-                case 'KeyP':
-                    document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip').click()
+                }
+    
+                case 'KeyP': {
+                    const pipButton = document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip')
+                    if (pipButton) pipButton.click()
                     break
+                }
+    
                 case 'KeyF':
                     handleFullScreen()
                     break
+    
                 default:
                     break
             }
@@ -341,7 +368,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     playerContainerRef.current?.focus()
                     setIsFocused(true)
                 }}
-                className={`${fullScreen ? 'w-screen h-screen' : null} relative overflow-hidden bg-slate-900 video-player`}
+                className={`${fullScreen ? 'w-screen h-screen' : null}  relative overflow-hidden bg-slate-900`}
             >
                 <ReactPlayer
                     url={url}
@@ -358,11 +385,11 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     width="100%"
                     height="100%"
                 />
-                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-3/4"></div>
+                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-50 video-player"></div>
                 <div 
                     onMouseEnter={useCallback(() => setHoldControls(true), [])} 
                     onMouseLeave={useCallback(() => setHoldControls(false), [])} 
-                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 px-1 bg-gray-800 transition-opacity duration-300`}
+                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 bg-gray-800 transition-opacity duration-300`}
                 >
                     <Slider
                         step={1}
@@ -467,22 +494,24 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                 {' '} / {' '}
                                 { timeFormat(duration) || 0 }
                             </div>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        size="icon"
-                                        variant="none"
-                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                        id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
-                                        onClick={handlePictureInPicture}
-                                    >
-                                        { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{ isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)' }</p>
-                                </TooltipContent>
-                            </Tooltip>
+                            { isPipAvailable && (
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            size="icon"
+                                            variant="none"
+                                            className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                            id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
+                                            onClick={handlePictureInPicture}
+                                        >
+                                            {isPip ? <PictureInPicture /> : <PictureInPicture2 />}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)'}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            )}
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
