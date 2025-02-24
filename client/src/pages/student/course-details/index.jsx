@@ -173,7 +173,7 @@ function StudentCoursesDetailsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
                                 { studentCourseDetails.objectives.split(',').map((item, index) => (
                                     <li key={index} className="flex items-start gap-2">
                                         <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
@@ -192,7 +192,7 @@ function StudentCoursesDetailsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="font-medium mb-2">
+                            <p className="font-medium mb-4">
                                 { studentCourseDetails.description }
                             </p>
                         </CardContent>

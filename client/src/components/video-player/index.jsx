@@ -362,7 +362,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                 <div 
                     onMouseEnter={useCallback(() => setHoldControls(true), [])} 
                     onMouseLeave={useCallback(() => setHoldControls(false), [])} 
-                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 bg-gray-800 transition-opacity duration-300`}
+                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 px-1 bg-gray-800 transition-opacity duration-300`}
                 >
                     <Slider
                         step={1}

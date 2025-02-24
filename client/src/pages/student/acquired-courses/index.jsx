@@ -49,9 +49,7 @@ function AcquiredCoursesPage() {
                         nextLecture,
                         completedLectures,
                         courseId: response?.data?.courseDetails?._id,
-                        progressPercentage: lectures.length > 0 
-                            ? Math.round((completedLectures / lectures.length) * 100) 
-                            : 0,
+                        progressPercentage: lectures.length > 0 ? Math.round((completedLectures / lectures.length) * 100) : 0
                     }
                 }
                 return null
@@ -80,7 +78,7 @@ function AcquiredCoursesPage() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-semibold mb-6 p-4">
+            <h1 className="text-2xl font-bold mb-6 ml-6 p-4">
                 { acquiredCourses?.length > 0 && 'My Courses' }
             </h1>
             { loading ? (

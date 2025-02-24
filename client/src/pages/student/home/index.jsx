@@ -6,7 +6,7 @@ import { courseCategories } from "@/config"
 import { getCoursePurchaseInfo, getStudentCourses } from "@/services"
 import { Button } from "@/components/ui/button"
 import { adjustPrice } from "@/utils"
-import { Play } from "lucide-react"
+import { Play, ScrollText, User2 } from "lucide-react"
 import banner from "/src/assets/banner.jpg"
 
 
@@ -97,7 +97,7 @@ function StudentHomePage() {
                                     <div className="absolute inset-0 bg-black/50 opacity-0 duration-500 group-hover:opacity-100"></div>
                                     <Play className="w-10 h-10 absolute inset-0 m-auto opacity-0 duration-500 group-hover:opacity-100 group-hover:scale-125 text-white" />
                                 </div>
-                                <div className="p-4">
+                                <div className="p-4 space-y-1">
                                     <p className="text-lg font-semibold">
                                         <span 
                                             onClick={() => handleCourseNavigation(item._id)} 
@@ -106,13 +106,15 @@ function StudentHomePage() {
                                             { item.title }
                                         </span>
                                     </p>
-                                    <p className="text-base font-semibold text-gray-700">
-                                        Created by {' '}
-                                        <span className="cursor-pointer text-gray-700 hover:text-gray-500 transition">
+                                    <p className="flex flex-row text-base font-semibold text-gray-700">
+                                        <User2 className="w-4 h-4 mt-1 mr-1" />
+                                        Created by
+                                        <span className="cursor-pointer ml-1 text-gray-700 hover:text-gray-500 transition">
                                             { item.instructorName }
                                         </span>
                                     </p>
-                                    <p className="text-base font-semibold capitalize text-gray-700">
+                                    <p className="flex flex-row text-base font-semibold capitalize text-gray-700">
+                                        <ScrollText className="w-4 h-4 mt-1 mr-1" />
                                         {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
                                     </p>
                                     <p className="text-lg font-semibold font-mono">

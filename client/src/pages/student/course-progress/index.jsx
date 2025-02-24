@@ -8,14 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
     Lock,
-    ArrowLeft,
+    House,
     ChevronLeft,
     ChevronRight,
     PartyPopper,
     PlayCircle,
     RotateCcw,
-    TvMinimalPlay,
-    CheckCircle
+    CheckCircle,
+    TvMinimalPlay
 } from "lucide-react"
 import {
     Dialog,
@@ -118,16 +118,20 @@ function CourseProgressPage() {
         <div className="flex flex-col h-screen bg-gray-900 text-gray-50">
             <div className="flex flex-col h-screen overflow-hidden">
                 <div className="flex justify-between p-4 bg-gray-900 border-b border-gray-500">
-                    <div className="flex items-center space-x-4">
-                        <Button onClick={() => navigate('/acquired-courses')} variant="outline" className="ml-4 font-semibold text-gray-900">
-                            <ArrowLeft className="w-4 h-4" />
+                    <div className="flex items-center space-x-2">
+                        <Button onClick={() => navigate('/home')} variant="outline" className="font-semibold text-gray-900">
+                            <House className="w-4 h-4" />
+                            Home
+                        </Button>
+                        <Button onClick={() => navigate('/acquired-courses')} variant="outline" className="font-semibold text-gray-900">
+                            <TvMinimalPlay className="w-4 h-4" />
                             My Courses
                         </Button>
-                        <h1 className="text-lg font-semibold hidden lg:block">
-                            {studentCourseProgress?.courseDetails?.title}
+                        <h1 className="text-lg font-semibold hidden lg:block pl-2">
+                            { studentCourseProgress?.courseDetails?.title }
                         </h1>
                     </div>
-                    <div onClick={() => setDisplaySideBar(!displaySideBar)} className="mt-2.5 mr-4 cursor-pointer">
+                    <div onClick={() => setDisplaySideBar(!displaySideBar)} className="mt-2.5 cursor-pointer">
                         { displaySideBar ? <ChevronRight /> : <ChevronLeft /> }
                     </div>
                 </div>
