@@ -47,7 +47,6 @@ const getCourseProgress = async (req, res) => {
                 courseAcquired: true,
                 courseDetails: course,
                 progress: courseProgress.lectureProgress,
-                lastViewedLecture: courseProgress.lastViewedLecture,
                 completionDate: courseProgress.completionDate,
                 completed: courseProgress.completed
             }
@@ -81,65 +80,6 @@ const resetCourseProgress = async (req, res) => {
             success: true,
             message: 'Course Progress Reset',
             data: progress
-        })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error'
-        })
-    }
-}
-
-const lastViewedLecture = async (req, res) => {
-    try {
-        const { userId, courseId, lectureId } = req.body
-        const acquiredCourses = await StudentCourses.findOne({ userId })
-        const courseAcquired = acquiredCourses.courses.findIndex(item => item.courseId === courseId) > -1
-
-        if (!courseAcquired) {
-            return res.status(200).json({
-                success: true,
-                message: 'Course Not Acquired',
-                data: {
-                    courseAcquired: false
-                }
-            })
-        }
-
-        const course = await Course.findById(courseId)
-
-        if (!course) {
-            return res.status(404).json({
-                success: false,
-                message: 'Course Not Found'
-            })
-        }
-
-        const progress = await CourseProgress.findOne({ userId, courseId })
-
-        if (!progress) {
-            progress = new CourseProgress({
-                userId,
-                courseId,
-                lastViewedLecture: lectureId,
-                lectureProgress: [{
-                    lectureId,
-                    viewed: true,
-                    dateViewed: new Date()
-                }]
-            })
-            await progress.save()
-        } else {
-            progress.lastViewedLecture = lectureId
-            await progress.save()
-        }
-
-        res.status(200).json({
-            success: true,
-            data: {
-                courseAcquired: true,
-                progress
-            }
         })
     } catch (err) {
         res.status(500).json({
@@ -215,6 +155,5 @@ const viewLecture = async (req, res) => {
 module.exports = {
     getCourseProgress,
     resetCourseProgress,
-    lastViewedLecture,
     viewLecture
 }
