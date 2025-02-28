@@ -131,7 +131,7 @@ function StudentCoursesPage() {
                                     { filterOptions[item].map(option => (
                                         <Label key={option.id} className="flex font-medium items-center gap-3">
                                             <Checkbox
-                                                onCheckedChange={() => handleFilterChange(item, option)}
+                                                onCheckedChange={() => handleFiltersChange(item, option)}
                                                 checked={
                                                     filters &&
                                                     Object.keys(filters).length > 0 &&
