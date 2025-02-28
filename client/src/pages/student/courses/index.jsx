@@ -8,7 +8,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { ArrowUpDownIcon, ListFilter, Play, RotateCcw, ScrollText, User2 } from "lucide-react"
+import { ArrowUpDownIcon, Atom, ListFilter, Play, RotateCcw, ScrollText, User2 } from "lucide-react"
 import { adjustPrice } from "@/utils"
 import {
     DropdownMenu,
@@ -59,7 +59,7 @@ function StudentCoursesPage() {
         setLoading(false)
     }
 
-    function handleFilterChange(section, option) {
+    function handleFiltersChange(section, option) {
         let copyFilters = { ...filters }
         const sectionValues = copyFilters[section] || []
 
@@ -85,6 +85,11 @@ function StudentCoursesPage() {
 
         setSearchParams(new URLSearchParams(params))
         return Object.fromEntries(searchParams)
+    }
+
+    function handleFiltersReset() {
+        setSort('title-a-z')
+        setFilters({})
     }
 
     useEffect(() => {
@@ -166,7 +171,7 @@ function StudentCoursesPage() {
                                                     { filterOptions[item].map(option => (
                                                         <Label key={option.id} className="flex font-medium items-center gap-3">
                                                             <Checkbox
-                                                                onCheckedChange={() => handleFilterChange(item, option)}
+                                                                onCheckedChange={() => handleFiltersChange(item, option)}
                                                                 checked={
                                                                     filters &&
                                                                     Object.keys(filters).length > 0 &&
@@ -200,7 +205,7 @@ function StudentCoursesPage() {
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            <Button variant="outline" onClick={() => setFilters({})}>
+                            <Button variant="outline" onClick={handleFiltersReset}>
                                 <RotateCcw />
                                 Reset
                             </Button>
@@ -215,7 +220,7 @@ function StudentCoursesPage() {
                             studentCourses.map(item => (
                                 <div 
                                     key={item._id} 
-                                    className="shadow border rounded overflow-hidden hover:shadow-lg duration-300"
+                                    className="shadow border rounded overflow-hidden hover:shadow-lg duration-300 cursor-default"
                                 >
                                     <div 
                                         onClick={() => handleCourseNavigation(item._id)}
@@ -233,7 +238,7 @@ function StudentCoursesPage() {
                                         <p className="text-lg font-semibold">
                                             <span
                                                 onClick={() => handleCourseNavigation(item._id)}
-                                                className="cursor-pointer text-gray-700 hover:text-gray-500 transition"
+                                                className="cursor-pointer text-gray-900 hover:text-gray-700 transition"
                                             >
                                                 { item.title }
                                             </span>
@@ -248,6 +253,12 @@ function StudentCoursesPage() {
                                         <p className="flex flex-row text-base font-semibold capitalize text-gray-700">
                                             <ScrollText className="w-4 h-4 mt-1 mr-1" />
                                             {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
+                                        </p>
+                                        <p className="flex flex-row text-base font-semibold text-gray-700">
+                                            <Atom className="w-4 h-4 mt-1" />
+                                            <span className="capitalize ml-1 text-gray-700">
+                                                { item.category.replace('-', ' ') }
+                                            </span>
                                         </p>
                                         <p className="text-lg font-semibold font-mono">
                                             { adjustPrice(item.price) }

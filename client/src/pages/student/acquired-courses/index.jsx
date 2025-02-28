@@ -6,7 +6,7 @@ import { getAcquiredCourses, getCourseProgress } from "@/services"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { CheckCircle, Play } from "lucide-react"
+import { Atom, CheckCircle, Play, User2 } from "lucide-react"
 import { Tooltip } from "react-tooltip"
 
 
@@ -91,7 +91,7 @@ function AcquiredCoursesPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                             { acquiredCourses.map((item, index) => (
                                 <Card key={index} className="flex flex-col items-center hover:shadow-lg duration-300">
-                                    <CardContent className="relative flex-grow w-full p-4">
+                                    <CardContent className="relative flex-grow w-full p-4 cursor-default">
                                         <div 
                                             onClick={() => navigate(`/course-progress/${item.courseId}`)} 
                                             className="relative h-52 rounded-lg overflow-hidden cursor-pointer group"
@@ -104,20 +104,28 @@ function AcquiredCoursesPage() {
                                             <div className="absolute inset-0 bg-black/50 opacity-0 duration-500 group-hover:opacity-100"></div>
                                             <Play className="w-10 h-10 absolute inset-0 m-auto opacity-0 duration-500 group-hover:opacity-100 group-hover:scale-125 text-white" />
                                         </div>
-                                        <div className="mt-4 pl-1 font-medium cursor-default">
-                                            <div className="mb-5">
-                                                <h3 className="font-semibold text-base text-gray-900">
+                                        <div className="mt-4 pl-1 font-medium">
+                                            <div className="mb-5 space-y-0.5">
+                                                <h3 
+                                                    onClick={() => navigate(`/course-progress/${item.courseId}`)}
+                                                    className="font-semibold text-base text-gray-900 hover:text-gray-700 transition cursor-pointer">
                                                     { item.title.length > 35
                                                         ? item.title.slice(0, 35) + '...'
                                                         : item.title
                                                     }
                                                 </h3>
-                                                <h4 className="text-sm text-gray-700">
-                                                    { item.courseCategory.replace('-', ' ') }
-                                                </h4>
-                                                <p className="text-sm text-gray-700">
-                                                    { item.instructorName }
-                                                </p>
+                                                <div className="flex flex-row">
+                                                    <User2 className="w-4 h-4 mr-1 mt-0.5" />
+                                                    <h4 className="text-sm capitalize font-semibold text-gray-700">
+                                                        { item.instructorName }
+                                                    </h4>     
+                                                </div>
+                                                <div className="flex flex-row">
+                                                    <Atom className="w-4 h-4 mr-1 mt-0.5" />
+                                                    <h4 className="text-sm capitalize font-semibold text-gray-700">
+                                                        { item.courseCategory.replace('-', ' ') }
+                                                    </h4>     
+                                                </div>
                                             </div>
                                             <div  
                                                 data-tooltip-id="progress"

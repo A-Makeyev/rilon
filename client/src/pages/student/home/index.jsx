@@ -6,7 +6,7 @@ import { courseCategories } from "@/config"
 import { getCoursePurchaseInfo, getStudentCourses } from "@/services"
 import { Button } from "@/components/ui/button"
 import { adjustPrice } from "@/utils"
-import { Play, ScrollText, User2 } from "lucide-react"
+import { Atom, Play, ScrollText, User2 } from "lucide-react"
 import banner from "/src/assets/banner.jpg"
 
 
@@ -97,11 +97,11 @@ function StudentHomePage() {
                                     <div className="absolute inset-0 bg-black/50 opacity-0 duration-500 group-hover:opacity-100"></div>
                                     <Play className="w-10 h-10 absolute inset-0 m-auto opacity-0 duration-500 group-hover:opacity-100 group-hover:scale-125 text-white" />
                                 </div>
-                                <div className="p-4 space-y-1">
+                                <div className="p-4 space-y-1 cursor-default">
                                     <p className="text-lg font-semibold">
                                         <span 
                                             onClick={() => handleCourseNavigation(item._id)} 
-                                            className="cursor-pointer text-gray-700 hover:text-gray-500 transition"
+                                            className="cursor-pointer text-gray-900 hover:text-gray-700 transition"
                                         >
                                             { item.title }
                                         </span>
@@ -116,6 +116,12 @@ function StudentHomePage() {
                                     <p className="flex flex-row text-base font-semibold capitalize text-gray-700">
                                         <ScrollText className="w-4 h-4 mt-1 mr-1" />
                                         {`${item.curriculum.length} ${item.curriculum.length <= 1 ? 'Lecture' : 'Lectures'}, ${item.level}`}
+                                    </p>
+                                    <p className="flex flex-row text-base font-semibold text-gray-700">
+                                        <Atom className="w-4 h-4 mt-1" />
+                                        <span className="capitalize ml-1 text-gray-700">
+                                            { item.category.replace('-', ' ') }
+                                        </span>
                                     </p>
                                     <p className="text-lg font-semibold font-mono">
                                         { adjustPrice(item.price) }
