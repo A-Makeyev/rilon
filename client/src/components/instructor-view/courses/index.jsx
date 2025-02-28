@@ -230,7 +230,7 @@ function InstructorCourses({ courses }) {
                                                                     </DialogDescription>
                                                                 )}
                                                             </div>
-                                                            <div className="flex justify-end space-x-2 mt-3">
+                                                            <div className="flex justify-end space-x-2 mt-5">
                                                                 <Button 
                                                                     variant="outline" 
                                                                     onClick={() => setOpen(false)}

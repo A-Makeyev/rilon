@@ -29,17 +29,18 @@ const getCourseProgress = async (req, res) => {
 
         const courseProgress = await CourseProgress.findOne({ userId, courseId })
 
-        // if (!courseProgress || courseProgress.lectureProgress.length === 0) {
-        //     return res.status(200).json({
-        //         success: true,
-        //         message: 'No Course Progress',
-        //         data: {
-        //             courseAcquired: true,
-        //             courseDetails: course,
-        //             progress: []
-        //         }
-        //     })
-        // }
+        if (!courseProgress) {
+            return res.status(200).json({
+                success: true,
+                message: 'No Course Progress',
+                data: {
+                    courseAcquired: true,
+                    courseDetails: course,
+                    lastViewedLecture: course.curriculum[0]._id,
+                    progress: []
+                }
+            })
+        }
 
         res.status(200).json({
             success: true,

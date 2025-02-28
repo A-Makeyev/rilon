@@ -285,7 +285,13 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     useEffect(() => {
         setShowLayer(prev => !playing && (played === 0 || played === 1))
     }, [playing, played])
-    
+
+    useEffect(() => {
+        if (played === 1) {
+            setPlaying(false)
+        }
+    }, [played])
+
     useEffect(() => {
         const videoPlayers = document.querySelectorAll('.video-player')
         videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })

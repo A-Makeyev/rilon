@@ -1,6 +1,6 @@
 cd client && npm i && cd .. && npm i && npm run dev
 git add . && git commit -m"update" && git push
-
+npm run import-data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 TODO:
