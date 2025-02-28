@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { getCourseProgress, resetCourseProgress, viewLecture } from "@/services"
+import { getCourseProgress, lastViewedLecture, resetCourseProgress, viewLecture } from "@/services"
 import { StudentContext } from "@/context/student"
 import { AuthContext } from "@/context/auth"
 import { Button } from "@/components/ui/button"
@@ -31,10 +31,7 @@ function CourseProgressPage() {
     const navigate = useNavigate()
     const { id } = useParams()
     const { auth } = useContext(AuthContext)
-    const {
-        studentCourseProgress,
-        setStudentCourseProgress,
-    } = useContext(StudentContext)
+    const {studentCourseProgress, setStudentCourseProgress } = useContext(StudentContext)
     const [lockCourse, setLockCourse] = useState(false)
     const [currentLecture, setCurrentLecture] = useState(null)
     const [displayCompletedCourse, setDisplayCompletedCourse] = useState(false)
@@ -61,13 +58,17 @@ function CourseProgressPage() {
                     return
                 }
 
-                if (response?.data?.progress?.length === 0) {
+                if (response?.data?.lastViewedLecture) {
+                    const lastViewdLectureId = response?.data?.lastViewedLecture
+                    const lecture = response?.data?.courseDetails?.curriculum?.find(course => course._id === lastViewdLectureId)
+                    setCurrentLecture(lecture)
+                } else if (response?.data?.progress?.length === 0) {
                     setCurrentLecture(response?.data?.courseDetails?.curriculum[0])
-                }  else {
+                    return
+                } else {
                     const lastLectureViewed = response?.data?.progress?.reduceRight((acc, obj, index) => {
                         return acc === -1 && obj.viewed ? index : acc
                     }, -1)
-
                     setCurrentLecture(response?.data?.courseDetails?.curriculum[lastLectureViewed + 1])
                 }
             }
@@ -99,9 +100,22 @@ function CourseProgressPage() {
         }
     }
 
+    async function updateLastViewedLecture(lecture) {
+        try {
+            await lastViewedLecture(
+                auth?.user?._id, 
+                studentCourseProgress?.courseDetails?._id, 
+                lecture._id
+            )
+        } catch(err) {
+            console.log(err)
+        }
+    }
+
     function handleChangeLecture(item) {
         setCurrentLecture(item)
         setRefreshKey(oldKey => oldKey + 1)
+        updateLastViewedLecture(item)
     }
     
     useEffect(() => {
@@ -178,7 +192,7 @@ function CourseProgressPage() {
                                                 key={index} 
                                                 onClick={() => handleChangeLecture(item)} 
                                                 className={
-                                                    `${currentLecture?._id === item._id ? 'underline font-bold text-gray-100' : null}
+                                                    `${currentLecture?._id === item._id ? 'underline font-bold text-gray-50' : null}
                                                     flex items-center w-full text-gray-300 hover:text-gray-100 transition space-x-2 cursor-pointer`
                                                 }
                                             >

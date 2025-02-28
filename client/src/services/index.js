@@ -125,6 +125,13 @@ export async function resetCourseProgress(userId, courseId) {
     return data
 }
 
+export async function lastViewedLecture(userId, courseId, lectureId) {
+    const { data } = await axiosInstance.post('/student/course-progress/current-lecture', {
+        userId, courseId, lectureId
+    })
+    return data
+}
+
 export async function viewLecture(userId, courseId, lectureId) {
     const { data } = await axiosInstance.post('/student/course-progress/view-lecture', {
         userId, courseId, lectureId

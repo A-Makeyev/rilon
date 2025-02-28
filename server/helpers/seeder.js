@@ -17,7 +17,7 @@ const rl = readline.createInterface({
 })
 
 const confirmAction = (message, callback) => {
-    rl.question(`${message} (y/n):`, (answer) => {
+    rl.question(`${message} (y/n): `, (answer) => {
         if (answer.toLowerCase().trim() === 'y') {
             callback()
         } else {
@@ -40,7 +40,7 @@ const importData = async () => {
                     await User.insertMany(users)
                     await Course.insertMany(courses)
 
-                    console.log("✔️  DATA IMPORTED")
+                    console.log('✔️  DATA UPDATED')
                     process.exit()
                 } catch (err) {
                     console.log(err)
@@ -51,7 +51,7 @@ const importData = async () => {
             await User.insertMany(users)
             await Course.insertMany(courses)
 
-            console.log("✔️  DATA IMPORTED")
+            console.log('✔️  DATA IMPORTED')
             process.exit()
         }
     } catch (err) {
