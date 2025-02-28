@@ -30,6 +30,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     const [fullScreen, setFullScreen] = useState(false)
     const [showControls, setShowControls] = useState(false)
     const [holdControls, setHoldControls] = useState(false)
+    const [showLayer, setShowLayer] = useState(true)
     const [isFocused, setIsFocused] = useState(true)
     const [hasAudio, setHasAudio] = useState(true)
     const [isPip, setIsPip] = useState(false)
@@ -55,6 +56,9 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }, [fullScreen])
 
     const handlePlayAndPause = useCallback(() => {
+        if (played === 1) {
+            setPlayed(0)
+        }
         setPlaying(!playing)
         setShowControls(playing && !showControls)
     }, [playing])
@@ -140,6 +144,10 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     function handleProgress(state) {
         if (!seeking) {
             setPlayed(state.played)
+        }
+
+        if (played === 1) {
+            setPlayed(1)
         }
     }
 
@@ -275,6 +283,10 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }, [played])
 
     useEffect(() => {
+        setShowLayer(prev => !playing && (played === 0 || played === 1))
+    }, [playing, played])
+    
+    useEffect(() => {
         const videoPlayers = document.querySelectorAll('.video-player')
         videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
         if (playing && !holdControls) {  
@@ -286,7 +298,13 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (!isFocused) return
-
+    
+            if (showLayer && event.code !== 'Space') {
+                event.preventDefault()
+                event.stopPropagation()
+                return
+            }
+    
             setShowControls(true)
             clearTimeout(controlsTimeoutRef.current)
             controlsTimeoutRef.current = setTimeout(() => {
@@ -294,7 +312,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     setShowControls(false)
                 }
             }, 2000)
-
+    
             switch (event.code) {
                 case 'Space':
                     handlePlayAndPause()
@@ -303,11 +321,9 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                 case 'ArrowRight':
                     handleForward()
                     break
-    
                 case 'ArrowLeft':
                     handleBackward()
                     break
-    
                 case 'ArrowUp':
                     event.preventDefault()
                     setVolume((prevVolume) => {
@@ -316,7 +332,6 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         return newVolume
                     })
                     break
-    
                 case 'ArrowDown':
                     event.preventDefault()
                     setVolume((prevVolume) => {
@@ -325,32 +340,26 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         return newVolume
                     })
                     break
-    
-                case 'KeyM': {
+                case 'KeyM': 
                     const volumeButton = document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume')
                     if (volumeButton) volumeButton.click()
                     break
-                }
-    
-                case 'KeyP': {
+                case 'KeyP': 
                     const pipButton = document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip')
                     if (pipButton) pipButton.click()
                     break
-                }
-    
                 case 'KeyF':
                     handleFullScreen()
                     break
-    
                 default:
                     break
             }
         }
-
+    
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [isFocused, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
-
+    }, [isFocused, showLayer, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
+    
     return (
         <TooltipProvider>
             <div
@@ -385,7 +394,16 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     width="100%"
                     height="100%"
                 />
-                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-50 video-player"></div>
+                <div 
+                    onClick={handlePlayAndPause} 
+                    className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/60 w-full h-full transition-opacity duration-300 cursor-pointer`}
+                >
+                    { played === 0 
+                        ? <Play className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" /> 
+                        : <RotateCcw className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" />
+                    }
+                </div>
+                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-40 video-player"></div>
                 <div 
                     onMouseEnter={useCallback(() => setHoldControls(true), [])} 
                     onMouseLeave={useCallback(() => setHoldControls(false), [])} 

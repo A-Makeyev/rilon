@@ -158,7 +158,7 @@ function StudentCoursesDetailsPage() {
                     <span>
                         { studentCourseDetails.date.split('T')[0]}
                     </span>
-                    <span className="flex items-center">
+                    <span className="flex items-center capitalize">
                         <Globe className="w-4 h-4 mr-1" />
                         { studentCourseDetails.language }
                     </span>

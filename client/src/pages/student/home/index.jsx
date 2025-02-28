@@ -53,7 +53,7 @@ function StudentHomePage() {
     return (
         <div className="min-h-screen bg-white">
             <section className="flex flex-col lg:flex-row items-center justify-between py-8 px-4 lg:px-8">
-                <div className="lg:w-1/2 lg:pr-12 my-10 container">
+                <div className="lg:w-1/2 lg:pr-12 mt-5 mb-10 container">
                     <h1 className="text-xl lg:text-3xl font-bold mb-4">
                         Software courses for high school and college students
                     </h1>
