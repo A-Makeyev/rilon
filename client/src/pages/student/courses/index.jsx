@@ -8,7 +8,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { ArrowUpDownIcon, ListFilter, Play, ScrollText, User2 } from "lucide-react"
+import { ArrowUpDownIcon, ListFilter, Play, RotateCcw, ScrollText, User2 } from "lucide-react"
 import { adjustPrice } from "@/utils"
 import {
     DropdownMenu,
@@ -41,23 +41,6 @@ function StudentCoursesPage() {
         }
     }
     
-    function handleFilterChange(section, option) {
-        let copyFilters = { ...filters }
-        const sectionValues = copyFilters[section] || []
-
-        if (!sectionValues.includes(option.id)) {
-            copyFilters[section] = [...sectionValues, option.id]
-        } else {
-            copyFilters[section] = sectionValues.filter(id => id !== option.id)
-        }
-
-        if (copyFilters[section].length === 0) {
-            delete copyFilters[section]
-        }
-
-        setFilters(copyFilters)
-    }
-
     async function getCourses(filters, sort) {
         if (!filters || !sort) return
 
@@ -74,6 +57,23 @@ function StudentCoursesPage() {
             setStudentCourses(response.data)
         }
         setLoading(false)
+    }
+
+    function handleFilterChange(section, option) {
+        let copyFilters = { ...filters }
+        const sectionValues = copyFilters[section] || []
+
+        if (!sectionValues.includes(option.id)) {
+            copyFilters[section] = [...sectionValues, option.id]
+        } else {
+            copyFilters[section] = sectionValues.filter(id => id !== option.id)
+        }
+
+        if (copyFilters[section].length === 0) {
+            delete copyFilters[section]
+        }
+
+        setFilters(copyFilters)
     }
 
     function updateSearchParams(filterParams) {
@@ -152,7 +152,7 @@ function StudentCoursesPage() {
                                 <DropdownMenu open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" className="flex items-center">
-                                            <ListFilter className="w-4 h-4" />
+                                            <ListFilter />
                                             Filters
                                         </Button>
                                     </DropdownMenuTrigger>
@@ -160,7 +160,7 @@ function StudentCoursesPage() {
                                         { filterOptions && Object.keys(filterOptions).map(item => (
                                             <div key={item} className="space-y-2">
                                                 <DropdownMenuLabel>
-                                                    {item.toUpperCase()}
+                                                    { item.toUpperCase() }
                                                 </DropdownMenuLabel>
                                                 <div className="space-y-2 pl-2 pb-2">
                                                     { filterOptions[item].map(option => (
@@ -174,7 +174,7 @@ function StudentCoursesPage() {
                                                                     filters[item].indexOf(option.id) > -1
                                                                 }
                                                             />
-                                                            {option.label}
+                                                            { option.label }
                                                         </Label>
                                                     ))}
                                                 </div>
@@ -185,8 +185,8 @@ function StudentCoursesPage() {
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="flex items-center gap-1">
-                                        <ArrowUpDownIcon className="w-4 h-4" />
+                                    <Button variant="outline">
+                                        <ArrowUpDownIcon />
                                         Sort
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -200,6 +200,10 @@ function StudentCoursesPage() {
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>
+                            <Button variant="outline" onClick={() => setFilters({})}>
+                                <RotateCcw />
+                                Reset
+                            </Button>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 pt-0.5">
