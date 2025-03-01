@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
 
     return res.status(201).json({
         success: true,
-        message: `User "${newUser.username}" was created`
+        message: `Your account has been created`
     })
 }
 
@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({
             success: false,
-            message: 'Invalid Credentials'
+            message: 'Username or password do not match'
         })
     }
 

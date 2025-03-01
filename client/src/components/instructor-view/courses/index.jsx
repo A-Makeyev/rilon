@@ -5,7 +5,7 @@ import { deleteCourse, deleteMedia } from "@/services"
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Button } from "@/components/ui/button"
 import { Edit, Trash } from "lucide-react"
@@ -45,43 +45,47 @@ function InstructorCourses({ courses }) {
 
         const toastId = toast(
             <div className="flex items-center gap-2">
-              <LoadingSpinner className="w-4 h-4" />
-              <span>Course will be permanently deleted in {secondsLeft}</span>
+                <LoadingSpinner className="w-4 h-4" />
+                <span>
+                    Course will be permanently deleted in {secondsLeft}
+                </span>
             </div>,
             {
-              duration: timeout,
-              position: "top-right",
-              action: {
-                label: "Undo",
-                onClick: () => {
-                  undo = true
-                  toast.dismiss(toastId)
-                  setLoadingCourseId(null)
-                  return
+                duration: timeout,
+                position: 'top-right',
+                action: {
+                    label: 'Undo',
+                    onClick: () => {
+                        undo = true
+                        toast.dismiss(toastId)
+                        setLoadingCourseId(null)
+                        return
+                    }
                 }
-              }
             }
-          )
+        )
     
-          const countdownInterval = setInterval(() => {
+        const countdownInterval = setInterval(() => {
             if (undo || secondsLeft <= 1) {
-              clearInterval(countdownInterval)
-              return
+                clearInterval(countdownInterval)
+                return
             }
-      
+        
             secondsLeft -= 1
             toast(
-              <div className="flex items-center gap-2">
-                <LoadingSpinner className="w-4 h-4" />
-                <span>Course will be permanently deleted in {secondsLeft}</span>
-              </div>,
-              {
-                id: toastId,
-                position: "top-right",
-                duration: timeout
-              }
+                <div className="flex items-center gap-2">
+                    <LoadingSpinner className="w-4 h-4" />
+                    <span>
+                        Course will be permanently deleted in {secondsLeft}
+                    </span>
+                </div>,
+                {
+                    id: toastId,
+                    position: 'top-right',
+                    duration: timeout
+                }
             )
-          }, 1000)
+        }, 1000)
     
         await new Promise((resolve) => setTimeout(resolve, timeout))
     

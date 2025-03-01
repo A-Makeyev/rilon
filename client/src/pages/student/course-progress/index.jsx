@@ -134,6 +134,12 @@ function CourseProgressPage() {
         }
     }, [displayConfetti])
 
+    useEffect(() => {
+        return () => {
+            setStudentCourseProgress({})
+        }
+    }, [])
+
     return (
         <div className="flex flex-col h-screen bg-gray-900 text-gray-50">
             <div className="flex flex-col h-screen overflow-hidden">

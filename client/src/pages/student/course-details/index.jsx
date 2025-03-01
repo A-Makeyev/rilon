@@ -128,11 +128,11 @@ function StudentCoursesDetailsPage() {
     }, [id, setCurrentCourseId])
 
     useEffect(() => {
-        if (!location.pathname.includes('/course/details/')) {
+        return () => {
             setStudentCourseDetails(null)
             setCurrentCourseId(null)
         }
-    }, [location.pathname, setStudentCourseDetails, setCurrentCourseId])
+    }, [])
 
     if (approvalUrl !== '') {
         window.location.href = approvalUrl

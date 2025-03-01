@@ -7,9 +7,7 @@ import { GraduationCap } from "lucide-react"
 import CommonForm from "@/components/common-form"
 
 
-const AuthPage = () => {
-    const [activeTab, setActiveTab] = useState('login')
-    
+const AuthPage = () => {    
     const {
         loginFormData,
         setLoginFormData,
@@ -17,6 +15,8 @@ const AuthPage = () => {
         setRegisterFormData,
         handleRegister,
         handleLogin,
+        activeTab, 
+        setActiveTab
     } = useContext(AuthContext)
 
     function handleTabChange(value) {
@@ -42,7 +42,7 @@ const AuthPage = () => {
 
     return (
         <div className="flex flex-col">
-            <div className="flex items-center justify-center min-h-[85vh] bg-background">
+            <div className="flex items-center justify-center min-h-[85vh] bg-background cursor-default">
                 <Tabs
                     value={activeTab}
                     defaultValue="login"

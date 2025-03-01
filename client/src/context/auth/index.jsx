@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react"
 import { initialLoginFormData, initialRegisterFormData } from "@/config"
 import { login, register, verify } from '@/services'
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
 
 
 export const AuthContext = createContext(null)
@@ -10,33 +11,62 @@ export default function AuthProvider({ children }) {
     const [loginFormData, setLoginFormData] = useState(initialLoginFormData)
     const [registerFormData, setRegisterFormData] = useState(initialRegisterFormData)
     const [auth, setAuth] = useState({ user: null, isAuthenticated: false })
+    const [activeTab, setActiveTab] = useState('login')
     const [loading, setLoading] = useState(true)
+
+    function greeting() {
+        const hours = new Date().getHours()
+        if (hours < 12) return 'Good morning'
+        if (hours < 18) return 'Good afternoon'
+        return 'Good evening'
+    }
 
     async function handleRegister(event) {
         event.preventDefault()
-        const data = await register(registerFormData)
+
+        try {
+            const data = await register(registerFormData)
+
+            if (data?.success) {
+                toast.success(data?.message, { position: 'top-center' })
+                setRegisterFormData(initialRegisterFormData)
+                setLoginFormData(initialLoginFormData)
+                setActiveTab('login')
+            }
+        } catch(err) {
+            toast.error(err?.response?.data?.message || 'Something went wrong', { position: 'top-center' })
+        }
     }
     
     async function handleLogin(event) {
         event.preventDefault()
         
-        const { data } = await login(loginFormData)
+        try {
+            const { data } = await login(loginFormData)
 
-        if (data.user && data.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken)
-            // sessionStorage.setItem('accessToken', data.accessToken)
+            if (data.user && data.accessToken) {
+                localStorage.setItem('accessToken', data.accessToken)
+    
+                setAuth({
+                    user: data.user,
+                    isAuthenticated: true
+                })
+                setLoading(false)
+            } else {
+                setAuth({
+                    user: null,
+                    isAuthenticated: false
+                })
+                setLoading(false)
+            }
 
-            setAuth({
-                user: data.user,
-                isAuthenticated: true
+            toast.success(`${greeting()} ${data?.user?.username}`, {
+                className: 'max-w-max min-w-[300px]',
+                bodyClassName: 'text-center',
+                position: 'top-center'
             })
-            setLoading(false)
-        } else {
-            setAuth({
-                user: null,
-                isAuthenticated: false
-            })
-            setLoading(false)
+        } catch(err) {
+            toast.error(err?.response?.data?.message || 'Something went wrong', { position: 'top-center' })
         }
     }
 
@@ -74,7 +104,7 @@ export default function AuthProvider({ children }) {
             isAuthenticated: false
         })
         localStorage.clear()
-        // sessionStorage.clear()
+        toast.info('Logged out', { position: 'top-center' })
     }
 
     useEffect(() => {
@@ -90,6 +120,8 @@ export default function AuthProvider({ children }) {
                 setRegisterFormData,
                 handleRegister,
                 handleLogin,
+                activeTab, 
+                setActiveTab,
                 auth,
                 logout
             }}
