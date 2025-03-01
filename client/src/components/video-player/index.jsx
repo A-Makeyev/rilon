@@ -15,7 +15,10 @@ import {
     ArrowRight, 
     ArrowUpDownIcon, 
     PictureInPicture, 
-    PictureInPicture2
+    PictureInPicture2,
+    StepForward,
+    StepBack,
+    Volume1
 } from "lucide-react"
 import ReactPlayer from "react-player"
 
@@ -35,9 +38,14 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     const [hasAudio, setHasAudio] = useState(true)
     const [isPip, setIsPip] = useState(false)
     const [isPipAvailable, setIsPipAvailable] = useState(false)
+    const [showIndication, setShowIndication] = useState(false)
+    const [showForward, setShowForward] = useState(false)
+    const [showBackward, setShowBackward] = useState(false)
+    const [showVolume, setShowVolume] = useState(false)
     const [duration, setDuration] = useState(null)
     const playerContainerRef = useRef(null)
     const controlsTimeoutRef = useRef(null)
+    const timeoutRef = useRef(null)
     const playerRef = useRef(null)
     const isReadyRef = useRef(false)
     
@@ -64,12 +72,36 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }, [playing])
 
     const handleBackward = useCallback(() => {
-        playerRef?.current?.seekTo(playerRef?.current?.getCurrentTime() - 5)
-    }, [])
+        const player = playerRef.current
+        if (player) player.seekTo(player.getCurrentTime() - 5)
+        if (showIndication || showBackward) return
+        setShowIndication(true)
+        setShowBackward(true)
 
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+        timeoutRef.current = setTimeout(() => {
+            setShowIndication(false)
+            setShowBackward(false)
+            timeoutRef.current = null
+        }, 1000)
+    }, [showIndication, showBackward])
+    
     const handleForward = useCallback(() => {
-        playerRef?.current?.seekTo(playerRef?.current?.getCurrentTime() + 5)
-    }, [])
+        const player = playerRef.current
+        if (player) player.seekTo(player.getCurrentTime() + 5)
+        if (showIndication || showForward) return
+        setShowIndication(true)
+        setShowForward(true)
+
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+        timeoutRef.current = setTimeout(() => {
+            setShowIndication(false)
+            setShowForward(false)
+            timeoutRef.current = null
+        }, 1000)
+    }, [showIndication, showForward])
 
     function handleReady() {
         const player = playerRef.current.getInternalPlayer()
@@ -128,6 +160,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
             setMuted(true)
             setVolume(0)
         }
+        setTimeout(handleShowVolume, 0)
     }
 
     function handleVolumeChange(value) {
@@ -139,6 +172,21 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         } else {
             setMuted(false)
         }
+        setTimeout(handleShowVolume, 0)
+    }
+
+    function handleShowVolume() {
+        if (showIndication || showVolume) return
+        setShowIndication(true)
+        setShowVolume(true)
+
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+        timeoutRef.current = setTimeout(() => {
+            setShowIndication(false)
+            setShowVolume(false)
+            timeoutRef.current = null
+        }, 1000)
     }
 
     function handleProgress(state) {
@@ -181,10 +229,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }
 
     async function handlePictureInPicture() {
-        if (!document.pictureInPictureEnabled) {
-            console.warn('Picture-in-Picture is not supported in this browser')
-            return
-        }
+        if (!document.pictureInPictureEnabled) return
     
         if (playerRef.current) {
             const videoElement = playerRef.current.wrapper || playerRef.current.getInternalPlayer()
@@ -337,7 +382,9 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         setMuted(newVolume === 0)
                         return newVolume
                     })
+                    setTimeout(handleShowVolume, 0)
                     break
+
                 case 'ArrowDown':
                     event.preventDefault()
                     setVolume((prevVolume) => {
@@ -345,10 +392,12 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         setMuted(newVolume === 0)
                         return newVolume
                     })
+                    setTimeout(handleShowVolume, 0)
                     break
                 case 'KeyM': 
                     const volumeButton = document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume')
                     if (volumeButton) volumeButton.click()
+                    setTimeout(handleShowVolume, 0)
                     break
                 case 'KeyP': 
                     const pipButton = document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip')
@@ -365,7 +414,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [isFocused, showLayer, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
-    
+
     return (
         <TooltipProvider>
             <div
@@ -404,10 +453,30 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     onClick={handlePlayAndPause} 
                     className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/60 w-full h-full transition-opacity duration-300 cursor-pointer`}
                 >
-                    { played === 0 
-                        ? <Play className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" /> 
-                        : <RotateCcw className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" />
+                    { showLayer && (
+                        played === 0 ? (
+                            <Play className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" />
+                        ) : played === 1 ? (
+                            <RotateCcw className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" />
+                        ) : null
+                    )}
+                </div>
+                <div className={`${showIndication ? "opacity-100 z-50" : "opacity-0 z-0"} absolute inset-0 m-auto bg-black/60 w-20 h-20 rounded-full transition-opacity duration-300`}>
+                    { showForward ? (
+                            <StepForward className="w-10 h-10 absolute inset-0 m-auto scale-125" />
+                        ) : showBackward ? (
+                            <StepBack className="w-10 h-10 absolute inset-0 m-auto scale-125" />
+                        ) : null
                     }
+                    { showVolume && (
+                        muted ? (
+                            <VolumeX className="w-10 h-10 absolute inset-0 m-auto scale-125" />
+                        ) : volume < 0.5 ? (
+                            <Volume1 className="w-10 h-10 absolute inset-0 m-auto scale-125" />
+                        ) : (
+                            <Volume2 className="w-10 h-10 absolute inset-0 m-auto scale-125" />
+                        )
+                    )}
                 </div>
                 <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-40 video-player"></div>
                 <div 
@@ -486,7 +555,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                         onClick={handleMute}
                                         disabled={!hasAudio}
                                     >
-                                        { muted || !hasAudio ? <VolumeX /> : <Volume2 /> }
+                                        { muted || !hasAudio ? <VolumeX /> : volume < 0.5 ? <Volume1 /> : <Volume2 /> }
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
