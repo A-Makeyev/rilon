@@ -149,14 +149,14 @@ function InstructorCourses({ courses }) {
             <CardContent className="pb-5">
                 <div className="overflow-x-auto">
                     { courses && courses.length > 0 && (
-                        <Table className="table-fixed">
+                        <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="w-1/2">Course</TableHead>
                                     <TableHead className="w-1/6">Students</TableHead>
                                     <TableHead className="w-1/6">Price</TableHead>
-                                    <TableHead className="w-1/12">Revenue</TableHead>
-                                    <TableHead className="w-1/6 text-right">Actions</TableHead>
+                                    <TableHead className="w-1/11">Revenue</TableHead>
+                                    <TableHead className="w-1/6 text-right pr-6">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
