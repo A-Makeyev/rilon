@@ -89,7 +89,9 @@
 }
 
 ::selection {
-  text-shadow: 1px 1px 5px rgba(163, 168, 255, 0.7), 0 0 1em rgba(163, 168, 255, 0.4);
+  color: #1b1b1b;
+  background-color: #f1f1f1;
+  text-shadow: 1px 1px 5px hsla(237, 100%, 82%, 0.7), 0 0 1em rgba(163, 168, 255, 0.4);
 }
 
 ::-webkit-scrollbar {

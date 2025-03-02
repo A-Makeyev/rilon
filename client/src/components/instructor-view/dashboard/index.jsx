@@ -63,41 +63,43 @@ function InstructorDashboard({ courses }) {
                     </Card>
                 ))}
             </div>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-xl">
-                        Courses
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table className="text-base font-medium font-mono">
-                            <TableHeader>
-                                <TableRow>
-                                <TableHead>Course</TableHead>
-                                <TableHead>Student</TableHead>
-                                <TableHead>Email</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                { calculateRevenue().studentList.map((item, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>
-                                            { item.courseTitle }
-                                        </TableCell>
-                                        <TableCell>
-                                            { item.studentName }
-                                        </TableCell>
-                                        <TableCell>
-                                            { item.studentEmail }
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </CardContent>
-            </Card>
+            { calculateRevenue().studentList.length > 0 && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-xl">
+                            Courses
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-x-auto">
+                            <Table className="text-base font-medium font-mono">
+                                    <TableHeader>
+                                        <TableRow>
+                                        <TableHead>Course</TableHead>
+                                        <TableHead>Student</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                <TableBody>
+                                    { calculateRevenue().studentList.map((item, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>
+                                                { item.courseTitle }
+                                            </TableCell>
+                                            <TableCell>
+                                                { item.studentName }
+                                            </TableCell>
+                                            <TableCell>
+                                                { item.studentEmail }
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
         </div>
     )
 }

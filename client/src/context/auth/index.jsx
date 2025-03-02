@@ -60,11 +60,7 @@ export default function AuthProvider({ children }) {
                 setLoading(false)
             }
 
-            toast.success(`${greeting()} ${data?.user?.username}`, {
-                className: 'max-w-max min-w-[300px]',
-                bodyClassName: 'text-center',
-                position: 'top-center'
-            })
+            toast.success(`${greeting()} ${data?.user?.username}`, { position: 'top-center' })
         } catch(err) {
             toast.error(err?.response?.data?.message || 'Something went wrong', { position: 'top-center' })
         }

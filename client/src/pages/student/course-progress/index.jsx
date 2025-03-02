@@ -141,7 +141,7 @@ function CourseProgressPage() {
     }, [])
 
     return (
-        <div className="flex flex-col h-screen bg-gray-900 text-gray-50">
+        <div className="flex flex-col bg-gray-900 text-gray-50">
             <div className="flex flex-col h-screen overflow-hidden">
                 <div className="flex justify-between p-4 bg-gray-900 border-b border-gray-500">
                     <div className="flex items-center space-x-2">
@@ -161,7 +161,7 @@ function CourseProgressPage() {
                         { displaySideBar ? <ChevronRight /> : <ChevronLeft /> }
                     </div>
                 </div>
-                <div className="relative flex flex-1">
+                <div className="relative flex flex-1 overflow-y-auto overflow-x-hidden">
                     <div className={`flex-1 transition-all duration-300 ${displaySideBar ? 'mr-[400px]' : ''}`}>
                         <div className="border-b border-gray-500">
                             <VideoPlayer
@@ -171,7 +171,7 @@ function CourseProgressPage() {
                                 onProgressUpdate={setCurrentLecture}
                                 progressData={currentLecture}
                                 width="100%"
-                                height="800px"
+                                height="700px"
                             />
                         </div>
                         <div className="p-6 bg-gray-900">
@@ -180,7 +180,7 @@ function CourseProgressPage() {
                             </h2>
                         </div>
                     </div>
-                    <div className={`${displaySideBar ? 'translate-x-0' : 'translate-x-full'} absolute right-0 h-screen w-full lg:w-[400px] bg-gray-900 border-l border-gray-500 transition-all duration-300`}>
+                    <div className={`${displaySideBar ? 'translate-x-0' : 'translate-x-full'} absolute right-0 h-screen w-full lg:w-[400px] z-50 bg-gray-900 border-l border-gray-500 transition-all duration-300`}>
                         <Tabs defaultValue="content" className="flex flex-col h-full">
                             <TabsList className="grid grid-cols-2 gap-0.5 w-full bg-gray-900 p-0 h-14">
                                 <TabsTrigger value="content" className="h-full text-gray-900 hover:bg-gray-200 text-base font-semibold rounded-none">

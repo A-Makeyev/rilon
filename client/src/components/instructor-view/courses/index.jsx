@@ -28,7 +28,7 @@ function InstructorCourses({ courses }) {
     const [open, setOpen] = useState(false)
 
     async function handleDeleteCourse() {
-      if (!selectedCourse) return
+      if (!selectedCourse || loadingCourseId) return
     
       try {
         setOpen(false)
@@ -182,6 +182,7 @@ function InstructorCourses({ courses }) {
                                                     <Button
                                                         size="sm"
                                                         variant="transparent"
+                                                        disabled={loadingCourseId}
                                                         onClick={() => navigate(`/instructor/edit-course/${course?._id}`)}
                                                     >
                                                         <Edit className="h-6 w-6" />
@@ -191,6 +192,7 @@ function InstructorCourses({ courses }) {
                                                             <Button
                                                                 size="sm"
                                                                 variant="transparent"
+                                                                disabled={loadingCourseId}
                                                                 onClick={() => {
                                                                     setSelectedCourse(course)
                                                                     setOpen(true)

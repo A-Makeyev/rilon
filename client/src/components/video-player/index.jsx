@@ -69,7 +69,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         }
         setPlaying(!playing)
         setShowControls(playing && !showControls)
-    }, [playing])
+    }, [played, playing, showControls])
 
     const handleBackward = useCallback(() => {
         const player = playerRef.current
@@ -102,6 +102,21 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
             timeoutRef.current = null
         }, 1000)
     }, [showIndication, showForward])
+
+    const handleShowVolume = useCallback(() => {
+        if (showIndication || showVolume) return
+        
+        setShowIndication(true)
+        setShowVolume(true)
+    
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    
+        timeoutRef.current = setTimeout(() => {
+            setShowIndication(false)
+            setShowVolume(false)
+            timeoutRef.current = null
+        }, 1000)
+    }, [showIndication, showVolume])
 
     function handleReady() {
         const player = playerRef.current.getInternalPlayer()
@@ -173,20 +188,6 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
             setMuted(false)
         }
         setTimeout(handleShowVolume, 0)
-    }
-
-    function handleShowVolume() {
-        if (showIndication || showVolume) return
-        setShowIndication(true)
-        setShowVolume(true)
-
-        if (timeoutRef.current) clearTimeout(timeoutRef.current)
-
-        timeoutRef.current = setTimeout(() => {
-            setShowIndication(false)
-            setShowVolume(false)
-            timeoutRef.current = null
-        }, 1000)
     }
 
     function handleProgress(state) {
@@ -340,6 +341,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     useEffect(() => {
         const videoPlayers = document.querySelectorAll('.video-player')
         videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
+
         if (playing && !holdControls) {  
             videoPlayers.forEach(x => { x.style.setProperty('cursor', 'none', 'important') })
             setShowControls(false)
@@ -365,17 +367,20 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
             }, 2000)
     
             switch (event.code) {
-                case 'Space':
+                case 'Space': {
                     handlePlayAndPause()
-                    event.preventDefault()                    
+                    event.preventDefault()
                     break
-                case 'ArrowRight':
+                }
+                case 'ArrowRight': {
                     handleForward()
                     break
-                case 'ArrowLeft':
+                }
+                case 'ArrowLeft': {
                     handleBackward()
                     break
-                case 'ArrowUp':
+                }
+                case 'ArrowUp': {
                     event.preventDefault()
                     setVolume((prevVolume) => {
                         let newVolume = Math.min(prevVolume + 0.05, 1)
@@ -384,8 +389,8 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     })
                     setTimeout(handleShowVolume, 0)
                     break
-
-                case 'ArrowDown':
+                }
+                case 'ArrowDown': {
                     event.preventDefault()
                     setVolume((prevVolume) => {
                         let newVolume = Math.max(prevVolume - 0.05, 0)
@@ -394,26 +399,30 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     })
                     setTimeout(handleShowVolume, 0)
                     break
-                case 'KeyM': 
+                }
+                case 'KeyM': {
                     const volumeButton = document.getElementById(videoId !== undefined ? `volume-for-video-${videoId}` : 'volume')
                     if (volumeButton) volumeButton.click()
                     setTimeout(handleShowVolume, 0)
                     break
-                case 'KeyP': 
+                }
+                case 'KeyP': {
                     const pipButton = document.getElementById(videoId !== undefined ? `pip-for-video-${videoId}` : 'pip')
                     if (pipButton) pipButton.click()
                     break
-                case 'KeyF':
+                }
+                case 'KeyF': {
                     handleFullScreen()
                     break
+                }
                 default:
                     break
             }
         }
-    
+            
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [isFocused, showLayer, handlePlayAndPause, handleForward, handleBackward, handleFullScreen])
+    }, [isFocused, showLayer, handlePlayAndPause, handleForward, handleBackward, handleFullScreen, handleShowVolume, holdControls, playing, videoId])
 
     return (
         <TooltipProvider>
@@ -451,17 +460,17 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                 />
                 <div 
                     onClick={handlePlayAndPause} 
-                    className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/60 w-full h-full transition-opacity duration-300 cursor-pointer`}
+                    className={`${showLayer ? "opacity-100" : "opacity-0"} absolute bg-black/60 text-white w-full h-full z-30 transition-opacity duration-300 cursor-pointer`}
                 >
                     { showLayer && (
                         played === 0 ? (
-                            <Play className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" />
+                            <Play className="w-10 h-10 absolute inset-0 m-auto scale-125 hover:scale-150 duration-300" />
                         ) : played === 1 ? (
-                            <RotateCcw className="w-10 h-10 absolute inset-0 m-auto text-white scale-125 hover:scale-150 duration-300" />
+                            <RotateCcw className="w-10 h-10 absolute inset-0 m-auto scale-125 hover:scale-150 duration-300" />
                         ) : null
                     )}
                 </div>
-                <div className={`${showIndication ? "opacity-100 z-50" : "opacity-0 z-0"} absolute inset-0 m-auto bg-black/60 w-20 h-20 rounded-full transition-opacity duration-300`}>
+                <div className={`${showIndication ? "opacity-100" : "opacity-0"} absolute inset-0 m-auto bg-black/60 text-white w-20 h-20 rounded-full transition-opacity duration-300`}>
                     { showForward ? (
                             <StepForward className="w-10 h-10 absolute inset-0 m-auto scale-125" />
                         ) : showBackward ? (
@@ -478,11 +487,11 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         )
                     )}
                 </div>
-                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-40 video-player"></div>
+                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] video-player"></div>
                 <div 
                     onMouseEnter={useCallback(() => setHoldControls(true), [])} 
                     onMouseLeave={useCallback(() => setHoldControls(false), [])} 
-                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 bg-gray-800 transition-opacity duration-300`}
+                    className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 z-40 bg-gray-800 transition-opacity duration-300`}
                 >
                     <Slider
                         step={1}
