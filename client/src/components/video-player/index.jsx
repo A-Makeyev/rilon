@@ -460,7 +460,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                 />
                 <div 
                     onClick={handlePlayAndPause} 
-                    className={`${showLayer ? "opacity-100" : "opacity-0"} absolute bg-black/60 text-white w-full h-full z-30 transition-opacity duration-300 cursor-pointer`}
+                    className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/60 text-white w-full h-full transition-opacity duration-300 cursor-pointer`}
                 >
                     { showLayer && (
                         played === 0 ? (
@@ -487,7 +487,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         )
                     )}
                 </div>
-                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] video-player"></div>
+                <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-40 video-player"></div>
                 <div 
                     onMouseEnter={useCallback(() => setHoldControls(true), [])} 
                     onMouseLeave={useCallback(() => setHoldControls(false), [])} 

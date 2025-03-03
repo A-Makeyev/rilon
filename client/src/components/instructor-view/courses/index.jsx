@@ -137,10 +137,10 @@ function InstructorCourses({ courses }) {
                 <Button
                     className="p-6"
                     onClick={() => {
-                    setCurrentEditedCourse(null)
-                    setCourseCurriculumFormData(courseCurriculumInitialFormData)
-                    setCourseLandingFormData(courseLandingInitialFormData)
-                    navigate("/instructor/create-new-course")
+                        setCurrentEditedCourse(null)
+                        setCourseCurriculumFormData(courseCurriculumInitialFormData)
+                        setCourseLandingFormData(courseLandingInitialFormData)
+                        navigate("/instructor/create-new-course")
                     }}
                 >
                     Create New Course

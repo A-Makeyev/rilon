@@ -35,7 +35,6 @@ function CourseProgressPage() {
     const [lockCourse, setLockCourse] = useState(false)
     const [currentLecture, setCurrentLecture] = useState(null)
     const [displayCompletedCourse, setDisplayCompletedCourse] = useState(false)
-    const [displayConfetti, setDisplayConfetti] = useState(false)
     const [displaySideBar, setDisplaySideBar] = useState(true)
     const [refreshKey, setRefreshKey] = useState(0)
 
@@ -54,8 +53,6 @@ function CourseProgressPage() {
                 if (response?.data?.completed) {
                     setCurrentLecture(response?.data?.courseDetails?.curriculum[0])
                     setDisplayCompletedCourse(true)
-                    setDisplayConfetti(true)
-                    return
                 }
 
                 if (response?.data?.lastViewedLecture) {
@@ -94,7 +91,6 @@ function CourseProgressPage() {
 
         if (response?.success) {
             setCurrentLecture(null)
-            setDisplayConfetti(false)
             setDisplayCompletedCourse(false)
             getCurrentCourseProgress()
         }
@@ -127,12 +123,6 @@ function CourseProgressPage() {
     useEffect(() => {
         getCurrentCourseProgress()
     }, [id])
-
-    useEffect(() => {
-        if (displayConfetti) {
-            setTimeout(() => setDisplayConfetti(false), 6000)
-        }
-    }, [displayConfetti])
 
     useEffect(() => {
         return () => {
@@ -271,15 +261,6 @@ function CourseProgressPage() {
                     </div>
                 </DialogContent>
             </Dialog>
-            { displayConfetti &&
-                <ConfettiExplosion
-                    force={1}
-                    width={3000}
-                    duration={6000}
-                    particleCount={300}
-                    style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-                />
-            }
         </div>
     )
 }
