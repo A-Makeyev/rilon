@@ -460,7 +460,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                 />
                 <div 
                     onClick={handlePlayAndPause} 
-                    className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/60 text-white w-full h-full transition-opacity duration-300 cursor-pointer`}
+                    className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/30 text-white w-full h-full transition-opacity duration-300 cursor-pointer`}
                 >
                     { showLayer && (
                         played === 0 ? (
@@ -470,7 +470,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         ) : null
                     )}
                 </div>
-                <div className={`${showIndication ? "opacity-100" : "opacity-0"} absolute inset-0 m-auto bg-black/60 text-white w-20 h-20 rounded-full transition-opacity duration-300`}>
+                <div className={`${showIndication ? "opacity-100" : "opacity-0"} absolute inset-0 m-auto bg-black/30 text-white w-20 h-20 rounded-full transition-opacity duration-300`}>
                     { showForward ? (
                             <StepForward className="w-10 h-10 absolute inset-0 m-auto scale-125" />
                         ) : showBackward ? (

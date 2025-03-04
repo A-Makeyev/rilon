@@ -9,10 +9,10 @@ function CourseLandingPage() {
     const { courseLandingFormData, setCourseLandingFormData } = useContext(InstructorContext)
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-lg font-medium">
-                    Course Details
+        <Card className="px-4 pb-4">
+            <CardHeader className="px-4">
+                <CardTitle className="text-lg font-medium mt-2">
+                    Details
                 </CardTitle>
             </CardHeader>
             <CardContent>

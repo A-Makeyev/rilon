@@ -108,7 +108,7 @@ function AcquiredCoursesPage() {
                                             <div className="mb-5 space-y-0.5">
                                                 <h3 
                                                     onClick={() => navigate(`/course-progress/${item.courseId}`)}
-                                                    className="font-semibold text-base text-gray-900 hover:text-gray-700 transition cursor-pointer">
+                                                    className="ml-0.5 font-semibold text-base text-gray-900 hover:text-gray-700 transition cursor-pointer">
                                                     { item.title.length > 35
                                                         ? item.title.slice(0, 35) + '...'
                                                         : item.title

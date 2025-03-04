@@ -57,8 +57,8 @@ function CourseSettings() {
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
-                <CardTitle className="text-lg font-medium">
-                    Course Image
+                <CardTitle className="text-lg font-medium mt-2">
+                    Image
                 </CardTitle>
                 { courseLandingFormData?.image_url && (
                     <Button onClick={handleDeleteImage}>
@@ -68,12 +68,12 @@ function CourseSettings() {
             </CardHeader>
             <CardContent>
                 { courseLandingFormData?.image_url ? (
-                    <div className="flex flex-col gap-3">
-                        <img src={courseLandingFormData.image_url} />
+                    <div className="flex flex-col gap-2">
+                        <img src={courseLandingFormData.image_url} className="rounded-lg m-3" />
                     </div>
                 ) : (
                     <div>
-                        {mediaUploadProgress ? (
+                        { mediaUploadProgress ? (
                             <MediaProgressBar
                                 isMediaUploading={mediaUploadProgress}
                                 progress={mediaUploadProgressPercentage}

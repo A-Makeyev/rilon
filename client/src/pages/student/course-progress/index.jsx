@@ -23,7 +23,6 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog"
-import ConfettiExplosion from "react-confetti-explosion"
 import VideoPlayer from "@/components/video-player"
 
 
@@ -110,8 +109,8 @@ function CourseProgressPage() {
 
     function handleChangeLecture(item) {
         setCurrentLecture(item)
-        setRefreshKey(oldKey => oldKey + 1)
         updateLastViewedLecture(item)
+        setRefreshKey(oldKey => oldKey + 1)
     }
     
     useEffect(() => {

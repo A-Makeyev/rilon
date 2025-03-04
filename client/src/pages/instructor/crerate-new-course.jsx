@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { InstructorContext } from "@/context/instructor"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { ArrowLeft, Zap } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { addNewCourse, getInstructorCourseDetails, updateCourse } from "@/services"
 import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config"
@@ -16,12 +17,12 @@ function CreateNewCourse() {
     const params = useParams()
     const navigate = useNavigate()
     const { auth } = useContext(AuthContext)
-    const { 
+    const {
         courseLandingFormData,
-        setCourseLandingFormData, 
-        courseCurriculumFormData, 
+        setCourseLandingFormData,
+        courseCurriculumFormData,
         setCourseCurriculumFormData,
-        currentEditedCourse, 
+        currentEditedCourse,
         setCurrentEditedCourse
     } = useContext(InstructorContext)
 
@@ -29,9 +30,9 @@ function CreateNewCourse() {
         if (Array.isArray(value)) {
             return value.length === 0
         }
-        return value === '' || value === null || value === undefined 
+        return value === '' || value === null || value === undefined
     }
-    
+
     function validateFormData() {
         for (let key in courseLandingFormData) {
             if (isEmpty(courseLandingFormData[key])) {
@@ -93,19 +94,19 @@ function CreateNewCourse() {
             const courseFormData = Object.keys(courseLandingInitialFormData).reduce((acc, key) => {
                 acc[key] = response?.data[key] || courseLandingInitialFormData[key]
                 return acc
-              }, {})
+            }, {})
 
-              setCourseLandingFormData(courseFormData)
-              setCourseCurriculumFormData(response?.data?.curriculum)
+            setCourseLandingFormData(courseFormData)
+            setCourseCurriculumFormData(response?.data?.curriculum)
         }
     }
 
-    useEffect(() => {    
+    useEffect(() => {
         if (currentEditedCourse !== null) {
             getCourseDetails()
         }
     }, [currentEditedCourse])
-    
+
     useEffect(() => {
         if (params?.courseId) {
             setCurrentEditedCourse(params?.courseId)
@@ -114,27 +115,39 @@ function CreateNewCourse() {
 
     return (
         <div className="container mx-auto p-4 mt-4">
-            <div className="flex justify-between">
-                <h1 className="text-3xl font-bold mb-5 ml-3">
-                    { courseLandingFormData?.title ? courseLandingFormData?.title : 'New Course' }
-                </h1>
-                <Button 
-                    className="text-md tracking-wider font-bold px-8 mr-3"
-                    disabled={!validateFormData()} 
+            <div className="flex flex-col md:flex-row justify-between gap-2">
+                <Button
+                    variant="outline"
+                    className="font-semibold"
+                    onClick={() => navigate('/instructor')}
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back
+                </Button>
+                <Button
+                    className="md:order-2 font-semibold"
+                    disabled={!validateFormData()}
                     onClick={handleCreateNewCourse}
                 >
-                    { currentEditedCourse ? 'Update' : 'Create' }
+                    <Zap className="w-4 h-4" />
+                    {currentEditedCourse ? 'Update' : 'Create'}
+
                 </Button>
+                <h1 className="mt-5 md:mt-0 mb-6 px-2 text-center text-2xl font-bold font-mono">
+                    {courseLandingFormData?.title ? courseLandingFormData?.title : 'New Course'}
+                </h1>
             </div>
             <Card>
                 <CardContent>
                     <div className="container mx-auto p-4">
                         <Tabs defaultValue="curriculum" className="space-y-4">
-                            <TabsList>
-                                <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-                                <TabsTrigger value="landing-page">Landing Page</TabsTrigger>
-                                <TabsTrigger value="settings">Settings</TabsTrigger>
-                            </TabsList>
+                            <div className="flex justify-center">
+                                <TabsList className="grid grid-cols-3 xl:inline-flex">
+                                    <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
+                                    <TabsTrigger value="landing-page">Landing Page</TabsTrigger>
+                                    <TabsTrigger value="settings">Settings</TabsTrigger>
+                                </TabsList>
+                            </div>
                             <TabsContent value="curriculum">
                                 <CourseCurriculum />
                             </TabsContent>
@@ -142,7 +155,7 @@ function CreateNewCourse() {
                                 <CourseLandingPage />
                             </TabsContent>
                             <TabsContent value="settings">
-                                <CourseSettings />                            
+                                <CourseSettings />
                             </TabsContent>
                         </Tabs>
                     </div>
