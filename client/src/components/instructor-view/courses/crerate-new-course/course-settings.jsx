@@ -55,14 +55,14 @@ function CourseSettings() {
     }
 
     return (
-        <Card>
+        <Card className="pb-0 sm:pb-4 -mx-4 lg:-mx-0">
             <CardHeader className="flex flex-row justify-between">
-                <CardTitle className="text-lg font-medium mt-2">
-                    Image
+                <CardTitle className="text-xl font-medium mt-2 ml-2">
+                    Course Image
                 </CardTitle>
                 { courseLandingFormData?.image_url && (
                     <Button onClick={handleDeleteImage}>
-                        Delete Image
+                        Replace Image
                     </Button>
                 )}
             </CardHeader>

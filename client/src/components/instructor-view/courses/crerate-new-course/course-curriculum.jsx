@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react"
+import { useContext, useRef, useState, useEffect } from "react"
 import { InstructorContext } from "@/context/instructor"
 import { uploadMedia, bulkUploadMedia, deleteMedia } from "@/services"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { ScrollText, Upload } from "lucide-react"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription, DialogClose } from "@/components/ui/dialog"
 import MediaProgressBar from "@/components/media-progress-bar"
 import VideoPlayer from "@/components/video-player"
+import { toast } from "sonner"
 
 
 function CourseCurriculum() {
@@ -99,7 +101,9 @@ function CourseCurriculum() {
                 })
             }
         } catch (err) {
-            console.error(err)
+            toast.error(err?.response?.data?.message || 'Something went wrong', {
+                position: "top-right"
+            })
         } finally {
             setMediaUploadProgress(false)
 
@@ -115,7 +119,7 @@ function CourseCurriculum() {
         if (video) {
             const videoFormData = new FormData()
             videoFormData.append('file', video)
-
+            
             try {
                 setMediaUploadProgress(true)
 
@@ -133,18 +137,21 @@ function CourseCurriculum() {
                 }
                 setMediaUploadProgress(false)
             } catch (err) {
-                console.error(err)
+                toast.error(err?.response?.data?.message || 'Something went wrong', {
+                    position: "top-right"
+                })
             }
         }
     }
 
-    async function handleVideoUrlInput(event, index) {
+    async function handleVideoUrl(event, index) {
         const url = event.target.value
+
         setCourseCurriculumFormData(prevState => {
             const newData = [...prevState]
             newData[index] = {
                 ...newData[index],
-                tempUrl: url // Store URL temporarily without applying
+                tempUrl: url
             }
             return newData
         })
@@ -152,6 +159,7 @@ function CourseCurriculum() {
 
     function handleApplyUrl(index) {
         const url = courseCurriculumFormData[index]?.tempUrl
+        
         if (url) {
             setCourseCurriculumFormData(prevState => {
                 const newData = [...prevState]
@@ -159,7 +167,7 @@ function CourseCurriculum() {
                     ...newData[index],
                     video_url: url,
                     public_id: `url_video_${Date.now()}`,
-                    tempUrl: '' // Clear temporary URL
+                    tempUrl: ''
                 }
                 return newData
             })
@@ -187,21 +195,26 @@ function CourseCurriculum() {
     async function handleDeleteLecture(index) {
         const copyCourseCurriculumFormData = [...courseCurriculumFormData]
         const currentVideoPublicId = copyCourseCurriculumFormData[index].public_id
+        const lectureTitle = copyCourseCurriculumFormData[index].title || `Lecture ${index + 1}`
         const response = await deleteMedia(currentVideoPublicId, 'video')
 
         if (response?.success) {
             const newCourseCurriculumFormData = copyCourseCurriculumFormData.filter((_, currentIndex) => currentIndex !== index)
             setCourseCurriculumFormData(newCourseCurriculumFormData)
+
+            toast.success(`${lectureTitle} lecture was deleted`, {
+                position: "top-right"
+            })
         }
     }
 
     return (
-        <Card className="-mx-4 lg:-mx-0">
-            <CardHeader className="flex flex-row justify-between px-4 sm:px-6">
-                <CardTitle className="text-lg font-medium mt-2">
-                    Lectures
+        <Card className="px-4 pb-4 -mx-4 lg:-mx-0">
+            <CardHeader className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-4">
+                <CardTitle className="order-2 sm:order-1 text-xl font-medium mt-6 sm:mt-2">
+                    Course Lectures
                 </CardTitle>
-                <div className="flex gap-2">
+                <div className="flex gap-2 order-1 sm:order-2">
                     <Input
                         multiple
                         type="file"
@@ -219,7 +232,7 @@ function CourseCurriculum() {
                         disabled={mediaUploadProgress}
                         onClick={() => bulkUploadRef.current?.click()}
                     >
-                        { mediaUploadProgress ? (
+                        {mediaUploadProgress ? (
                             <>
                                 <LoadingSpinner />
                                 <span>Uploading</span>
@@ -240,10 +253,10 @@ function CourseCurriculum() {
                     </Button>
                 </div>
             </CardHeader>
-            <CardContent className="px-4 sm:px-6 pb-6">
-                <div className="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 w-full">
-                    { courseCurriculumFormData.map((_, index) => (
-                        <div key={index} className="border shadow p-3 sm:p-3 rounded-md w-full h-full">
+            <CardContent className="px-4 sm:px-6">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 xl:gap-10">
+                    { courseCurriculumFormData.map((lecture, index) => (
+                        <div key={index} className="border shadow p-4 sm:p-6 -mb-2 sm:-mb-0 -mx-5 lg:-mx-3 rounded-md">
                             <div className="flex flex-col gap-5 items-start w-full">
                                 <div className="flex flex-col w-full gap-5">
                                     <div className="flex items-center justify-between w-full">
@@ -253,7 +266,7 @@ function CourseCurriculum() {
                                         <div className="flex items-center space-x-2">
                                             <Switch
                                                 id={`preview-lecture-${index + 1}`}
-                                                checked={courseCurriculumFormData[index]?.preview}
+                                                checked={lecture?.preview}
                                                 onCheckedChange={(value) => handlePreviewChange(value, index)}
                                             />
                                             <Label htmlFor={`preview-lecture-${index + 1}`}>
@@ -262,23 +275,25 @@ function CourseCurriculum() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="font-semibold pl-0.5">Title</h3>
+                                        <h3 className="font-semibold pl-0.5">
+                                            Title
+                                        </h3>
                                         <Input
                                             name={`lecture-${index + 1}`}
-                                            value={courseCurriculumFormData[index]?.title}
+                                            value={lecture?.title}
                                             onChange={(event) => handleTitleChange(event, index)}
                                             placeholder="What is this lecture about?"
                                             className="w-full"
                                         />
                                     </div>
                                 </div>
-                                <div className="w-full mt-5">
-                                    {courseCurriculumFormData[index]?.video_url ? (
+                                <div className="w-full">
+                                    { lecture?.video_url ? (
                                         <div className="space-y-3">
                                             <div className="w-full">
                                                 <VideoPlayer
-                                                    url={courseCurriculumFormData[index]?.video_url}
-                                                    videoId={courseCurriculumFormData[index]?.public_id}
+                                                    url={lecture?.video_url}
+                                                    videoId={lecture?.public_id}
                                                     width="100%"
                                                     height="400px"
                                                 />
@@ -287,46 +302,77 @@ function CourseCurriculum() {
                                                 <Button onClick={() => handleDeleteVideo(index)} className="flex-1">
                                                     Replace Video
                                                 </Button>
-                                                <Button onClick={() => handleDeleteLecture(index)} className="flex-1 bg-red-700 hover:bg-red-800">
-                                                    Delete Lecture
-                                                </Button>
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="destructive" className="flex-1">
+                                                            Delete Lecture
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="sm:w-[425px]">
+                                                        <DialogTitle className="font-semibold text-xl">
+                                                            { lecture?.title || `Lecture ${index + 1}` }
+                                                        </DialogTitle>
+                                                        <DialogDescription className="text-base font-medium text-gray-900 mt-3">
+                                                            Are you sure you want to delete Lecture {index + 1}?
+                                                        </DialogDescription>
+                                                        <div className="flex justify-end space-x-2 mt-5">
+                                                            <DialogClose asChild>
+                                                                <Button variant="outline">
+                                                                    Cancel
+                                                                </Button>
+                                                            </DialogClose>
+                                                            <DialogClose asChild>
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    onClick={() => handleDeleteLecture(index)}
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </DialogClose>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
                                             </div>
                                         </div>
                                     ) : (
                                         <div>
-                                            {mediaUploadProgress ? (
+                                            { mediaUploadProgress ? (
                                                 <MediaProgressBar
                                                     isMediaUploading={mediaUploadProgress}
                                                     progress={mediaUploadProgressPercentage}
                                                 />
                                             ) : (
                                                 <div className="flex flex-col gap-4">
-                                                    <h3 className="font-semibold pl-0.5">Upload</h3>
+                                                    <h3 className="font-semibold pl-0.5">
+                                                        Upload
+                                                    </h3>
                                                     <div className="flex flex-col gap-4">
                                                         <Input
                                                             type="file"
                                                             accept="video/*"
                                                             onChange={(event) => handleSingleVideoUpload(event, index)}
-                                                            className="cursor-pointer w-full"
+                                                            className="cursor-pointer"
                                                         />
-                                                        <div className="flex items-center gap-4">
+                                                        <div className="flex items-center gap-4 mt-2">
                                                             <div className="h-[1px] flex-1 bg-border"></div>
                                                             <span className="text-sm text-muted-foreground">or</span>
                                                             <div className="h-[1px] flex-1 bg-border"></div>
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <h3 className="font-semibold pl-0.5">Video URL</h3>
+                                                            <h3 className="font-semibold pl-0.5">
+                                                                Video URL
+                                                            </h3>
                                                             <div className="flex gap-2">
                                                                 <Input
                                                                     type="url"
                                                                     placeholder="Enter video URL"
-                                                                    value={courseCurriculumFormData[index]?.tempUrl || ''}
-                                                                    onChange={(event) => handleVideoUrlInput(event, index)}
+                                                                    value={lecture?.tempUrl || ''}
+                                                                    onChange={(event) => handleVideoUrl(event, index)}
                                                                     className="flex-1"
                                                                 />
                                                                 <Button
                                                                     onClick={() => handleApplyUrl(index)}
-                                                                    disabled={!courseCurriculumFormData[index]?.tempUrl}
+                                                                    disabled={!lecture?.tempUrl}
                                                                 >
                                                                     Apply
                                                                 </Button>

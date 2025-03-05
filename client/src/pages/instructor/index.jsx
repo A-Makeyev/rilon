@@ -16,7 +16,7 @@ function InstructorView() {
     const [activeTab, setActiveTab] = useState('dashboard')
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-    
+
     const menuItems = [
         {
             icon: ChartNoAxesCombined,
@@ -74,12 +74,12 @@ function InstructorView() {
         <div className="flex flex-col md:flex-row h-full min-h-screen bg-gray-100">
             <header className="bg-white shadow-md p-4 flex justify-between items-center md:hidden">
                 <h2 className="text-xl font-bold capitalize">
-                    { auth.user.username }
+                    {auth.user.username}
                 </h2>
                 <div className="flex space-x-2">
-                    { menuItems.map(item => (
+                    {menuItems.map(item => (
                         <Button
-                            key={item.value}
+                            key={item.label}
                             title={sidebarCollapsed ? item.label : null}
                             variant={activeTab === item.value ? 'outline' : 'transparent'}
                             className="w-full mb-2"
@@ -88,47 +88,47 @@ function InstructorView() {
                         >
                             <item.icon className="h-4 w-4" />
                             <span className="hidden sm:flex ml-2 ">
-                                { item.label }
+                                {item.label}
                             </span>
                         </Button>
                     ))}
                 </div>
             </header>
-            { mobileMenuOpen && (
+            {mobileMenuOpen && (
                 <div className="md:hidden bg-white shadow-md">
                     <div className="p-4 flex flex-col space-y-2">
-                        { menuItems.map(item => (
+                        {menuItems.map(item => (
                             <Button
-                                key={item.value}
+                                key={item.label}
                                 variant={activeTab === item.value ? 'outline' : 'transparent'}
                                 className="w-full justify-start"
                                 onClick={() => handleMenuItemClick(item)}
                             >
                                 <item.icon className="h-4 w-4 mr-2" />
-                                { item.label }
+                                {item.label}
                             </Button>
                         ))}
                     </div>
                 </div>
             )}
             <aside className={`${sidebarCollapsed ? 'w-16' : 'w-64'} hidden md:block bg-white shadow-md transition-all duration-300`}>
-                <div className="p-4 mt-5">                    
+                <div className="p-4 mt-5">
                     <div className="flex mb-4">
-                        <Button 
-                            variant="transparent" 
+                        <Button
+                            variant="transparent"
                             className={sidebarCollapsed ? 'w-full' : null}
-                            onClick={toggleSidebar} 
+                            onClick={toggleSidebar}
                         >
-                            { sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" /> }
+                            {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
                         </Button>
-                        { !sidebarCollapsed && (
+                        {!sidebarCollapsed && (
                             <h2 className="text-2xl font-bold mb-3 text-center capitalize">
-                                { auth.user.username }
+                                {auth.user.username}
                             </h2>
                         )}
                     </div>
                     <nav>
-                        { menuItems.map(item => (
+                        {menuItems.map(item => (
                             <Button
                                 key={item.value}
                                 variant={activeTab === item.value ? 'outline' : 'transparent'}
@@ -137,9 +137,9 @@ function InstructorView() {
                                 onClick={() => handleMenuItemClick(item)}
                             >
                                 <item.icon className="h-4 w-4" />
-                                { !sidebarCollapsed && (
+                                {!sidebarCollapsed && (
                                     <span className="ml-2">
-                                        { item.label }
+                                        {item.label}
                                     </span>
                                 )}
                             </Button>
@@ -154,29 +154,29 @@ function InstructorView() {
                             Instructor Dashboard
                         </h1>
                     </div>
-                    
+
                     <Tabs value={activeTab}>
-                        { menuItems.filter(item => item.component !== null).map(item => (
+                        {menuItems.filter(item => item.component !== null).map(item => (
                             <TabsContent key={item.value} value={item.value}>
-                                { item.component }
+                                {item.component}
                             </TabsContent>
                         ))}
                     </Tabs>
                 </div>
             </main>
             { menuItems.map(item => (
-                <>
+                <div key={`tooltip-group-${item.label}`}>
                     <Tooltip
                         id={item.label}
                         content={item.label}
                         className={`${sidebarCollapsed ? 'flex' : 'hidden'} flex sm:hidden font-medium`}
-                    />  
+                    />
                     <Tooltip
                         id={`sidebar-${item.label}`}
                         content={item.label}
                         className={sidebarCollapsed ? "flex" : "hidden"}
                     />
-                </>
+                </div>
             ))}
         </div>
     )
