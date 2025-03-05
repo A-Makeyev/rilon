@@ -55,7 +55,7 @@ function InstructorDashboard({ courses }) {
                                 { item.label }
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="flex flex-row items-center justify-center space-y-2">
+                        <CardContent className="flex flex-row items-center justify-center space-y-2 mb-6">
                             <div className="text-xl font-medium">
                                 { item.value }
                             </div>
@@ -72,7 +72,7 @@ function InstructorDashboard({ courses }) {
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
-                            <Table className="text-base font-medium font-mono">
+                            <Table className="text-base font-medium font-mono mb-4">
                                     <TableHeader>
                                         <TableRow>
                                         <TableHead>Course</TableHead>
