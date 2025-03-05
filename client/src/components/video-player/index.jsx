@@ -2,19 +2,19 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
-import { 
-    Play, 
+import {
+    Play,
     Pause,
-    Maximize, 
-    Minimize, 
-    RotateCcw, 
-    RotateCw, 
-    Volume2, 
+    Maximize,
+    Minimize,
+    RotateCcw,
+    RotateCw,
+    Volume2,
     VolumeX,
-    ArrowLeft, 
-    ArrowRight, 
-    ArrowUpDownIcon, 
-    PictureInPicture, 
+    ArrowLeft,
+    ArrowRight,
+    ArrowUpDownIcon,
+    PictureInPicture,
     PictureInPicture2,
     StepForward,
     StepBack,
@@ -48,7 +48,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     const timeoutRef = useRef(null)
     const playerRef = useRef(null)
     const isReadyRef = useRef(false)
-    
+
     const handleFullScreen = useCallback(async () => {
         if (document.pictureInPictureElement) {
             await document.exitPictureInPicture()
@@ -74,7 +74,8 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     const handleBackward = useCallback(() => {
         const player = playerRef.current
         if (player) player.seekTo(player.getCurrentTime() - 5)
-        if (showIndication || showBackward) return
+        if ((!showLayer && showIndication) || showBackward) return
+        
         setShowIndication(true)
         setShowBackward(true)
 
@@ -86,11 +87,12 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
             timeoutRef.current = null
         }, 1000)
     }, [showIndication, showBackward])
-    
+
     const handleForward = useCallback(() => {
         const player = playerRef.current
         if (player) player.seekTo(player.getCurrentTime() + 5)
-        if (showIndication || showForward) return
+        if ((!showLayer && showIndication) || showForward) return
+
         setShowIndication(true)
         setShowForward(true)
 
@@ -104,13 +106,13 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     }, [showIndication, showForward])
 
     const handleShowVolume = useCallback(() => {
-        if (showIndication || showVolume) return
-        
+        if ((!showLayer && showIndication) || showVolume) return
+
         setShowIndication(true)
         setShowVolume(true)
-    
+
         if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    
+
         timeoutRef.current = setTimeout(() => {
             setShowIndication(false)
             setShowVolume(false)
@@ -150,7 +152,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
         clearTimeout(controlsTimeoutRef.current)
         controlsTimeoutRef.current = setTimeout(() => {
-            if (playing && !holdControls) {  
+            if (playing && !holdControls) {
                 videoPlayers.forEach(x => { x.style.setProperty('cursor', 'none', 'important') })
                 setShowControls(false)
             }
@@ -161,7 +163,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         const videoPlayers = document.querySelectorAll('.video-player')
         videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
         clearTimeout(controlsTimeoutRef.current)
-        if (playing) {  
+        if (playing) {
             setShowControls(false)
         }
     }
@@ -231,44 +233,40 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
 
     async function handlePictureInPicture() {
         if (!document.pictureInPictureEnabled) return
-    
+
         if (playerRef.current) {
-            const videoElement = playerRef.current.wrapper || playerRef.current.getInternalPlayer()
-    
-            if (videoElement && videoElement.requestPictureInPicture) {
-                if (!isPip) {
-                    await videoElement.requestPictureInPicture()
-                    setIsPip(true)
-                } else if (document.pictureInPictureElement) {
-                    await document.exitPictureInPicture()
-                    setIsPip(false)
+            const videoElement = playerRef.current.getInternalPlayer()
+
+            if (videoElement) {
+                try {
+                    if (!isPip) {
+                        await videoElement.requestPictureInPicture()
+                        setIsPip(true)
+                    } else if (document.pictureInPictureElement) {
+                        await document.exitPictureInPicture()
+                        setIsPip(false)
+                    }
+                } catch (error) {
+                    console.error('PiP error:', error)
                 }
-            }  
+            }
         }
     }
 
     useEffect(() => {
-        if (document.pictureInPictureEnabled && playerRef.current) {
-            const videoElement = playerRef.current.wrapper || playerRef.current.getInternalPlayer()
-            setIsPipAvailable(!!(videoElement && videoElement.requestPictureInPicture))
-        }
-    }, [playerRef])
-
-    useEffect(() => {
-        const checkPipStatus = () => {
-            if (document.pictureInPictureElement) {
-                setIsPip(true)
-            } else {
-                setIsPip(false)
+        const checkPiPSupport = () => {
+            if (document.pictureInPictureEnabled && playerRef.current) {
+                const videoElement = playerRef.current.getInternalPlayer()
+                if (videoElement && typeof videoElement.requestPictureInPicture === 'function') {
+                    setIsPipAvailable(true)
+                }
             }
-            requestAnimationFrame(checkPipStatus)
         }
 
-        requestAnimationFrame(checkPipStatus)
-        return () => {
-            cancelAnimationFrame(checkPipStatus)
-        }
-    }, [])
+        checkPiPSupport()
+        const timeoutId = setTimeout(checkPiPSupport, 1000)
+        return () => clearTimeout(timeoutId)
+    }, [playerRef.current])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -325,7 +323,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                 ...progressData,
                 progressValue: played
             })
-        } 
+        }
     }, [played])
 
     useEffect(() => {
@@ -342,7 +340,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
         const videoPlayers = document.querySelectorAll('.video-player')
         videoPlayers.forEach(x => { x.style.setProperty('cursor', 'auto', 'important') })
 
-        if (playing && !holdControls) {  
+        if (playing && !holdControls) {
             videoPlayers.forEach(x => { x.style.setProperty('cursor', 'none', 'important') })
             setShowControls(false)
         }
@@ -351,21 +349,21 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (!isFocused) return
-    
+
             if (showLayer && event.code !== 'Space') {
                 event.preventDefault()
                 event.stopPropagation()
                 return
             }
-    
+
             setShowControls(true)
             clearTimeout(controlsTimeoutRef.current)
             controlsTimeoutRef.current = setTimeout(() => {
-                if (playing && !holdControls) {  
+                if (playing && !holdControls) {
                     setShowControls(false)
                 }
             }, 2000)
-    
+
             switch (event.code) {
                 case 'Space': {
                     handlePlayAndPause()
@@ -419,10 +417,10 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     break
             }
         }
-            
+
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [isFocused, showLayer, handlePlayAndPause, handleForward, handleBackward, handleFullScreen, handleShowVolume, holdControls, playing, videoId])
+    }, [isFocused, showLayer, handlePlayAndPause, handleForward, handleBackward, handleFullScreen, handleShowVolume, holdControls, playing])
 
     return (
         <TooltipProvider>
@@ -441,7 +439,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     playerContainerRef.current?.focus()
                     setIsFocused(true)
                 }}
-                className={`${fullScreen ? 'w-screen h-screen' : null}  relative overflow-hidden bg-slate-900`}
+                className={`${fullScreen ? 'w-screen h-screen' : null}  relative overflow-hidden rounded-md bg-slate-900`}
             >
                 <ReactPlayer
                     url={url}
@@ -458,8 +456,8 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     width="100%"
                     height="100%"
                 />
-                <div 
-                    onClick={handlePlayAndPause} 
+                <div
+                    onClick={handlePlayAndPause}
                     className={`${showLayer ? "opacity-100 z-50" : "opacity-0 z-0"} absolute bg-black/30 text-white w-full h-full transition-opacity duration-300 cursor-pointer`}
                 >
                     { showLayer && (
@@ -470,7 +468,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         ) : null
                     )}
                 </div>
-                <div className={`${showIndication ? "opacity-100" : "opacity-0"} absolute inset-0 m-auto bg-black/30 text-white w-20 h-20 rounded-full transition-opacity duration-300`}>
+                <div className={`${showIndication ? "opacity-100" : "opacity-0"} absolute inset-0 m-auto bg-black/30 text-white w-20 h-20 rounded-full transition-opacity`}>
                     { showForward ? (
                             <StepForward className="w-10 h-10 absolute inset-0 m-auto scale-125" />
                         ) : showBackward ? (
@@ -488,9 +486,9 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                     )}
                 </div>
                 <div onClick={handlePlayAndPause} className="absolute bg-transparent w-full h-[calc(100%-4rem)] z-40 video-player"></div>
-                <div 
-                    onMouseEnter={useCallback(() => setHoldControls(true), [])} 
-                    onMouseLeave={useCallback(() => setHoldControls(false), [])} 
+                <div
+                    onMouseEnter={useCallback(() => setHoldControls(true), [])}
+                    onMouseLeave={useCallback(() => setHoldControls(false), [])}
                     className={`${showControls || holdControls || !playing ? 'opacity-100' : 'opacity-0'} absolute block bottom-0 left-0 right-0 pb-2 z-40 bg-gray-800 transition-opacity duration-300`}
                 >
                     <Slider
@@ -502,7 +500,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                         className="mb-2"
                     />
                     <div className="flex items-center justify-between px-3">
-                        <div className={`${hasAudio ? 'space-x-4' : null} flex items-center`}>
+                        <div className="flex items-center">
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
@@ -515,7 +513,7 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{ playing ? 'Pause' : 'Play' }</p>
+                                    { playing ? 'Pause' : 'Play' }
                                 </TooltipContent>
                             </Tooltip>
                             <Tooltip>
@@ -530,10 +528,10 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p className="flex flex-row">
+                                    <span className="flex flex-row">
                                         <ArrowLeft size={16} strokeWidth={2.5} className="mr-0.5 mt-[0.5px]" />
-                                        <span>Backward</span>
-                                    </p>
+                                        Backward
+                                    </span>
                                 </TooltipContent>
                             </Tooltip>
                             <Tooltip>
@@ -548,47 +546,54 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p className="flex flex-row">
-                                        <span>Forward</span>
+                                    <span className="flex flex-row">
+                                        Forward
                                         <ArrowRight size={16} strokeWidth={2.5} className="ml-0.5 mt-[0.5px]" />
-                                    </p>
+                                    </span>
                                 </TooltipContent>
                             </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        size="icon"
-                                        variant="none"
-                                        className="text-white bg-transparent transition ease-in-out hover:scale-125"
-                                        id={`${videoId !== undefined ? `volume-for-video-${videoId}` : 'volume'}`}
-                                        onClick={handleMute}
-                                        disabled={!hasAudio}
-                                    >
-                                        { muted || !hasAudio ? <VolumeX /> : volume < 0.5 ? <Volume1 /> : <Volume2 /> }
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{ muted || !hasAudio ? 'Unmute (M)' : 'Mute (M)' }</p>
-                                </TooltipContent>
-                            </Tooltip>
-                            { hasAudio && (
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Slider
-                                            step={1}
-                                            max={100}
-                                            value={[volume * 100]}
-                                            onValueChange={(value) => handleVolumeChange([value[0] / 100])}
-                                        />
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p className="flex flex-row">
-                                            Volume
-                                            (<ArrowUpDownIcon className="w-3.5 h-3.5 mt-0.5" />)
-                                        </p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            )}
+                            <div className="relative flex items-center">
+                                <div className="group flex items-center">
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                size="icon"
+                                                variant="none"
+                                                className="text-white bg-transparent transition ease-in-out hover:scale-125"
+                                                id={`${videoId !== undefined ? `volume-for-video-${videoId}` : 'volume'}`}
+                                                onClick={handleMute}
+                                                disabled={!hasAudio}
+                                            >
+                                                { muted || !hasAudio ? <VolumeX /> : volume < 0.5 ? <Volume1 /> : <Volume2 /> }
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            { muted || !hasAudio ? 'Unmute (M)' : 'Mute (M)' }
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    { hasAudio && (
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <div className="absolute left-full ml-1 w-14 sm:w-20 opacity-0 scale-90 transition group-hover:opacity-100 group-hover:scale-100 pointer-events-none group-hover:pointer-events-auto">
+                                                    <Slider
+                                                        step={1}
+                                                        max={100}
+                                                        className="h-10"
+                                                        value={[volume * 100]}
+                                                        onValueChange={(value) => handleVolumeChange([value[0] / 100])}
+                                                    />
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <span className="flex flex-row">
+                                                    Volume
+                                                    (<ArrowUpDownIcon className="w-3.5 h-3.5 mt-0.5" />)
+                                                </span>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                         <div className="flex items-center">
                             <div className="text-white mr-2 select-none cursor-default">
@@ -606,11 +611,11 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                             id={`${videoId !== undefined ? `pip-for-video-${videoId}` : 'pip'}`}
                                             onClick={handlePictureInPicture}
                                         >
-                                            {isPip ? <PictureInPicture /> : <PictureInPicture2 />}
+                                            { isPip ? <PictureInPicture /> : <PictureInPicture2 /> }
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)'}</p>
+                                        { isPip ? 'Exit Picture-In-Picture (P)' : 'Picture-In-Picture (P)' }
                                     </TooltipContent>
                                 </Tooltip>
                             )}
@@ -622,11 +627,11 @@ function VideoPlayer({ url, videoId, onProgressUpdate, progressData, width = '10
                                         className="text-white bg-transparent transition ease-in-out hover:scale-125"
                                         onClick={handleFullScreen}
                                     >
-                                        { fullScreen ? <Minimize /> : <Maximize /> }
+                                        {fullScreen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{ fullScreen ? 'Exit Full Screen (F)' : 'Full Screen (F)' }</p>
+                                    { fullScreen ? 'Exit Full Screen (F)' : 'Full Screen (F)' }
                                 </TooltipContent>
                             </Tooltip>
                         </div>
