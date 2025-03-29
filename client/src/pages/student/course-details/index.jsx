@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
 import { createPayment, getCoursePurchaseInfo, getStudentCourseDetails } from "@/services"
@@ -20,7 +20,6 @@ import VideoPlayer from "@/components/video-player"
 
 
 function StudentCoursesDetailsPage() {
-    const location = useLocation()
     const navigate = useNavigate()
     const { id } = useParams()
     const { auth } = useContext(AuthContext)
@@ -106,6 +105,7 @@ function StudentCoursesDetailsPage() {
             }
         } catch(err) {
             setLoading(false)
+            console.log(err)
         }
     }
 

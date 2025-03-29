@@ -1,4 +1,4 @@
-import { useContext, useRef, useState, useEffect } from "react"
+import { useContext, useRef } from "react"
 import { InstructorContext } from "@/context/instructor"
 import { uploadMedia, bulkUploadMedia, deleteMedia } from "@/services"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
