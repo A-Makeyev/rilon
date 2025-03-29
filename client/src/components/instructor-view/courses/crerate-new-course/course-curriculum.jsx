@@ -30,6 +30,10 @@ function CourseCurriculum() {
             ...prevState,
             { title: '', preview: false, video_url: '', public_id: '' }
         ])
+
+        setTimeout(() => {
+            window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' })
+        }, 100)
     }
 
     function handleTitleChange(event, index) {
@@ -232,7 +236,7 @@ function CourseCurriculum() {
                         disabled={mediaUploadProgress}
                         onClick={() => bulkUploadRef.current?.click()}
                     >
-                        {mediaUploadProgress ? (
+                        { mediaUploadProgress ? (
                             <>
                                 <LoadingSpinner />
                                 <span>Uploading</span>

@@ -264,7 +264,7 @@ function CreateNewCourse() {
                                 <div style={{ ...skeletonStyle, width: '100%', height: '200px' }}></div>
                             </div>
                         ) : (
-                            <Tabs defaultValue="curriculum" className="space-y-4" onFocus={() => window.scrollTo(0, 0)}>
+                            <Tabs defaultValue="curriculum" className="space-y-4" onClick={() => window.scrollTo(0, 0)}>
                                 <div className="flex justify-center">
                                     <TabsList className="grid grid-cols-3 xl:inline-flex">
                                         <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
