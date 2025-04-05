@@ -175,7 +175,7 @@ function CreateNewCourse() {
     }
 
     return (
-        <div className="container mx-auto p-4 mt-4">
+        <div className="container mx-auto p-4 mt-4"> 
             <style>
                 {`
                     @keyframes shimmer {
@@ -184,7 +184,7 @@ function CreateNewCourse() {
                     }
                 `}
             </style>
-            <div className="flex flex-col md:flex-row justify-between gap-2">
+            <div className="flex flex-col md:flex-row justify-between gap-2"> 
                 { unsavedChanges() ? (
                     <Dialog>
                         <DialogTrigger asChild>
@@ -211,18 +211,18 @@ function CreateNewCourse() {
                                 </DialogClose>
                                 <DialogClose asChild>
                                     <Button
-                                        variant="destructive"
-                                        onClick={() => navigate('/instructor')}
+                                        disabled={!validateFormData()}
+                                        onClick={handleCreateNewCourse}
                                     >
-                                        Discard
+                                        Update
                                     </Button>
                                 </DialogClose>
                                 <DialogClose asChild>
                                     <Button
-                                        disabled={!validateFormData()}
-                                        onClick={handleCreateNewCourse}
+                                        variant="destructive"
+                                        onClick={() => navigate('/instructor')}
                                     >
-                                        { currentEditedCourse ? 'Update' : 'Create' }
+                                        Discard
                                     </Button>
                                 </DialogClose>
                             </div>
@@ -264,12 +264,18 @@ function CreateNewCourse() {
                                 <div style={{ ...skeletonStyle, width: '100%', height: '200px' }}></div>
                             </div>
                         ) : (
-                            <Tabs defaultValue="curriculum" className="space-y-4" onFocus={() => window.scrollTo(0, 0)}>
+                            <Tabs defaultValue="curriculum" className="space-y-4">
                                 <div className="flex justify-center">
                                     <TabsList className="grid grid-cols-3 xl:inline-flex">
-                                        <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-                                        <TabsTrigger value="landing-page">Landing Page</TabsTrigger>
-                                        <TabsTrigger value="settings">Settings</TabsTrigger>
+                                        <TabsTrigger value="curriculum" onFocus={() => window.scrollTo(0, 0)}>
+                                            Curriculum
+                                        </TabsTrigger>
+                                        <TabsTrigger value="landing-page">
+                                            Landing Page
+                                        </TabsTrigger>
+                                        <TabsTrigger value="settings">
+                                            Settings
+                                        </TabsTrigger>
                                     </TabsList>
                                 </div>
                                 <TabsContent value="curriculum">

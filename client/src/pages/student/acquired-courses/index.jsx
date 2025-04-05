@@ -78,7 +78,7 @@ function AcquiredCoursesPage() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6 ml-6 p-4">
+            <h1 className="text-2xl text-center sm:text-start font-bold mb-6 ml-6 p-4">
                 { acquiredCourses?.length > 0 && 'My Courses' }
             </h1>
             { loading ? (

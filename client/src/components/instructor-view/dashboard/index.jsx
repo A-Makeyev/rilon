@@ -46,7 +46,7 @@ function InstructorDashboard({ courses }) {
 
     return (
         <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 { config.map((item, index) => (
                     <Card key={index} className="hover:shadow-lg duration-300">
                         <CardHeader className="flex flex-row items-center justify-center space-y-2 pb-3">

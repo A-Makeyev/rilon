@@ -232,7 +232,7 @@ function CourseCurriculum() {
                         disabled={mediaUploadProgress}
                         onClick={() => bulkUploadRef.current?.click()}
                     >
-                        {mediaUploadProgress ? (
+                        { mediaUploadProgress ? (
                             <>
                                 <LoadingSpinner />
                                 <span>Uploading</span>
