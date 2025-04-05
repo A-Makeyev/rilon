@@ -72,7 +72,7 @@ function InstructorDashboard({ courses }) {
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
-                            <Table className="text-base font-medium font-mono mb-4">
+                            <Table className="text-base font-medium font-mono mb-2">
                                     <TableHeader>
                                         <TableRow>
                                         <TableHead>Course</TableHead>
