@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "@/context/auth"
 import { StudentContext } from "@/context/student"
 import { createPayment, getCoursePurchaseInfo, getStudentCourseDetails } from "@/services"
@@ -20,7 +20,6 @@ import VideoPlayer from "@/components/video-player"
 
 
 function StudentCoursesDetailsPage() {
-    const location = useLocation()
     const navigate = useNavigate()
     const { id } = useParams()
     const { auth } = useContext(AuthContext)
@@ -106,6 +105,7 @@ function StudentCoursesDetailsPage() {
             }
         } catch(err) {
             setLoading(false)
+            console.log(err)
         }
     }
 
@@ -173,7 +173,7 @@ function StudentCoursesDetailsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 p-3">
                                 { studentCourseDetails.objectives.split(',').map((item, index) => (
                                     <li key={index} className="flex items-start gap-2">
                                         <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
@@ -192,7 +192,7 @@ function StudentCoursesDetailsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="font-medium mb-4">
+                            <p className="font-medium mb-4 p-3">
                                 { studentCourseDetails.description }
                             </p>
                         </CardContent>
@@ -208,7 +208,7 @@ function StudentCoursesDetailsPage() {
                                 <li
                                     key={index}
                                     onClick={item.preview ? () => handlePreview(item) : null}
-                                    className={`${item.preview ? 'cursor-pointer hover:text-gray-700 transition' : null} flex items-center mb-4`}
+                                    className={`${item.preview ? 'cursor-pointer hover:text-gray-700 transition' : null} flex items-center mb-4 pl-2`}
                                 >
                                     { item.preview ? <PlayCircle className="w-5 h-5 mr-2" /> : <Lock className="w-5 h-5 mr-2" /> }
                                     <span className="font-medium">
