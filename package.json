@@ -15,7 +15,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server/index.js",
     "server": "nodemon server/index.js",
     "client": "npm run dev --prefix client",
     "test": "npx playwright test --project=chromium --headed",

@@ -12,7 +12,6 @@ import { dirname, join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { config } from 'dotenv'
 
-
 config()
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -39,8 +38,8 @@ app.use('/student/acquired-courses', acquiredCoursesRoutes)
 app.use('/student/course-progress', courseProgressRoutes)
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(join(__dirname, 'client', 'build')))
-    app.get('*', (req, res) => res.sendFile(resolve(__dirname, 'client', 'build', 'index.html')))
+    app.use(express.static(join(__dirname, '..', 'client', 'dist')))
+    app.get('*', (req, res) => res.sendFile(resolve(__dirname, '..', 'client', 'dist', 'index.html')))
 } else {
     app.get('/', (req, res) => res.send('<h1 style="text-align: center margin-top: 20%">Server is Running</h1>'))
 }
