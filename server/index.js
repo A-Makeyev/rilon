@@ -1,5 +1,4 @@
 require('dotenv').config()
-const path = require('path')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const express = require('express')
@@ -14,7 +13,6 @@ const courseProgressRoutes = require('./routes/student-routes/course-progress-ro
 
 const app = express()
 const PORT = process.env.PORT || 5000
-const __dirname = path.resolve()
 
 app.use(cors({
     origin: process.env.CLIENT_URL,
@@ -34,14 +32,6 @@ app.use('/student/courses', studentCourseRoutes)
 app.use('/student/order', studentOrderRoutes)
 app.use('/student/acquired-courses', acquiredCoursesRoutes)
 app.use('/student/course-progress', courseProgressRoutes)
-
-
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '/frontend/build')))
-    app.get('*', (request, response) => response.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')))
-} else {
-    app.get('/', (request, response) => response.send('<h1 style="text-align: center margin-top: 20%">Server is Running</h1>'))
-}
 
 app.use((err, req, res, next) => {
     console.log('🥞', err.stack)
