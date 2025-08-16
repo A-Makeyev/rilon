@@ -1,12 +1,6 @@
 import axios from "axios"
 
 
-// const axiosInstance = axios.create({
-//     baseURL: process.env.NODE_ENV === 'production' 
-//      ? 'https://rilon.onrender.com' 
-//      : 'http://localhost:5000'
-// })
-
 const axiosInstance = axios.create({
     baseURL: window.location.hostname.includes('rilon.onrender.com')
     ? 'https://rilon.onrender.com'

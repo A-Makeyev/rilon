@@ -6,6 +6,7 @@ const StudentCourses = require("../../models/StudentCourses")
 
 const createOrder = async (req, res) => {
     try {
+        const clientUrl = process.env.NODE_ENV === 'production' ? process.env.CLIENT_PROD_URL : process.env.CLIENT_URL
         const {
             payerId,
             paymentId,
@@ -31,8 +32,8 @@ const createOrder = async (req, res) => {
                 payment_method: 'paypal',
             },
             redirect_urls: {
-                return_url: `${process.env.CLIENT_URL}/payment-return`,
-                cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+                return_url: `${clientUrl}/payment-return`,
+                cancel_url: `${clientUrl}/payment-cancel`,
             },
             transactions: [
                 {

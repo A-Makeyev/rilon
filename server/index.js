@@ -20,7 +20,7 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: process.env.NODE_ENV === 'production' ? process.env.CLIENT_PROD_URL : process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
