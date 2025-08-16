@@ -1,6 +1,9 @@
+import { dirname, join, resolve } from 'path'
+import { fileURLToPath } from 'url'
+import { config } from 'dotenv'
 import cors from 'cors'
-import mongoose from 'mongoose'
 import express from 'express'
+import mongoose from 'mongoose'
 import authRoutes from './routes/auth/index.js'
 import instructorMediaRoutes from './routes/instructor-routes/media-routes.js'
 import instructorCourseRoutes from './routes/instructor-routes/course-routes.js'
@@ -8,9 +11,7 @@ import studentCourseRoutes from './routes/student-routes/course-routes.js'
 import studentOrderRoutes from './routes/student-routes/order-routes.js'
 import acquiredCoursesRoutes from './routes/student-routes/acquired-courses-routes.js'
 import courseProgressRoutes from './routes/student-routes/course-progress-routes.js'
-import { dirname, join, resolve } from 'path'
-import { fileURLToPath } from 'url'
-import { config } from 'dotenv'
+
 
 config()
 const __dirname = dirname(fileURLToPath(import.meta.url))
